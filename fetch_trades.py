@@ -265,14 +265,6 @@ def fetch_greeks(token, account_id, contracts):
         "Content-Type": "application/json"
     }
     
-    # osiSymbols is passed as repeated query parameters
-    # requests handles list params automatically
-    params = {
-        "osiSymbols": contracts,
-        "apiKey": ""  # Not needed but some endpoints expect it
-    }
-    
-    # Remove apiKey — Public uses Bearer token auth
     params = {"osiSymbols": contracts}
     
     response = requests.get(url, headers=headers, params=params)
@@ -294,12 +286,72 @@ def fetch_greeks(token, account_id, contracts):
     return greeks_by_symbol
 
 
+def get_share_prices(tickers, token, account_id):
+    """
+    Fetch current share prices for a list of tickers in one batched call.
+    Uses Public's quotes endpoint with instrument type EQUITY.
+
+    Called once per scan run after all signals are collected. Batching
+    all tickers into a single request keeps API overhead minimal — one
+    call covers the entire watchlist regardless of how many signals fired.
+
+    Parameters:
+        tickers (list): List of ticker strings e.g. ["AAPL", "NVDA"]
+        token (str): Valid access token
+        account_id (str): Brokerage account ID
+
+    Returns:
+        dict: Last trade price keyed by ticker e.g. {"AAPL": 213.42}
+              Returns empty dict if the call fails — non-fatal, signals
+              still log normally with share_price=None.
+    """
+
+    if not tickers:
+        return {}
+
+    try:
+        url = f"{BASE_URL}/userapigateway/marketdata/{account_id}/quotes"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        body = {
+            "instruments": [
+                {"symbol": t, "type": "EQUITY"} for t in tickers
+            ]
+        }
+
+        response = requests.post(url, headers=headers, json=body)
+
+        if response.status_code != 200:
+            print(f"  ✗ Share price fetch failed: {response.status_code}")
+            return {}
+
+        prices = {}
+        for q in response.json().get("quotes", []):
+            if q.get("outcome") == "SUCCESS":
+                symbol = q["instrument"]["symbol"]
+                last = q.get("last")
+                if last is not None:
+                    try:
+                        prices[symbol] = float(last)
+                    except (ValueError, TypeError):
+                        pass
+
+        print(f"  ✓ Share prices fetched for {len(prices)} tickers")
+        return prices
+
+    except Exception as e:
+        print(f"  ✗ Share price error: {e}")
+        return {}
+
+
 # =============================================================================
 # STEP 4: DISPLAY AND ANALYZE
 # Surface the most interesting contracts by volume/OI ratio
 # =============================================================================
 
-def analyze_and_display(chain_data, ticker, expiration_date, quiet=False):
+def analyze_and_display(chain_data, ticker, expiration_date, quiet=False, share_prices=None):
     """
     Analyze the options chain and surface contracts showing
     unusual activity based on our signal criteria.
@@ -311,6 +363,10 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False):
         chain_data (dict): The raw option chain from the API
         ticker (str): The stock ticker for display
         expiration_date (str): The expiration date for display
+        quiet (bool): Suppress per-contract display output
+        share_prices (dict): Optional dict of ticker -> share price at scan time.
+                             Passed through to log_signal() for DB storage.
+                             If None or ticker not present, logs as NULL.
     """
     
     calls = chain_data.get("calls", [])
@@ -403,12 +459,15 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False):
             contract["_signal_tier"] = "NONE"
     
     
-# -------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # LOGGING — always runs regardless of quiet mode
     # We log all significant signals to the journal every scan
     # -------------------------------------------------------------------------
     
     today = datetime.now().strftime("%Y-%m-%d")
+
+    # Resolve share price for this ticker once — None if unavailable
+    share_price = (share_prices or {}).get(ticker)
     
     for contract in active_contracts:
         
@@ -424,10 +483,6 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False):
         tier = contract.get("_signal_tier", "NONE")
         
         # Only log meaningful signals
-        # Logging thresholds — keeps the journal curated and meaningful
-        # HIGH and INST: always log regardless of premium
-        # WATCH: only log if score >= 5 AND premium >= $500K
-        # This filters borderline WATCH signals that add noise without value
         should_log = (
             tier in ["HIGH", "INST", "WATCH"]
         )
@@ -452,7 +507,8 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False):
                     vol_oi_ratio=ratio,
                     premium=premium,
                     composite_score=score,
-                    signal_tier=tier
+                    signal_tier=tier,
+                    share_price=share_price
                 )
 
     # -------------------------------------------------------------------------
@@ -584,6 +640,8 @@ def main():
             if not chain:
                 continue
             
+            # share_prices not available yet at this stage — fetched after
+            # the full scan completes and passed in for the logging re-pass below
             signals = analyze_and_display(chain, ticker, expiration, quiet=True)
             
             if signals:
@@ -600,6 +658,46 @@ def main():
             print(f"  → 🔥 {high} HIGH  💰 {inst} INST  ⚡ {watch} WATCH")
         else:
             print(f"  → No significant signals")
+
+    # -------------------------------------------------------------------------
+    # Step 4b: Fetch share prices for all tickers that produced signals
+    # One batched call covers everything — done after the scan so we don't
+    # add latency to the per-ticker loop. Signals are already logged at this
+    # point, so we UPDATE the share_price column for today's records.
+    # -------------------------------------------------------------------------
+
+    tickers_with_signals = list({
+        s.get("_ticker") for s in all_signals if s.get("_ticker")
+    })
+
+    share_prices = {}
+    if tickers_with_signals:
+        print(f"\n  Fetching share prices for {len(tickers_with_signals)} tickers...")
+        time.sleep(API_DELAY)
+        share_prices = get_share_prices(tickers_with_signals, token, account_id)
+
+        if share_prices:
+            # UPDATE share_price on records already written this scan
+            # Signals are logged during analyze_and_display() before we have
+            # prices, so we patch them in now with a targeted UPDATE.
+            import sqlite3
+            from journal import DB_PATH
+            today = datetime.now().strftime("%Y-%m-%d")
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            updated_total = 0
+            for ticker, price in share_prices.items():
+                cursor.execute("""
+                    UPDATE signals
+                    SET share_price = ?
+                    WHERE ticker = ?
+                    AND scan_time LIKE ?
+                    AND share_price IS NULL
+                """, (price, ticker, f"{today}%"))
+                updated_total += cursor.rowcount
+            conn.commit()
+            conn.close()
+            print(f"  ✓ Share prices written to {updated_total} signal records")
     
     # Step 5: Master summary
     print(f"\n\n{'='*70}")
@@ -632,8 +730,8 @@ def main():
                 print(f"  ✗ Greeks unavailable — displaying without")
         
         # Master summary table with Greeks
-        print(f"\n  {'Ticker':<8} {'Contract':<30} {'Type':<6} {'Premium':<12} {'Score':<7} {'Delta':<8} {'Theta':<8} {'IV':<8} Tier")
-        print(f"  {'-'*95}")
+        print(f"\n  {'Ticker':<8} {'Contract':<30} {'Type':<6} {'Premium':<12} {'Score':<7} {'Delta':<8} {'Theta':<8} {'IV':<8} {'Stock':<10} Tier")
+        print(f"  {'-'*105}")
         
         for contract in all_signals[:20]:
             symbol = contract.get("instrument", {}).get("symbol", "N/A")
@@ -665,6 +763,10 @@ def main():
             delta_display = f"{delta:+.3f}" if delta != 0 else "—"
             theta_display = f"{theta:.3f}" if theta != 0 else "—"
             iv_display = f"{iv*100:.1f}%" if iv != 0 else "—"
+
+            # Share price at scan time
+            price = share_prices.get(ticker)
+            price_display = f"${price:,.2f}" if price else "—"
             
             # Delta context — tells us ITM/ATM/OTM character of the signal
             abs_delta = abs(delta)
@@ -677,7 +779,7 @@ def main():
             else:
                 delta_context = " OTM"
             
-            print(f"  {ticker:<8} {symbol:<30} {c_type:<6} {premium_display:<12} {score:<7} {delta_display:<8} {theta_display:<8} {iv_display:<8} {tier_icon} {tier}{delta_context}")
+            print(f"  {ticker:<8} {symbol:<30} {c_type:<6} {premium_display:<12} {score:<7} {delta_display:<8} {theta_display:<8} {iv_display:<8} {price_display:<10} {tier_icon} {tier}{delta_context}")
         
         # Directional bias — HIGH signals only
         high_signals_only = [s for s in all_signals if s.get("_signal_tier") == "HIGH"]

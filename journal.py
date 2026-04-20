@@ -52,6 +52,14 @@ def init_database():
             created_at  TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
+
+    # Add share_price column if it doesn't exist yet (safe to run repeatedly)
+    try:
+        cursor.execute("ALTER TABLE signals ADD COLUMN share_price REAL")
+        conn.commit()
+        print("  ✓ share_price column added to signals table")
+    except sqlite3.OperationalError:
+        pass  # Column already exists — no action needed
     
     conn.commit()
     conn.close()
@@ -61,7 +69,7 @@ def init_database():
 
 def log_signal(ticker, contract, contract_type, strike, expiration,
                bid, ask, volume, open_interest, vol_oi_ratio,
-               premium, composite_score, signal_tier):
+               premium, composite_score, signal_tier,share_price=None):
     """
     Write a single signal record to the database.
     Called automatically by the scanner when a signal is detected.
@@ -94,12 +102,14 @@ def log_signal(ticker, contract, contract_type, strike, expiration,
         INSERT INTO signals (
             scan_time, ticker, contract, contract_type, strike,
             expiration, bid, ask, volume, open_interest,
-            vol_oi_ratio, premium, composite_score, signal_tier
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            vol_oi_ratio, premium, composite_score, signal_tier,
+            share_price
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         scan_time, ticker, contract, contract_type, strike,
         expiration, bid, ask, volume, open_interest,
-        vol_oi_ratio, premium, composite_score, signal_tier
+        vol_oi_ratio, premium, composite_score, signal_tier,
+        share_price
     ))
     
     signal_id = cursor.lastrowid

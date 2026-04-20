@@ -212,6 +212,39 @@ def get_journal_summary():
     return result
 
 
+def get_signal_history(days=30):
+    """
+    Fetch signal counts and premium volume grouped by scan date.
+    Returns last N days of data for the history chart.
+    
+    Each row contains:
+        scan_date   — YYYY-MM-DD string
+        high_count  — number of HIGH signals that day
+        inst_count  — number of INST signals that day
+        watch_count — number of WATCH signals that day
+        total_premium — sum of premium for all signals that day
+    """
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            DATE(scan_time) as scan_date,
+            SUM(CASE WHEN signal_tier = 'HIGH'  THEN 1 ELSE 0 END) as high_count,
+            SUM(CASE WHEN signal_tier = 'INST'  THEN 1 ELSE 0 END) as inst_count,
+            SUM(CASE WHEN signal_tier = 'WATCH' THEN 1 ELSE 0 END) as watch_count,
+            SUM(premium) as total_premium
+        FROM signals
+        WHERE scan_time >= DATE('now', ?)
+        GROUP BY DATE(scan_time)
+        ORDER BY scan_date ASC
+    """, (f"-{days} days",))
+
+    rows = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return rows
+
+
 def get_api_token():
     """
     Get a fresh access token from Public API.
@@ -413,6 +446,50 @@ def dashboard():
         s['premium_display'] = fmt_premium(s['premium'])
         s['decoded'] = decode_contract(s['contract'])
         s['greeks'] = greeks_data.get(s['contract'], {})
+
+    # Signal history for chart — serialize to JSON for JS consumption
+    import json
+    signal_history = get_signal_history(days=30)
+    # Format premium for each day
+    for day in signal_history:
+        p = day['total_premium'] or 0
+        day['total_premium'] = p
+        day['premium_display'] = fmt_premium(p)
+    signal_history_json = json.dumps(signal_history)
+
+    # Pass high/inst signals as JSON for DTE filter (days_out already decoded above)
+    high_signals_json = json.dumps([{
+        'contract': s['contract'],
+        'contract_type': s['contract_type'],
+        'premium_display': s['premium_display'],
+        'composite_score': s['composite_score'],
+        'days_out': s['decoded']['days_out'],
+        'ticker': s['decoded']['ticker'],
+        'strike_display': s['decoded']['strike_display'],
+        'contract_type_display': s['decoded']['contract_type'],
+        'expiry_display': s['decoded']['expiry_display'],
+        'dte_display': s['decoded']['dte_display'],
+        'delta': s['greeks'].get('delta', ''),
+        'iv': s['greeks'].get('iv', ''),
+        'moneyness': s['greeks'].get('moneyness', ''),
+        'moneyness_color': s['greeks'].get('moneyness_color', ''),
+        'has_greeks': bool(s['greeks']),
+        'share_price': f"${s['share_price']:,.2f}" if s.get('share_price') else '',
+    } for s in high_signals])
+
+    inst_signals_json = json.dumps([{
+        'contract': s['contract'],
+        'contract_type': s['contract_type'],
+        'premium_display': s['premium_display'],
+        'composite_score': s['composite_score'],
+        'days_out': s['decoded']['days_out'],
+        'ticker': s['decoded']['ticker'],
+        'strike_display': s['decoded']['strike_display'],
+        'contract_type_display': s['decoded']['contract_type'],
+        'expiry_display': s['decoded']['expiry_display'],
+        'dte_display': s['decoded']['dte_display'],
+        'share_price': f"${s['share_price']:,.2f}" if s.get('share_price') else '',
+    } for s in inst_signals])
     
     return render_template_string(DASHBOARD_HTML,
         now=now.strftime('%Y-%m-%d %H:%M:%S %Z'),
@@ -432,6 +509,9 @@ def dashboard():
         bias_color=bias_color,
         todays_signal_count=len(todays_signals),
         greeks_data=greeks_data,
+        signal_history_json=signal_history_json,
+        high_signals_json=high_signals_json,
+        inst_signals_json=inst_signals_json,
     )
 
 
@@ -500,6 +580,16 @@ def last_scan():
     conn.close()
     
     return jsonify({'last_scan': last})
+
+
+@app.route('/api/signal-history')
+def signal_history():
+    """
+    Returns last 30 days of signals grouped by date.
+    Used for the history chart on the dashboard.
+    """
+    rows = get_signal_history(days=30)
+    return jsonify(rows)
 
 
 # =============================================================================
@@ -589,6 +679,11 @@ DASHBOARD_HTML = """
             max-width: 1400px;
             margin: 0 auto;
         }
+
+        /* Full-width cards span both columns */
+        .full-width {
+            grid-column: 1 / -1;
+        }
         
         /* ── Cards ── */
         .card {
@@ -653,6 +748,60 @@ DASHBOARD_HTML = """
             color: #64748b;
             margin-top: 4px;
         }
+
+        /* ── Signal History Chart ── */
+        .history-card {
+            grid-column: 1 / -1;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .chart-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 10px;
+            color: #64748b;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+
+        .legend-line {
+            display: inline-block;
+            width: 14px;
+            height: 2px;
+            background: #e2e8f0;
+            border-radius: 1px;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        #historyChart {
+            width: 100%;
+            height: 160px;
+            display: block;
+        }
+
+        .chart-empty {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #475569;
+            font-style: italic;
+            font-size: 12px;
+        }
         
         /* ── Bias Bar ── */
         .bias-card {
@@ -698,6 +847,39 @@ DASHBOARD_HTML = """
             color: {{ bias_color }};
             min-width: 80px;
             text-align: right;
+        }
+
+        /* ── DTE Filter Tabs ── */
+        .dte-tabs {
+            display: flex;
+            gap: 4px;
+            margin-left: auto;  /* push tabs to right of card-title */
+        }
+
+        .dte-tab {
+            padding: 3px 10px;
+            border-radius: 4px;
+            border: 1px solid #334155;
+            background: transparent;
+            color: #64748b;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-transform: uppercase;
+        }
+
+        .dte-tab:hover {
+            border-color: #475569;
+            color: #94a3b8;
+        }
+
+        .dte-tab.active {
+            background: #334155;
+            color: #f1f5f9;
+            border-color: #475569;
         }
         
         /* ── Signal Tables ── */
@@ -745,6 +927,21 @@ DASHBOARD_HTML = """
         .tier-high  { color: #f97316; }
         .tier-inst  { color: #a855f7; }
         .tier-watch { color: #3b82f6; }
+
+        .stock-price-cell {
+            color: #64748b;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .dte-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: 600;
+            vertical-align: middle;
+        }
         
         /* ── Outcome Buttons ── */
         .outcome-btn {
@@ -819,6 +1016,14 @@ DASHBOARD_HTML = """
             font-style: italic;
             text-align: center;
             padding: 20px 0;
+        }
+
+        .table-empty {
+            color: #475569;
+            font-style: italic;
+            text-align: center;
+            padding: 16px 0;
+            font-size: 11px;
         }
         
         /* ── Auto refresh indicator ── */
@@ -899,6 +1104,22 @@ DASHBOARD_HTML = """
         </div>
     </div>
 
+    <!-- Signal History Chart -->
+    <div class="card history-card">
+        <div class="chart-header">
+            <div class="card-title" style="margin-bottom:0">📉 Signal History — Last 30 Days</div>
+            <div class="chart-legend">
+                <span><span class="legend-dot" style="background:#f97316"></span>HIGH</span>
+                <span><span class="legend-dot" style="background:#a855f7"></span>INST</span>
+                <span><span class="legend-dot" style="background:#3b82f6"></span>WATCH</span>
+                <span><span class="legend-line"></span>Premium Flow</span>
+            </div>
+        </div>
+        <div id="chartContainer">
+            <canvas id="historyChart"></canvas>
+        </div>
+    </div>
+
     <!-- Directional Bias -->
     <div class="card bias-card">
         <div class="card-title">📊 Directional Flow Bias — HIGH Signals Today</div>
@@ -920,128 +1141,69 @@ DASHBOARD_HTML = """
         </div>
     </div>
 
-    <!-- High Conviction Signals -->
-    <div class="card">
+    <!-- High Conviction Signals — full width -->
+    <div class="card full-width">
         <div class="card-title">
             🔥 HIGH Conviction
-            <span class="count">{{ high_signals|length }}</span>
+            <span class="count" id="high-count">{{ high_signals|length }}</span>
+            <div class="dte-tabs">
+                <button class="dte-tab active" onclick="setDteFilter('all')">All</button>
+                <button class="dte-tab" onclick="setDteFilter('0dte')">0DTE</button>
+                <button class="dte-tab" onclick="setDteFilter('1-2d')">1–2d</button>
+                <button class="dte-tab" onclick="setDteFilter('week')">Week</button>
+                <button class="dte-tab" onclick="setDteFilter('30d+')">30d+</button>
+            </div>
         </div>
-        {% if high_signals %}
-        <table class="signal-table">
+        <table class="signal-table" id="high-table">
             <thead>
                 <tr>
-                    <th>Ticker</th>
-                    <th>Strike / Type / Expiry</th>
-                    <th>Premium</th>
-                    <th>Delta</th>
-                    <th>IV</th>
-                    <th>Score</th>
+                    <th style="width:70px">Ticker</th>
+                    <th style="width:90px">Strike</th>
+                    <th style="width:60px">Type</th>
+                    <th style="width:90px">Expiry</th>
+                    <th style="width:90px">Stock @</th>
+                    <th style="width:90px">Premium</th>
+                    <th style="width:80px">Delta</th>
+                    <th style="width:60px">IV</th>
+                    <th style="width:55px">Score</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for s in high_signals %}
-                <tr>
-                    <td style="color:#f1f5f9; font-weight:700; font-size:12px;">
-                        {{ s.decoded.ticker }}
-                    </td>
-                    <td>
-                        <div style="color:#cbd5e1; font-size:12px; font-weight:600;">
-                            {{ s.decoded.strike_display }}
-                            <span class="{{ 'type-call' if s.contract_type == 'CALL' else 'type-put' }}">
-                                {{ s.decoded.contract_type }}
-                            </span>
-                        </div>
-                        <div style="color:#475569; font-size:10px; margin-top:2px;">
-                            {{ s.decoded.expiry_display }}
-                            <span style="padding:1px 5px; border-radius:3px; margin-left:4px;"
-                                class="{% if s.decoded.days_out == 0 %}dte-urgent{% elif s.decoded.days_out <= 2 %}dte-soon{% else %}dte-normal{% endif %}">
-                                {{ s.decoded.dte_display }}
-                            </span>
-                        </div>
-                    </td>
-                    <td class="premium-cell">{{ s.premium_display }}</td>
-                    <td>
-                        {% if s.greeks %}
-                        <div style="font-size:12px; font-weight:600; color:#e2e8f0;">
-                            {{ s.greeks.delta }}
-                        </div>
-                        <div style="font-size:10px; margin-top:2px;">
-                            <span style="color:{{ s.greeks.moneyness_color }};">
-                                {{ s.greeks.moneyness }}
-                            </span>
-                        </div>
-                        {% else %}
-                        <span style="color:#475569;">—</span>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if s.greeks %}
-                        <span style="font-size:12px; color:#94a3b8;">
-                            {{ s.greeks.iv }}
-                        </span>
-                        {% else %}
-                        <span style="color:#475569;">—</span>
-                        {% endif %}
-                    </td>
-                    <td class="score-cell">{{ s.composite_score }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <tbody id="high-tbody"></tbody>
         </table>
-        {% else %}
-        <div class="no-data">No HIGH signals today yet</div>
-        {% endif %}
+        <div class="table-empty" id="high-empty" style="display:none">No signals match this filter</div>
     </div>
 
-    <!-- Institutional Signals -->
-    <div class="card">
+    <!-- Institutional Flow — full width, stacked under HIGH -->
+    <div class="card full-width">
         <div class="card-title">
             💰 Institutional Flow
-            <span class="count">{{ inst_signals|length }}</span>
+            <span class="count" id="inst-count">{{ inst_signals|length }}</span>
+            <div class="dte-tabs">
+                <button class="dte-tab active" onclick="setDteFilter('all')">All</button>
+                <button class="dte-tab" onclick="setDteFilter('0dte')">0DTE</button>
+                <button class="dte-tab" onclick="setDteFilter('1-2d')">1–2d</button>
+                <button class="dte-tab" onclick="setDteFilter('week')">Week</button>
+                <button class="dte-tab" onclick="setDteFilter('30d+')">30d+</button>
+            </div>
         </div>
-        {% if inst_signals %}
-        <table class="signal-table">
+        <table class="signal-table" id="inst-table">
             <thead>
                 <tr>
-                    <th>Ticker</th>
-                    <th>Strike / Type / Expiry</th>
-                    <th>Premium</th>
-                    <th>Score</th>
+                    <th style="width:70px">Ticker</th>
+                    <th style="width:90px">Strike</th>
+                    <th style="width:60px">Type</th>
+                    <th style="width:90px">Expiry</th>
+                    <th style="width:90px">Stock @</th>
+                    <th style="width:90px">Premium</th>
+                    <th style="width:55px">Score</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for s in inst_signals %}
-                <tr>
-                    <td style="color:#f1f5f9; font-weight:700; font-size:12px;">
-                        {{ s.decoded.ticker }}
-                    </td>
-                    <td>
-                        <div style="color:#cbd5e1; font-size:12px; font-weight:600;">
-                            {{ s.decoded.strike_display }}
-                            <span class="{{ 'type-call' if s.contract_type == 'CALL' else 'type-put' }}">
-                                {{ s.decoded.contract_type }}
-                            </span>
-                        </div>
-                        <div style="color:#475569; font-size:10px; margin-top:2px;">
-                            {{ s.decoded.expiry_display }}
-                            <span style="padding:1px 5px; border-radius:3px; margin-left:4px;"
-                                class="{% if s.decoded.days_out == 0 %}dte-urgent{% elif s.decoded.days_out <= 2 %}dte-soon{% else %}dte-normal{% endif %}">
-                                {{ s.decoded.dte_display }}
-                            </span>
-                        </div>
-                    </td>
-                    <td class="premium-cell">{{ s.premium_display }}</td>
-                    <td class="score-cell">{{ s.composite_score }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
+            <tbody id="inst-tbody"></tbody>
         </table>
-        {% else %}
-        <div class="no-data">No INST signals today yet</div>
-        {% endif %}
+        <div class="table-empty" id="inst-empty" style="display:none">No signals match this filter</div>
     </div>
 
-    <!-- Performance -->
+    <!-- Performance + Expiring Today — side by side -->
     <div class="card">
         <div class="card-title">📈 Scanner Performance</div>
         {% if performance %}
@@ -1068,7 +1230,6 @@ DASHBOARD_HTML = """
         {% endif %}
     </div>
 
-    <!-- Expiring Today -->
     <div class="card">
         <div class="card-title">
             ⏰ Expiring Today
@@ -1079,7 +1240,9 @@ DASHBOARD_HTML = """
             <thead>
                 <tr>
                     <th>Ticker</th>
-                    <th>Strike / Type / Expiry</th>
+                    <th>Strike</th>
+                    <th>Type</th>
+                    <th>Expiry</th>
                     <th>Premium</th>
                     <th>Outcome</th>
                 </tr>
@@ -1090,20 +1253,20 @@ DASHBOARD_HTML = """
                     <td style="color:#f1f5f9; font-weight:700; font-size:12px;">
                         {{ s.decoded.ticker }}
                     </td>
+                    <td style="color:#cbd5e1; font-size:12px; font-weight:600;">
+                        {{ s.decoded.strike_display }}
+                    </td>
                     <td>
-                        <div style="color:#cbd5e1; font-size:12px; font-weight:600;">
-                            {{ s.decoded.strike_display }}
-                            <span class="{{ 'type-call' if s.contract_type == 'CALL' else 'type-put' }}">
-                                {{ s.decoded.contract_type }}
-                            </span>
-                        </div>
-                        <div style="color:#475569; font-size:10px; margin-top:2px;">
-                            {{ s.decoded.expiry_display }}
-                            <span style="padding:1px 5px; border-radius:3px; margin-left:4px;"
-                                class="{% if s.decoded.days_out == 0 %}dte-urgent{% elif s.decoded.days_out <= 2 %}dte-soon{% else %}dte-normal{% endif %}">
-                                {{ s.decoded.dte_display }}
-                            </span>
-                        </div>
+                        <span class="{{ 'type-call' if s.contract_type == 'CALL' else 'type-put' }}">
+                            {{ s.decoded.contract_type }}
+                        </span>
+                    </td>
+                    <td style="color:#64748b; font-size:11px;">
+                        {{ s.decoded.expiry_display }}
+                        <span class="dte-badge {% if s.decoded.days_out == 0 %}dte-urgent{% elif s.decoded.days_out <= 2 %}dte-soon{% else %}dte-normal{% endif %}"
+                              style="margin-left:4px;">
+                            {{ s.decoded.dte_display }}
+                        </span>
                     </td>
                     <td class="premium-cell">{{ s.premium_display }}</td>
                     <td>
@@ -1113,17 +1276,11 @@ DASHBOARD_HTML = """
                         </span>
                         {% else %}
                         <button class="outcome-btn btn-win"
-                            onclick="recordOutcome('{{ s.contract }}', 'WIN', {{ loop.index }})">
-                            W
-                        </button>
+                            onclick="recordOutcome('{{ s.contract }}', 'WIN', {{ loop.index }})">W</button>
                         <button class="outcome-btn btn-loss"
-                            onclick="recordOutcome('{{ s.contract }}', 'LOSS', {{ loop.index }})">
-                            L
-                        </button>
+                            onclick="recordOutcome('{{ s.contract }}', 'LOSS', {{ loop.index }})">L</button>
                         <button class="outcome-btn btn-flat"
-                            onclick="recordOutcome('{{ s.contract }}', 'FLAT', {{ loop.index }})">
-                            F
-                        </button>
+                            onclick="recordOutcome('{{ s.contract }}', 'FLAT', {{ loop.index }})">F</button>
                         {% endif %}
                     </td>
                 </tr>
@@ -1139,65 +1296,371 @@ DASHBOARD_HTML = """
 
 <script>
 {% raw %}
-    // Record outcome via API without page reload
-    async function recordOutcome(contract, outcome, rowIndex) {
-        try {
-            const response = await fetch('/api/record-outcome', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contract, outcome, notes: '' })
-            });
-            
-            const data = await response.json();
-            
-            if (data.success) {
-                // Update the UI immediately without reload
-                const td = document.querySelector(`#row-${rowIndex} td:last-child`);
-                const colorMap = {
-                    'WIN': '#22c55e', 'LOSS': '#ef4444', 'FLAT': '#64748b'
-                };
-                td.innerHTML = `
-                    <span class="outcome-recorded outcome-${outcome}">
-                        ${outcome}
-                    </span>`;
-            } else {
-                alert('Failed to record outcome');
-            }
-        } catch (err) {
-            console.error('Error:', err);
-        }
-    }
-    
-    // Poll for new scan data every 60 seconds
-    // Only reload when scanner has produced new signals
-    let lastKnownScan = null;
 
-    async function checkForNewScan() {
-        try {
-            const response = await fetch('/api/last-scan');
-            const data = await response.json();
-            
-            console.log('Polling check — last scan:', data.last_scan, '| known:', lastKnownScan);
-            
-            if (lastKnownScan === null) {
-                lastKnownScan = data.last_scan;
-                console.log('Baseline set:', lastKnownScan);
-            } else if (data.last_scan !== lastKnownScan) {
-                console.log('New scan detected — reloading');
-                location.reload();
-            }
-        } catch (err) {
-            console.log('Refresh check failed:', err);
-        }
-    }
-
-    // Check every 60 seconds
-    setInterval(checkForNewScan, 60 * 1000);
-
-    // Run immediately on load to establish baseline
-    checkForNewScan();
+// ─────────────────────────────────────────────
+// DATA (injected server-side, parsed once)
+// ─────────────────────────────────────────────
 {% endraw %}
-    </script>
+const SIGNAL_HISTORY = {{ signal_history_json | safe }};
+const HIGH_SIGNALS   = {{ high_signals_json | safe }};
+const INST_SIGNALS   = {{ inst_signals_json | safe }};
+{% raw %}
+
+// ─────────────────────────────────────────────
+// SIGNAL HISTORY CHART
+// ─────────────────────────────────────────────
+(function renderHistoryChart() {
+    const canvas = document.getElementById('historyChart');
+    if (!canvas) return;
+
+    if (!SIGNAL_HISTORY || SIGNAL_HISTORY.length === 0) {
+        document.getElementById('chartContainer').innerHTML =
+            '<div class="chart-empty">No historical data yet — signals will appear here after the scanner runs on multiple days</div>';
+        return;
+    }
+
+    // ── Layout constants ──
+    const PADDING = { top: 12, right: 60, bottom: 32, left: 36 };
+    const BAR_GAP = 0.25; // fraction of slot width used as gap between groups
+
+    // ── Colour palette ──
+    const COLORS = {
+        high:    '#f97316',
+        inst:    '#a855f7',
+        watch:   '#3b82f6',
+        premium: '#e2e8f0',
+    };
+
+    // ── Sizing: fill container width, fixed height ──
+    const container = canvas.parentElement;
+    const W = container.clientWidth || 800;
+    const H = 160;
+    canvas.width  = W;
+    canvas.height = H;
+
+    const ctx = canvas.getContext('2d');
+    const innerW = W - PADDING.left - PADDING.right;
+    const innerH = H - PADDING.top  - PADDING.bottom;
+
+    // ── Data ranges ──
+    const days      = SIGNAL_HISTORY;
+    const n         = days.length;
+    const maxCount  = Math.max(1, ...days.map(d => (d.high_count || 0) + (d.inst_count || 0) + (d.watch_count || 0)));
+    const maxPrem   = Math.max(1, ...days.map(d => d.total_premium || 0));
+
+    // ── Helpers ──
+    const xSlot  = i  => PADDING.left + (i / n) * innerW;
+    const slotW  = () => innerW / n;
+    const yCount = v  => PADDING.top + innerH - (v / maxCount) * innerH;
+    const yPrem  = v  => PADDING.top + innerH - (v / maxPrem)  * innerH;
+
+    // ── Grid lines (count axis) ──
+    const gridLines = 4;
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth   = 1;
+    for (let i = 0; i <= gridLines; i++) {
+        const y = PADDING.top + (innerH / gridLines) * i;
+        ctx.beginPath();
+        ctx.moveTo(PADDING.left, y);
+        ctx.lineTo(W - PADDING.right, y);
+        ctx.stroke();
+    }
+
+    // ── Stacked bars ──
+    const bw = slotW() * (1 - BAR_GAP);  // bar group width
+    const bx = i => xSlot(i) + slotW() * BAR_GAP / 2;  // group left edge
+
+    days.forEach((d, i) => {
+        let base = PADDING.top + innerH;
+        const tiers = [
+            { key: 'watch_count', color: COLORS.watch },
+            { key: 'inst_count',  color: COLORS.inst  },
+            { key: 'high_count',  color: COLORS.high  },
+        ];
+
+        tiers.forEach(({ key, color }) => {
+            const count = d[key] || 0;
+            if (count === 0) return;
+            const h = (count / maxCount) * innerH;
+            ctx.fillStyle = color;
+            ctx.fillRect(bx(i), base - h, bw, h);
+            base -= h;
+        });
+    });
+
+    // ── Premium line (right-axis) ──
+    ctx.beginPath();
+    ctx.strokeStyle = COLORS.premium;
+    ctx.lineWidth   = 1.5;
+    ctx.setLineDash([3, 3]);
+
+    days.forEach((d, i) => {
+        const x = bx(i) + bw / 2;
+        const y = yPrem(d.total_premium || 0);
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // ── Premium dots ──
+    days.forEach((d, i) => {
+        const x = bx(i) + bw / 2;
+        const y = yPrem(d.total_premium || 0);
+        ctx.beginPath();
+        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = COLORS.premium;
+        ctx.fill();
+    });
+
+    // ── X-axis date labels (show every ~5 days to avoid crowding) ──
+    ctx.fillStyle  = '#475569';
+    ctx.font       = '9px SF Mono, Consolas, monospace';
+    ctx.textAlign  = 'center';
+    const labelStep = Math.max(1, Math.ceil(n / 6));
+
+    days.forEach((d, i) => {
+        if (i % labelStep !== 0 && i !== n - 1) return;
+        const x = bx(i) + bw / 2;
+        const label = d.scan_date ? d.scan_date.slice(5) : '';  // MM-DD
+        ctx.fillText(label, x, H - 6);
+    });
+
+    // ── Left Y-axis labels (count) ──
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#475569';
+    for (let i = 0; i <= gridLines; i++) {
+        const v = Math.round((maxCount / gridLines) * (gridLines - i));
+        const y = PADDING.top + (innerH / gridLines) * i;
+        ctx.fillText(v, PADDING.left - 4, y + 3);
+    }
+
+    // ── Right Y-axis labels (premium) ──
+    ctx.textAlign = 'left';
+    ctx.fillStyle = '#64748b';
+    const premSteps = [0, 0.5, 1];
+    premSteps.forEach(frac => {
+        const v = maxPrem * frac;
+        const y = yPrem(v);
+        let label;
+        if (v >= 1_000_000) label = '$' + (v / 1_000_000).toFixed(1) + 'M';
+        else if (v >= 1_000) label = '$' + Math.round(v / 1_000) + 'K';
+        else label = '$' + Math.round(v);
+        ctx.fillText(label, W - PADDING.right + 4, y + 3);
+    });
+
+    // ── Tooltip on hover ──
+    canvas.addEventListener('mousemove', (e) => {
+        const rect  = canvas.getBoundingClientRect();
+        const mx    = e.clientX - rect.left;
+        const myRel = e.clientY - rect.top;
+
+        const idx = Math.floor(((mx - PADDING.left) / innerW) * n);
+        if (idx < 0 || idx >= n) {
+            canvas.title = '';
+            return;
+        }
+        const d = days[idx];
+        const total = (d.high_count || 0) + (d.inst_count || 0) + (d.watch_count || 0);
+        canvas.title =
+            `${d.scan_date}\n` +
+            `Signals: ${total} (H:${d.high_count || 0} I:${d.inst_count || 0} W:${d.watch_count || 0})\n` +
+            `Premium: ${d.premium_display || '$0'}`;
+    });
+})();
+
+
+// ─────────────────────────────────────────────
+// DTE FILTER TABS
+// ─────────────────────────────────────────────
+
+// Active DTE bucket — shared across both tables
+let activeDte = 'all';
+
+// Classify a signal's days_out into a bucket
+function dteBucket(daysOut) {
+    if (daysOut === 0)               return '0dte';
+    if (daysOut >= 1 && daysOut <= 2) return '1-2d';
+    if (daysOut >= 3 && daysOut <= 7) return 'week';
+    if (daysOut > 7)                 return '30d+';
+    return 'other';
+}
+
+// Returns true if signal passes the current filter
+function passesFilter(signal) {
+    if (activeDte === 'all') return true;
+    return dteBucket(signal.days_out) === activeDte;
+}
+
+// DTE badge class helper
+function dteBadgeClass(daysOut) {
+    if (daysOut === 0)      return 'dte-urgent';
+    if (daysOut <= 2)       return 'dte-soon';
+    return 'dte-normal';
+}
+
+// Render HIGH table
+function renderHighTable() {
+    const tbody  = document.getElementById('high-tbody');
+    const empty  = document.getElementById('high-empty');
+    const count  = document.getElementById('high-count');
+    const filtered = HIGH_SIGNALS.filter(passesFilter);
+
+    count.textContent = filtered.length;
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(s => `
+        <tr>
+            <td style="color:#f1f5f9; font-weight:700; font-size:12px;">${s.ticker}</td>
+            <td style="color:#cbd5e1; font-size:12px; font-weight:600;">${s.strike_display}</td>
+            <td>
+                <span class="${s.contract_type === 'CALL' ? 'type-call' : 'type-put'}">
+                    ${s.contract_type_display}
+                </span>
+            </td>
+            <td style="color:#64748b; font-size:11px; white-space:nowrap;">
+                ${s.expiry_display}
+                <span class="dte-badge ${dteBadgeClass(s.days_out)}" style="margin-left:4px;">
+                    ${s.dte_display}
+                </span>
+            </td>
+            <td class="stock-price-cell">
+                ${s.share_price ? s.share_price : '<span style="color:#334155;">—</span>'}
+            </td>
+            <td class="premium-cell">${s.premium_display}</td>
+            <td>
+                ${s.has_greeks ? `
+                    <span style="font-size:12px; font-weight:600; color:#e2e8f0;">${s.delta}</span>
+                    <span style="font-size:10px; margin-left:4px; color:${s.moneyness_color};">${s.moneyness}</span>
+                ` : '<span style="color:#475569;">—</span>'}
+            </td>
+            <td>
+                ${s.has_greeks
+                    ? `<span style="font-size:12px; color:#94a3b8;">${s.iv}</span>`
+                    : '<span style="color:#475569;">—</span>'}
+            </td>
+            <td class="score-cell">${s.composite_score}</td>
+        </tr>
+    `).join('');
+}
+
+// Render INST table
+function renderInstTable() {
+    const tbody  = document.getElementById('inst-tbody');
+    const empty  = document.getElementById('inst-empty');
+    const count  = document.getElementById('inst-count');
+    const filtered = INST_SIGNALS.filter(passesFilter);
+
+    count.textContent = filtered.length;
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = filtered.map(s => `
+        <tr>
+            <td style="color:#f1f5f9; font-weight:700; font-size:12px;">${s.ticker}</td>
+            <td style="color:#cbd5e1; font-size:12px; font-weight:600;">${s.strike_display}</td>
+            <td>
+                <span class="${s.contract_type === 'CALL' ? 'type-call' : 'type-put'}">
+                    ${s.contract_type_display}
+                </span>
+            </td>
+            <td style="color:#64748b; font-size:11px; white-space:nowrap;">
+                ${s.expiry_display}
+                <span class="dte-badge ${dteBadgeClass(s.days_out)}" style="margin-left:4px;">
+                    ${s.dte_display}
+                </span>
+            </td>
+            <td class="stock-price-cell">
+                ${s.share_price ? s.share_price : '<span style="color:#334155;">—</span>'}
+            </td>
+            <td class="premium-cell">${s.premium_display}</td>
+            <td class="score-cell">${s.composite_score}</td>
+        </tr>
+    `).join('');
+}
+
+// Tab click handler — updates both tables and all tab buttons simultaneously
+function setDteFilter(bucket) {
+    activeDte = bucket;
+
+    // Update all tab buttons (two sets — one per card)
+    document.querySelectorAll('.dte-tab').forEach(btn => {
+        const btnBucket = btn.getAttribute('onclick').match(/'(.+?)'/)[1];
+        btn.classList.toggle('active', btnBucket === bucket);
+    });
+
+    renderHighTable();
+    renderInstTable();
+}
+
+// Initial render
+renderHighTable();
+renderInstTable();
+
+
+// ─────────────────────────────────────────────
+// OUTCOME RECORDING
+// ─────────────────────────────────────────────
+async function recordOutcome(contract, outcome, rowIndex) {
+    try {
+        const response = await fetch('/api/record-outcome', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contract, outcome, notes: '' })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            const td = document.querySelector(`#row-${rowIndex} td:last-child`);
+            td.innerHTML = `
+                <span class="outcome-recorded outcome-${outcome}">
+                    ${outcome}
+                </span>`;
+        } else {
+            alert('Failed to record outcome');
+        }
+    } catch (err) {
+        console.error('Error:', err);
+    }
+}
+
+
+// ─────────────────────────────────────────────
+// AUTO-REFRESH POLLING (scan-based)
+// ─────────────────────────────────────────────
+let lastKnownScan = null;
+
+async function checkForNewScan() {
+    try {
+        const response = await fetch('/api/last-scan');
+        const data = await response.json();
+        
+        if (lastKnownScan === null) {
+            lastKnownScan = data.last_scan;
+        } else if (data.last_scan !== lastKnownScan) {
+            location.reload();
+        }
+    } catch (err) {
+        console.log('Refresh check failed:', err);
+    }
+}
+
+setInterval(checkForNewScan, 60 * 1000);
+checkForNewScan();
+
+{% endraw %}
+</script>
 
 </body>
 </html>
