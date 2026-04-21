@@ -220,6 +220,31 @@ def get_recent_signals(days=7, tier=None):
     return results
 
 
+def get_todays_signals_for_assessment():
+    """
+    Fetch today's HIGH and INST signals for trade quality assessment.
+    Used by fetch_trades.py to calculate per-ticker directional bias.
+
+    Returns:
+        list: Signal dicts with ticker and contract_type fields
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    cursor.execute("""
+        SELECT ticker, contract_type, signal_tier, premium, composite_score
+        FROM signals
+        WHERE scan_time LIKE ?
+        AND signal_tier IN ('HIGH', 'INST')
+    """, (f"{today}%",))
+
+    results = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return results
+
+
 def get_performance_summary():
     """
     Calculate win/loss statistics across all signals with recorded outcomes.

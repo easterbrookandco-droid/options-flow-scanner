@@ -1,9 +1,11 @@
 import requests
 import os
 import time
+import pytz
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 from journal import init_database, log_signal, check_duplicate, display_recent_signals, display_logging_summary, log_scan_event
+from thesis_generator import generate_thesis
 
 # Load our secret key from the .env file
 load_dotenv()
@@ -41,6 +43,9 @@ EXPIRATIONS_TO_SCAN = 4
 # Delay between API calls in seconds
 # Keeps us well within Public's 10 requests/second rate limit
 API_DELAY = 0.15
+
+# Timezone for all market hour calculations
+MARKET_TIMEZONE = "US/Eastern"
 
 
 # =============================================================================
@@ -344,6 +349,321 @@ def get_share_prices(tickers, token, account_id):
     except Exception as e:
         print(f"  ✗ Share price error: {e}")
         return {}
+    
+    
+def get_market_overview(token, account_id):
+    """
+    Fetch current prices for key market indicators.
+    Called once per scan run for context in the terminal output.
+
+    Tickers:
+        SPY  — S&P 500
+        QQQ  — Nasdaq 100
+        IWM  — Russell 2000 (small caps)
+        TLT  — 20yr Treasury bonds (inverse relationship to rates)
+        GLD  — Gold
+        USO  — Crude oil (WTI proxy)
+        GDX  — Gold miners (risk sentiment)
+        BITX — 2x Bitcoin ETF (crypto proxy, available as equity)
+
+    Returns:
+        dict: Keyed by ticker with price and day change data,
+              empty dict if call fails.
+    """
+
+    MARKET_TICKERS = ["SPY", "QQQ", "IWM", "TLT", "GLD", "USO"]
+
+    try:
+        url = f"{BASE_URL}/userapigateway/marketdata/{account_id}/quotes"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
+        }
+        body = {
+            "instruments": [
+                {"symbol": t, "type": "EQUITY"} for t in MARKET_TICKERS
+            ]
+        }
+
+        response = requests.post(url, headers=headers, json=body)
+
+        if response.status_code != 200:
+            print(f"  ✗ Market overview fetch failed: {response.status_code}")
+            return {}
+
+        overview = {}
+        for q in response.json().get("quotes", []):
+            if q.get("outcome") == "SUCCESS":
+                symbol = q["instrument"]["symbol"]
+                try:
+                    last     = float(q.get("last") or 0)
+                    prev     = float(q.get("previousClose") or 0)
+                    chg      = last - prev if prev else 0
+                    chg_pct  = (chg / prev * 100) if prev else 0
+                    overview[symbol] = {
+                        "price":    last,
+                        "change":   chg,
+                        "chg_pct":  chg_pct,
+                        "arrow":    "▲" if chg >= 0 else "▼",
+                        "sign":     "+" if chg >= 0 else "",
+                        "has_change": prev > 0, # flag for display
+                    }
+                except (ValueError, TypeError):
+                    pass
+
+        return overview
+
+    except Exception as e:
+        print(f"  ✗ Market overview error: {e}")
+        return {}
+
+
+def print_market_overview(overview):
+    """
+    Print a compact market overview table to the terminal.
+    Called at the start of each scan run.
+    """
+
+    if not overview:
+        print("  Market overview unavailable")
+        return
+
+    LABELS = {
+        "SPY": "S&P 500 (SPY)",
+        "QQQ": "Nasdaq  (QQQ)",
+        "IWM": "Russell (IWM)",
+        "TLT": "Bonds   (TLT)",
+        "GLD": "Gold    (GLD)",
+        "USO": "Crude   (USO)",
+    }
+
+    print(f"\n  {'─'*48}")
+    print(f"  📈 MARKET OVERVIEW")
+    print(f"  {'─'*48}")
+
+    for ticker, label in LABELS.items():
+        if ticker not in overview:
+            continue
+        d = overview[ticker]
+        color_marker = "🟢" if d["change"] >= 0 else "🔴"
+        print(f"  {color_marker} {label:<16} "
+              f"${d['price']:>8.2f}   "
+              f"{d['arrow']} {d['sign']}{d['change']:.2f} "
+              f"({d['sign']}{d['chg_pct']:.2f}%)")
+        if d.get("has_change"):
+            print(f"  {color_marker} {label:<16} "
+                  f"${d['price']:>8.2f}   "
+                  f"{d['arrow']} {d['sign']}{d['change']:.2f} "
+                  f"({d['sign']}{d['chg_pct']:.2f}%)")
+        else:
+            print(f"  {color_marker} {label:<16} "
+                  f"${d['price']:>8.2f}   "
+                  f"(change unavailable after hours)")
+
+    print(f"  {'─'*48}")
+
+
+# Per-ticker IV baselines — rough "normal" ranges based on historical behavior
+# We'll refine these as our own data accumulates
+IV_BASELINES = {
+    "SPY":  {"low": 10, "moderate": 20, "high": 35},
+    "QQQ":  {"low": 12, "moderate": 22, "high": 38},
+    "IWM":  {"low": 15, "moderate": 25, "high": 40},
+    "AAPL": {"low": 20, "moderate": 32, "high": 50},
+    "NVDA": {"low": 35, "moderate": 55, "high": 80},
+    "TSLA": {"low": 40, "moderate": 65, "high": 90},
+    "AMZN": {"low": 20, "moderate": 32, "high": 50},
+    "META": {"low": 22, "moderate": 35, "high": 55},
+    "MSFT": {"low": 18, "moderate": 28, "high": 45},
+    "GOOGL":{"low": 20, "moderate": 30, "high": 48},
+    "JPM":  {"low": 18, "moderate": 28, "high": 45},
+    "GS":   {"low": 20, "moderate": 30, "high": 48},
+    "AMD":  {"low": 35, "moderate": 55, "high": 80},
+    "NFLX": {"low": 25, "moderate": 40, "high": 60},
+}
+IV_BASELINES_DEFAULT = {"low": 20, "moderate": 35, "high": 55}
+
+
+def evaluate_trade_quality(signal, all_signals_today, market_overview):
+    """
+    Evaluate a HIGH signal against the decision framework.
+    Returns a formatted assessment string for terminal output.
+
+    Framework rules:
+        1. Score threshold met for DTE band
+        2. Premium threshold met
+        3. DTE in actionable range (5-14 days preferred, 0DTE auto-skip)
+        4. IV not already spiked relative to ticker baseline
+        5. Directional lean — signal type matches both ticker flow
+           AND overall market flow
+
+    Parameters:
+        signal (dict): A logged signal dict from the DB
+        all_signals_today (list): All signals from today's scan
+                                  for flow bias calculation
+        market_overview (dict): Output of get_market_overview()
+
+    Returns:
+        str: Multi-line formatted assessment block
+    """
+
+    ticker        = signal.get("ticker", "")
+    contract      = signal.get("contract", "")
+    contract_type = signal.get("contract_type", "")  # CALL or PUT
+    score         = signal.get("composite_score", 0)
+    premium       = signal.get("premium", 0)
+    iv_raw        = signal.get("iv", 0) or 0
+    dte           = signal.get("decoded", {}).get("days_out", 0) \
+                    if "decoded" in signal \
+                    else 999
+
+    lines   = []
+    checks  = []
+    verdict = "QUALIFIED"
+
+    # ── Check 1: DTE ──────────────────────────────────────────────────────
+    if dte == 0:
+        checks.append("❌ 0DTE — avoid, no time buffer")
+        verdict = "SKIP"
+    elif dte <= 2:
+        checks.append(f"⚠️  Very short DTE ({dte}d) — high risk, fast resolution")
+    elif dte <= 14:
+        checks.append(f"✅ DTE in range ({dte}d — target 5–14)")
+    else:
+        checks.append(f"⚠️  Long DTE ({dte}d) — slower to resolve, "
+                      f"more theta budget")
+
+    # ── Check 2: Score ────────────────────────────────────────────────────
+    if score >= 8:
+        checks.append(f"✅ Score strong ({score})")
+    elif score >= 6:
+        checks.append(f"✅ Score meets threshold ({score})")
+    else:
+        checks.append(f"⚠️  Score marginal ({score})")
+
+    # ── Check 3: Premium ──────────────────────────────────────────────────
+    if premium >= 5_000_000:
+        checks.append(f"✅ Premium institutional (${premium/1e6:.1f}M)")
+    elif premium >= 1_000_000:
+        checks.append(f"✅ Premium strong (${premium/1e6:.1f}M)")
+    else:
+        checks.append(f"⚠️  Premium moderate (${premium/1e3:.0f}K)")
+
+    # ── Check 4: IV vs baseline ───────────────────────────────────────────
+    baseline = IV_BASELINES.get(ticker, IV_BASELINES_DEFAULT)
+    iv_pct   = iv_raw * 100 if iv_raw <= 5 else iv_raw  # normalize if decimal
+
+    if iv_pct == 0:
+        checks.append("⚠️  IV unavailable")
+    elif iv_pct > baseline["high"]:
+        checks.append(f"❌ IV spiked ({iv_pct:.0f}% vs {ticker} "
+                      f"baseline high {baseline['high']}%) — expensive entry")
+        if verdict != "SKIP":
+            verdict = "CAUTION"
+    elif iv_pct > baseline["moderate"]:
+        checks.append(f"⚠️  IV elevated ({iv_pct:.0f}%) — above normal "
+                      f"for {ticker}, price accordingly")
+    else:
+        checks.append(f"✅ IV moderate ({iv_pct:.0f}%) — reasonable entry cost")
+
+    # ── Check 5: Directional lean ─────────────────────────────────────────
+    # 5a: Does this signal match ticker's dominant flow today?
+    ticker_signals = [s for s in all_signals_today
+                      if s.get("ticker") == ticker
+                      and s.get("signal_tier") in ["HIGH", "INST"]]
+    ticker_calls   = sum(1 for s in ticker_signals
+                         if s.get("contract_type") == "CALL")
+    ticker_puts    = sum(1 for s in ticker_signals
+                         if s.get("contract_type") == "PUT")
+    ticker_total   = ticker_calls + ticker_puts
+
+    if ticker_total > 0:
+        ticker_call_pct = ticker_calls / ticker_total * 100
+        ticker_put_pct  = ticker_puts  / ticker_total * 100
+        ticker_bias     = ("BULLISH" if ticker_call_pct > 55
+                           else "BEARISH" if ticker_put_pct > 55
+                           else "NEUTRAL")
+    else:
+        ticker_bias = "NEUTRAL"
+
+    signal_direction = "BULLISH" if contract_type == "CALL" else "BEARISH"
+
+    ticker_aligned = (
+        ticker_bias == "NEUTRAL" or
+        ticker_bias == signal_direction
+    )
+
+    # 5b: Does ticker bias align with overall market (SPY/QQQ)?
+    spy  = market_overview.get("SPY", {})
+    qqq  = market_overview.get("QQQ", {})
+    spy_chg  = spy.get("chg_pct", 0)
+    qqq_chg  = qqq.get("chg_pct", 0)
+    avg_mkt  = (spy_chg + qqq_chg) / 2
+
+    market_bias = ("BULLISH" if avg_mkt > 0.3
+                   else "BEARISH" if avg_mkt < -0.3
+                   else "NEUTRAL")
+
+    market_aligned = (
+        market_bias == "NEUTRAL" or
+        market_bias == signal_direction
+    )
+
+    if ticker_aligned and market_aligned:
+        checks.append(
+            f"✅ Directional lean confirmed — signal ({signal_direction}), "
+            f"ticker flow ({ticker_bias}), market ({market_bias}) all aligned"
+        )
+    elif ticker_aligned and not market_aligned:
+        checks.append(
+            f"⚠️  Partial lean — signal matches ticker flow ({ticker_bias}) "
+            f"but market trending {market_bias}"
+        )
+        if verdict == "QUALIFIED":
+            verdict = "REVIEW"
+    elif not ticker_aligned and market_aligned:
+        checks.append(
+            f"⚠️  Partial lean — signal matches market ({market_bias}) "
+            f"but ticker flow is {ticker_bias}"
+        )
+        if verdict == "QUALIFIED":
+            verdict = "REVIEW"
+    else:
+        checks.append(
+            f"❌ Directional conflict — signal is {signal_direction} but "
+            f"ticker flow is {ticker_bias} and market is {market_bias}"
+        )
+        if verdict not in ("SKIP",):
+            verdict = "CAUTION"
+
+    # ── Suggested position size ───────────────────────────────────────────
+    # Based on verdict — very rough educational guidance only
+    if verdict == "SKIP":
+        sizing = "Position size: $0 — do not trade"
+    elif verdict == "CAUTION":
+        sizing = "Position size: paper trade only until conditions improve"
+    elif verdict == "REVIEW":
+        sizing = "Position size: 1 contract max, risk no more than $300"
+    else:
+        sizing = "Position size: 1–2 contracts, risk $300–600 max"
+
+    # ── Assemble output ───────────────────────────────────────────────────
+    verdict_icon = {
+        "SKIP":      "🚫",
+        "CAUTION":   "⚠️ ",
+        "REVIEW":    "🔍",
+        "QUALIFIED": "✅",
+    }.get(verdict, "❓")
+
+    lines.append(f"\n  {'·'*60}")
+    lines.append(f"  📋 TRADE ASSESSMENT: {contract}")
+    for c in checks:
+        lines.append(f"     {c}")
+    lines.append(f"     💰 {sizing}")
+    lines.append(f"     {verdict_icon} VERDICT: {verdict}")
+    lines.append(f"  {'·'*60}")
+
+    return "\n".join(lines)
 
 
 # =============================================================================
@@ -447,13 +767,42 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False, share_
         contract["_ticker"] = ticker
         
         # Tag signal tier for master summary
-        score = contract["_composite_score"]
+        score   = contract["_composite_score"]
         premium = contract["_premium"]
-        if score >= 6 and premium >= 1_000_000:
+
+        # DTE-adjusted thresholds
+        # Longer-dated options accumulate more OI, naturally producing
+        # lower Vol/OI ratios. Loosen thresholds as DTE increases so
+        # genuine conviction flow isn't filtered out on weekly/monthly contracts.
+        try:
+            exp_date = datetime.strptime(expiration_date, "%Y-%m-%d")
+            eastern  = pytz.timezone(MARKET_TIMEZONE)
+            dte      = (exp_date.date() - datetime.now(eastern).date()).days
+        except Exception:
+            dte = 0
+
+        if dte == 0:
+            high_score_thresh, high_prem_thresh = 6, 1_000_000
+            inst_prem_thresh                    = 5_000_000
+            watch_score_thresh, watch_prem_thresh = 3, 100_000
+        elif dte <= 2:
+            high_score_thresh, high_prem_thresh = 5, 750_000
+            inst_prem_thresh                    = 4_000_000
+            watch_score_thresh, watch_prem_thresh = 2.5, 75_000
+        elif dte <= 7:
+            high_score_thresh, high_prem_thresh = 4, 500_000
+            inst_prem_thresh                    = 3_000_000
+            watch_score_thresh, watch_prem_thresh = 2, 50_000
+        else:
+            high_score_thresh, high_prem_thresh = 3, 300_000
+            inst_prem_thresh                    = 2_000_000
+            watch_score_thresh, watch_prem_thresh = 1.5, 30_000
+
+        if score >= high_score_thresh and premium >= high_prem_thresh:
             contract["_signal_tier"] = "HIGH"
-        elif premium >= 5_000_000:
+        elif premium >= inst_prem_thresh:
             contract["_signal_tier"] = "INST"
-        elif score >= 3 and premium >= 100_000:
+        elif score >= watch_score_thresh and premium >= watch_prem_thresh:
             contract["_signal_tier"] = "WATCH"
         else:
             contract["_signal_tier"] = "NONE"
@@ -610,8 +959,13 @@ def main():
     # Step 3: Initialize journal database
     print("\nInitializing signal journal...")
     init_database()
+
+    # Step 4: Fetch market overview once — used for context and trade assessments
+    print("\n  Fetching market overview...")
+    market_overview = get_market_overview(token, account_id)
+    print_market_overview(market_overview)
     
-    # Step 4: Scan each ticker in the watchlist
+    # Step 5: Scan each ticker in the watchlist
     all_signals = []
     scan_errors = []
     
@@ -660,7 +1014,7 @@ def main():
             print(f"  → No significant signals")
 
     # -------------------------------------------------------------------------
-    # Step 4b: Fetch share prices for all tickers that produced signals
+    # Step 5b: Fetch share prices for all tickers that produced signals
     # One batched call covers everything — done after the scan so we don't
     # add latency to the per-ticker loop. Signals are already logged at this
     # point, so we UPDATE the share_price column for today's records.
@@ -699,7 +1053,7 @@ def main():
             conn.close()
             print(f"  ✓ Share prices written to {updated_total} signal records")
     
-    # Step 5: Master summary
+    # Step 6: Master summary
     print(f"\n\n{'='*70}")
     print(f"  🎯 MASTER SIGNAL SUMMARY")
     print(f"  {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
@@ -800,7 +1154,111 @@ def main():
             put_pct = round((put_premium / total_premium) * 100, 1)
             bias = "BULLISH" if call_pct > 55 else "BEARISH" if put_pct > 55 else "NEUTRAL"
             print(f"  Flow Bias:       {call_pct}% calls / {put_pct}% puts → {bias}")
-    
+
+        # ── Trade quality assessments for HIGH signals ──
+        print(f"\n\n  {'='*60}")
+        print(f"  📋 TRADE QUALITY ASSESSMENTS — HIGH SIGNALS")
+        print(f"  {'='*60}")
+        print(f"  Framework: Score ✓  Premium ✓  DTE 5-14d  "
+              f"IV moderate  Flow aligned")
+
+        from journal import get_todays_signals_for_assessment
+        todays_db_signals = get_todays_signals_for_assessment()
+
+        eastern = pytz.timezone(MARKET_TIMEZONE)
+        today   = datetime.now(eastern).date()
+
+        # Build candidate list — all HIGH signals
+        high_signals_for_assessment = [
+            c for c in all_signals if c.get("_signal_tier") == "HIGH"
+        ]
+
+        # Pass 1 — evaluate every candidate, collect (verdict, output, score, dte)
+        VERDICT_RANK = {"QUALIFIED": 0, "REVIEW": 1, "CAUTION": 2, "SKIP": 3}
+
+        evaluated = []
+        thesis_count = 0
+        for contract in high_signals_for_assessment:
+            symbol = contract.get("instrument", {}).get("symbol", "")
+            ticker = contract.get("_ticker", "")
+            exp    = contract.get("_expiration", "2099-01-01")
+            try:
+                dte = (datetime.strptime(exp, "%Y-%m-%d").date() - today).days
+            except Exception:
+                dte = 0
+
+            greeks = greeks_data.get(symbol, {})
+            try:
+                iv_val = float(greeks.get("impliedVolatility", 0) or 0)
+            except (ValueError, TypeError):
+                iv_val = 0
+
+            sig = {
+                "ticker":          ticker,
+                "contract":        symbol,
+                "contract_type":   contract.get("_type", ""),
+                "composite_score": contract.get("_composite_score", 0),
+                "premium":         contract.get("_premium", 0),
+                "iv":              iv_val,
+                "decoded":         {"days_out": dte},
+            }
+
+            assessment_text = evaluate_trade_quality(
+                sig, todays_db_signals, market_overview
+            )
+
+            # Extract verdict from the output for sorting
+            verdict = "SKIP"
+            for v in ("QUALIFIED", "REVIEW", "CAUTION", "SKIP"):
+                if f"VERDICT: {v}" in assessment_text:
+                    verdict = v
+                    break
+
+            # Generate thesis for QUALIFIED and REVIEW signals only
+            # Cap at 10 to control API spend
+            thesis = ""
+            if verdict in ("QUALIFIED", "REVIEW") and thesis_count < 10 and dte > 2:
+                thesis = generate_thesis(
+                    sig,
+                    greeks_data.get(
+                        contract.get("instrument", {}).get("symbol", ""), {}
+                    ),
+                    market_overview,
+                    {
+                        "call_pct":   call_pct,
+                        "put_pct":    put_pct,
+                        "bias_label": bias,
+                    }
+                )
+                thesis_count += 1
+
+            evaluated.append({
+                "verdict":      verdict,
+                "verdict_rank": VERDICT_RANK.get(verdict, 9),
+                "score":        contract.get("_composite_score", 0),
+                "dte":          dte,
+                "text":         assessment_text,
+                "thesis":       thesis,
+            })
+
+
+        # Pass 2 — sort: QUALIFIED first, then REVIEW, CAUTION, SKIP
+        #                within each verdict tier: higher score first
+        #                within same score: lower DTE first (more urgent)
+        evaluated.sort(key=lambda x: (
+            x["verdict_rank"],
+            0 if x["dte"] > 2 else 1,   # thesis-eligible signals first
+            -x["score"],
+            x["dte"]
+        ))
+
+        # Print top 10
+        for entry in evaluated[:10]:
+            print(entry["text"])
+            if entry.get("thesis"):
+                print(f"\n  📝 Proposed thesis:")
+                print(f"     {entry['thesis']}")
+
     else:
         print("\n  No significant signals detected across watchlist.")
     
@@ -814,7 +1272,7 @@ def main():
         signals_found=len(all_signals)
     )
 
-    # Step 6: Journal review
+    # Step 7: Journal review
     print(f"\n")
     display_logging_summary()
     display_recent_signals(days=7)

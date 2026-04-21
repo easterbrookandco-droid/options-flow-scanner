@@ -210,6 +210,17 @@ def main():
                     print(f"  📋 END OF DAY REVIEW")
                     print(f"  {now.strftime('%Y-%m-%d %H:%M:%S %Z')}")
                     print(f"{'='*70}")
+
+                    # Fire a post-close scan at 4:01 PM for final settlement snapshot
+                    now = datetime.now(eastern)
+                    eod_close_time = now.replace(hour=16, minute=1, second=0, microsecond=0)
+                    secs_to_close = int((eod_close_time - now).total_seconds())
+                    if secs_to_close > 0:
+                        print(f"\n  Waiting until 4:01 PM for post-close settlement scan...")
+                        time.sleep(secs_to_close)
+                        scan_count += 1
+                        print(f"\n  📡 SCAN #{scan_count} — POST-CLOSE SETTLEMENT")
+                        run_scanner()
                     
                     # Import and run the expiring signals review
                     sys.path.insert(0, ".")
