@@ -1272,6 +1272,18 @@ def main():
         signals_found=len(all_signals)
     )
 
+    # Open paper positions summary — quick check at end of every scan
+    from journal import get_open_positions, get_paper_trade_summary
+    open_positions = get_open_positions()
+    if open_positions:
+        print(f"\n{'='*70}")
+        print(f"  📂 OPEN PAPER POSITIONS — {len(open_positions)} active")
+        print(f"{'='*70}")
+        from paper_trade import print_open_positions
+        print_open_positions(open_positions, header=False)
+    else:
+        print(f"\n  📂 No open paper positions")
+    
     # Step 7: Journal review
     print(f"\n")
     display_logging_summary()

@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import pytz
 from datetime import datetime
 
 # Database file lives in the project folder
@@ -65,6 +66,379 @@ def init_database():
     conn.close()
     
     print(f"  ✓ Journal database ready ({DB_PATH})")
+
+
+def init_paper_trades_table():
+    """
+    Create the paper_trades table if it doesn't exist.
+    Called once at startup from paper_trade.py.
+    
+    Separate from init_database() intentionally — paper trading
+    is an optional layer on top of the signal scanner. Keeping
+    the table creation separate means the scanner can run cleanly
+    without any paper trading infrastructure if needed.
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS paper_trades (
+            id                          INTEGER PRIMARY KEY AUTOINCREMENT,
+
+            -- Signal linkage
+            signal_contract             TEXT NOT NULL,
+            signal_id                   INTEGER,
+
+            -- Entry details
+            entry_date                  TEXT NOT NULL,
+            entry_time                  TEXT NOT NULL,
+            entry_price                 REAL NOT NULL,
+            entry_underlying_price      REAL,
+            contracts                   INTEGER NOT NULL DEFAULT 1,
+            total_cost                  REAL NOT NULL,
+            thesis                      TEXT NOT NULL,
+
+            -- Assessment context at entry
+            verdict_at_entry            TEXT,
+            score_at_entry              REAL,
+            dte_at_entry                INTEGER,
+            iv_at_entry                 REAL,
+            delta_at_entry              REAL,
+            market_bias_at_entry        TEXT,
+            ticker_bias_at_entry        TEXT,
+
+            -- Exit rules
+            target_price                REAL NOT NULL,
+            stop_price                  REAL NOT NULL,
+
+            -- Market environment at entry
+            spy_chg_pct_at_entry        REAL,
+            qqq_chg_pct_at_entry        REAL,
+            iwm_chg_pct_at_entry        REAL,
+            tlt_chg_pct_at_entry        REAL,
+            gld_chg_pct_at_entry        REAL,
+            uso_chg_pct_at_entry        REAL,
+
+            -- Exit details (null until closed)
+            exit_date                   TEXT,
+            exit_time                   TEXT,
+            exit_price                  REAL,
+            exit_underlying_price       REAL,
+            exit_underlying_change_pct  REAL,
+            exit_reason                 TEXT,
+
+            -- Market environment at exit
+            spy_chg_pct_at_exit         REAL,
+            qqq_chg_pct_at_exit         REAL,
+            iwm_chg_pct_at_exit         REAL,
+            tlt_chg_pct_at_exit         REAL,
+            gld_chg_pct_at_exit         REAL,
+            uso_chg_pct_at_exit         REAL,
+
+            -- Outcome (null until closed)
+            pnl                         REAL,
+            pnl_pct                     REAL,
+            hold_days                   INTEGER,
+            hit_target_first            INTEGER,
+            max_value_seen              REAL,
+
+            -- Metadata
+            notes                       TEXT,
+            status                      TEXT NOT NULL DEFAULT 'OPEN',
+            created_at                  TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+
+    conn.commit()
+    conn.close()
+    print(f"  ✓ Paper trades table ready")
+
+
+def insert_paper_trade(
+    signal_contract, entry_price, contracts, thesis,
+    entry_underlying_price=None,
+    verdict_at_entry=None, score_at_entry=None,
+    dte_at_entry=None, iv_at_entry=None, delta_at_entry=None,
+    market_bias_at_entry=None, ticker_bias_at_entry=None,
+    market_snapshot=None, signal_id=None
+):
+    """
+    Record a new paper trade entry.
+
+    Parameters:
+        signal_contract (str): Contract symbol e.g. "TSLA260429C00392500"
+        entry_price (float): Option ask price per share at entry
+        contracts (int): Number of contracts (1-2 per framework)
+        thesis (str): One sentence explaining the trade rationale
+        entry_underlying_price (float): Stock price at entry
+        verdict_at_entry (str): QUALIFIED / REVIEW etc
+        score_at_entry (float): Composite score at time of entry
+        dte_at_entry (int): Days to expiration at entry
+        iv_at_entry (float): Implied volatility at entry
+        delta_at_entry (float): Delta at entry
+        market_bias_at_entry (str): BULLISH / BEARISH / NEUTRAL
+        ticker_bias_at_entry (str): Same for specific ticker
+        market_snapshot (dict): Output of get_market_overview()
+                                keyed by ticker with chg_pct values
+        signal_id (int): FK to signals table if known
+
+    Returns:
+        int: ID of the newly created paper trade record
+    """
+
+    eastern = pytz.timezone("US/Eastern")
+    now = datetime.now(eastern)
+    entry_date = now.strftime("%Y-%m-%d")
+    entry_time = now.strftime("%H:%M:%S")
+
+    total_cost   = round(entry_price * contracts * 100, 2)
+    target_price = round(entry_price * 2, 2)
+    stop_price   = round(entry_price * 0.5, 2)
+
+    # Extract macro snapshot values safely
+    def chg(ticker):
+        if not market_snapshot:
+            return None
+        t = market_snapshot.get(ticker, {})
+        return t.get("chg_pct") if t.get("has_change") else None
+
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO paper_trades (
+            signal_contract, signal_id,
+            entry_date, entry_time,
+            entry_price, entry_underlying_price,
+            contracts, total_cost, thesis,
+            verdict_at_entry, score_at_entry,
+            dte_at_entry, iv_at_entry, delta_at_entry,
+            market_bias_at_entry, ticker_bias_at_entry,
+            target_price, stop_price,
+            spy_chg_pct_at_entry, qqq_chg_pct_at_entry,
+            iwm_chg_pct_at_entry, tlt_chg_pct_at_entry,
+            gld_chg_pct_at_entry, uso_chg_pct_at_entry,
+            status
+        ) VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN'
+        )
+    """, (
+        signal_contract, signal_id,
+        entry_date, entry_time,
+        entry_price, entry_underlying_price,
+        contracts, total_cost, thesis,
+        verdict_at_entry, score_at_entry,
+        dte_at_entry, iv_at_entry, delta_at_entry,
+        market_bias_at_entry, ticker_bias_at_entry,
+        target_price, stop_price,
+        chg("SPY"), chg("QQQ"),
+        chg("IWM"), chg("TLT"),
+        chg("GLD"), chg("USO"),
+    ))
+
+    trade_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return trade_id
+
+
+def close_paper_trade(
+    trade_id, exit_price, exit_reason,
+    exit_underlying_price=None,
+    market_snapshot=None,
+    notes=None
+):
+    """
+    Record the exit of an open paper trade and calculate P&L.
+
+    Parameters:
+        trade_id (int): ID of the paper trade to close
+        exit_price (float): Option price per share at exit
+        exit_reason (str): TARGET / STOP / MANUAL / EXPIRED
+        exit_underlying_price (float): Stock price at exit
+        market_snapshot (dict): Market overview at exit time
+        notes (str): Optional freeform notes on the exit
+
+    Returns:
+        dict: Summary of the closed trade including P&L,
+              or None if trade not found
+    """
+
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Fetch the open trade
+    cursor.execute("""
+        SELECT * FROM paper_trades
+        WHERE id = ? AND status = 'OPEN'
+    """, (trade_id,))
+    trade = cursor.fetchone()
+
+    if not trade:
+        conn.close()
+        return None
+
+    trade = dict(trade)
+
+    eastern = pytz.timezone("US/Eastern")
+    now = datetime.now(eastern)
+    exit_date = now.strftime("%Y-%m-%d")
+    exit_time = now.strftime("%H:%M:%S")
+
+    # P&L calculations
+    contracts  = trade["contracts"]
+    entry_price = trade["entry_price"]
+    total_cost  = trade["total_cost"]
+
+    pnl     = round((exit_price - entry_price) * contracts * 100, 2)
+    pnl_pct = round((pnl / total_cost) * 100, 2) if total_cost else 0
+
+    # Hold time
+    try:
+        entry_dt  = datetime.strptime(trade["entry_date"], "%Y-%m-%d")
+        exit_dt   = datetime.strptime(exit_date, "%Y-%m-%d")
+        hold_days = (exit_dt - entry_dt).days
+    except Exception:
+        hold_days = 0
+
+    # Did it hit target before stop?
+    hit_target = 1 if exit_reason == "TARGET" else 0
+
+    # Underlying price change entry to exit
+    underlying_change = None
+    if exit_underlying_price and trade.get("entry_underlying_price"):
+        underlying_change = round(
+            ((exit_underlying_price - trade["entry_underlying_price"])
+             / trade["entry_underlying_price"]) * 100, 2
+        )
+
+    # Macro snapshot at exit
+    def chg(ticker):
+        if not market_snapshot:
+            return None
+        t = market_snapshot.get(ticker, {})
+        return t.get("chg_pct") if t.get("has_change") else None
+
+    cursor.execute("""
+        UPDATE paper_trades SET
+            exit_date                   = ?,
+            exit_time                   = ?,
+            exit_price                  = ?,
+            exit_underlying_price       = ?,
+            exit_underlying_change_pct  = ?,
+            exit_reason                 = ?,
+            spy_chg_pct_at_exit         = ?,
+            qqq_chg_pct_at_exit         = ?,
+            iwm_chg_pct_at_exit         = ?,
+            tlt_chg_pct_at_exit         = ?,
+            gld_chg_pct_at_exit         = ?,
+            uso_chg_pct_at_exit         = ?,
+            pnl                         = ?,
+            pnl_pct                     = ?,
+            hold_days                   = ?,
+            hit_target_first            = ?,
+            notes                       = ?,
+            status                      = 'CLOSED'
+        WHERE id = ?
+    """, (
+        exit_date, exit_time,
+        exit_price, exit_underlying_price,
+        underlying_change, exit_reason,
+        chg("SPY"), chg("QQQ"),
+        chg("IWM"), chg("TLT"),
+        chg("GLD"), chg("USO"),
+        pnl, pnl_pct,
+        hold_days, hit_target,
+        notes, trade_id
+    ))
+
+    conn.commit()
+    conn.close()
+
+    return {
+        "trade_id":   trade_id,
+        "contract":   trade["signal_contract"],
+        "pnl":        pnl,
+        "pnl_pct":    pnl_pct,
+        "exit_reason": exit_reason,
+        "hold_days":  hold_days,
+    }
+
+
+def get_open_positions():
+    """
+    Fetch all currently open paper trades.
+
+    Returns:
+        list: Open trade dicts ordered by entry date ascending
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT * FROM paper_trades
+        WHERE status = 'OPEN'
+        ORDER BY entry_date ASC, entry_time ASC
+    """)
+
+    trades = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return trades
+
+
+def get_closed_trades(limit=20):
+    """
+    Fetch recently closed paper trades for review display.
+
+    Returns:
+        list: Closed trade dicts ordered by exit date descending
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT * FROM paper_trades
+        WHERE status = 'CLOSED'
+        ORDER BY exit_date DESC, exit_time DESC
+        LIMIT ?
+    """, (limit,))
+
+    trades = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return trades
+
+
+def get_paper_trade_summary():
+    """
+    Calculate high-level P&L summary across all paper trades.
+    Used for the scan-end display and review command.
+
+    Returns:
+        dict: Summary stats — total, open, closed, win rate, total P&L
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT
+            COUNT(*)                                        as total,
+            SUM(CASE WHEN status = 'OPEN' THEN 1 ELSE 0 END)   as open_count,
+            SUM(CASE WHEN status = 'CLOSED' THEN 1 ELSE 0 END)  as closed_count,
+            SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END)            as wins,
+            SUM(CASE WHEN pnl <= 0 THEN 1 ELSE 0 END)           as losses,
+            SUM(CASE WHEN pnl IS NOT NULL THEN pnl ELSE 0 END)  as total_pnl,
+            AVG(CASE WHEN pnl IS NOT NULL THEN pnl_pct ELSE NULL END) as avg_pnl_pct
+        FROM paper_trades
+    """)
+
+    result = dict(cursor.fetchone())
+    conn.close()
+    return result
 
 
 def log_signal(ticker, contract, contract_type, strike, expiration,
