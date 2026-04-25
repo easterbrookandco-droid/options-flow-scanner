@@ -448,6 +448,8 @@ def print_session_summary(auto_closed_count, check_count):
 # =============================================================================
 
 def main():
+    from logger_setup import setup_logger
+    log_path = setup_logger("monitor")
     eastern         = pytz.timezone(MARKET_TIMEZONE)
     check_count     = 0
     auto_closed_total = 0

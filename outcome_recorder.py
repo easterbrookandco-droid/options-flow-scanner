@@ -385,6 +385,8 @@ def get_dates_needing_outcomes():
 # =============================================================================
 
 def main():
+    from logger_setup import setup_logger
+    log_path = setup_logger("outcome")
     """
     Main entry point for outcome recording.
     Can be called standalone or imported by scheduler.

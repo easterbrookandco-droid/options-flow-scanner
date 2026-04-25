@@ -138,6 +138,8 @@ def run_scanner():
 # =============================================================================
 
 def main():
+    from logger_setup import setup_logger
+    log_path = setup_logger("scanner")
     """
     Main scheduler loop.
     
@@ -231,6 +233,14 @@ def main():
                         record_outcomes()
                     except Exception as e:
                         print(f"  ✗ Outcome recording failed: {e}")
+
+                    # Generate daily summary
+                    print(f"\n  Generating daily summary...")
+                    try:
+                        from daily_summary import run_summary
+                        run_summary()
+                    except Exception as e:
+                        print(f"  ✗ Daily summary failed: {e}")
 
                     # Import and run the expiring signals review
                     sys.path.insert(0, ".")

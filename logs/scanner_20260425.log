@@ -1,0 +1,11 @@
+======================================================================
+  🔄 OPTIONS FLOW SCANNER — SCHEDULER
+  Started: 2026-04-25 15:13:17 EDT
+  Scan interval: every 30 minutes during market hours
+  Market hours: 9:30 — 16:00 Eastern
+  Scanner: fetch_trades.py
+  Press Ctrl+C to stop
+======================================================================
+  Market is currently closed.
+  Next open: 2026-04-27 09:29 EDT (42h 16m from now)
+  Sleeping until market open...
