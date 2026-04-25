@@ -493,35 +493,72 @@ def log_signal(ticker, contract, contract_type, strike, expiration,
     return signal_id
 
 
-def check_duplicate(contract, scan_date):
+def check_duplicate(contract, date, current_score=None):
     """
-    Check if we've already logged this contract today.
-    Prevents the same signal from being logged multiple times
-    when the scanner runs repeatedly during market hours.
-    
-    Parameters:
-        contract (str): The options contract symbol
-        scan_date (str): Today's date YYYY-MM-DD
-    
-    Returns:
-        bool: True if already logged today, False if new
-    """
-    
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT id FROM signals 
-        WHERE contract = ? 
-        AND scan_time LIKE ?
-        LIMIT 1
-    """, (contract, f"{scan_date}%"))
-    
-    result = cursor.fetchone()
-    conn.close()
-    
-    return result is not None
+    Check if a contract should be skipped to avoid redundant logging.
 
+    Logic:
+        - If contract has never been logged → not a duplicate, log it
+        - If contract was logged today → always skip (already have today's read)
+        - If contract was logged on a previous day:
+            - If score hasn't changed materially (within 0.5 pts) → skip
+            - If score has escalated significantly (>= 0.5 pts higher) → log it
+              This captures meaningful conviction increases mid-week
+
+    Parameters:
+        contract (str): Contract symbol
+        date (str): Today's date YYYY-MM-DD
+        current_score (float): Current composite score, used for
+                               escalation detection. If None, always
+                               skips previously seen contracts.
+
+    Returns:
+        bool: True if should skip (is duplicate), False if should log
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+
+    # Check if logged today already
+    cursor.execute("""
+        SELECT COUNT(*) as n FROM signals
+        WHERE contract = ?
+        AND scan_time LIKE ?
+    """, (contract, f"{date}%"))
+    if cursor.fetchone()["n"] > 0:
+        conn.close()
+        return True  # Already logged today, always skip
+
+    # Check if logged on a previous day
+    cursor.execute("""
+        SELECT composite_score
+        FROM signals
+        WHERE contract = ?
+        AND scan_time NOT LIKE ?
+        ORDER BY scan_time DESC
+        LIMIT 1
+    """, (contract, f"{date}%"))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    if row is None:
+        return False  # Never logged, don't skip
+
+    # Previously logged — check for score escalation
+    if current_score is None:
+        return True  # No score provided, skip to be safe
+
+    previous_score = row["composite_score"]
+    score_increase = current_score - previous_score
+
+    if score_increase >= 0.5:
+        # Meaningful escalation — log it
+        return False
+    else:
+        # No material change — skip
+        return True
+    
 
 def record_outcome(contract, outcome, notes=""):
     """
