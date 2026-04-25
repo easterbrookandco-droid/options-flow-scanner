@@ -223,7 +223,15 @@ def main():
                         scan_count += 1
                         print(f"\n  📡 SCAN #{scan_count} — POST-CLOSE SETTLEMENT")
                         run_scanner()
-                    
+
+                    # Record outcomes for today's expiring contracts
+                    print(f"\n  Recording outcomes for expiring contracts...")
+                    try:
+                        from outcome_recorder import main as record_outcomes
+                        record_outcomes()
+                    except Exception as e:
+                        print(f"  ✗ Outcome recording failed: {e}")
+
                     # Import and run the expiring signals review
                     sys.path.insert(0, ".")
                     try:
