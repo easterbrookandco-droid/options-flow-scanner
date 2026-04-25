@@ -1,0 +1,108 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Friday, April 24 2026
+  Generated: 2026-04-25 15:22:53 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Scanner log not found for 2026-04-24
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  1678
+  Tickers with signals:  19
+  🔥 HIGH:               162
+  💰 INST:               173
+  ⚡ WATCH:              1343
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 46.5%  $356.0M
+  ▼ Puts:  53.5%  $409.7M
+  Bias:    NEUTRAL
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  Scanner log not found — assessments unavailable
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  Opened today (2):
+  #3  TSLA260427C00377500
+       Entry: $4.35  × 1 contract(s)  = $435.00
+       Target: $8.70  Stop: $2.17
+       💭 .2M premium in 4 DTE calls contradicts the 58% put bias, signaling potential gamma squeeze on a reversal.
+
+  #4  SPY260427P00712000
+       Entry: $2.55  × 1 contract(s)  = $255.00
+       Target: $5.10  Stop: $1.27
+       💭 .9M in put premium with -0.41 delta at 3 DTE contradicts the 77% bullish call bias, signaling smart money hedging into SPY weakness.
+
+
+  Closed today (1):
+  🔴 #2  AMD260501P00295000
+       Entry: $8.45  →  Exit: $1.78
+       Reason: STOP  P&L: $-667.00 (-78.9%)
+       📝 Auto-closed by position monitor. Bid:1.7 Ask:1.86
+
+
+  Currently open (2):
+  #3  TSLA260427C00377500
+       Entry: $4.35  Target: $8.70  Stop: $2.17
+       Held: 1d  Verdict at entry: None
+       💭 .2M premium in 4 DTE calls contradicts the 58% put bias, signaling potential gamma squeeze on a reversal.
+
+  #4  SPY260427P00712000
+       Entry: $2.55  Target: $5.10  Stop: $1.27
+       Held: 1d  Verdict at entry: None
+       💭 .9M in put premium with -0.41 delta at 3 DTE contradicts the 77% bullish call bias, signaling smart money hedging into SPY weakness.
+
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  No outcomes recorded for contracts expiring 2026-04-24
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 GOOGL  GOOGL260501C00150000         CALL   2026-05-01   $15.6M       9.0
+  🔥 SPY    SPY260427P00722000           PUT    2026-04-27   $13.9M       9.0
+  🔥 SPY    SPY260427P00725000           PUT    2026-04-27   $8.6M        9.0
+  🔥 TSLA   TSLA260501C00220000          CALL   2026-05-01   $7.5M        9.0
+  🔥 SPY    SPY260428P00722000           PUT    2026-04-28   $2.1M        8.0
+  🔥 SPY    SPY260427P00723000           PUT    2026-04-27   $1.9M        8.0
+  🔥 AMD    AMD260501P00335000           PUT    2026-05-01   $1.3M        8.0
+  🔥 AMD    AMD260508C00352500           CALL   2026-05-08   $1.1M        8.0
+  🔥 AMD    AMD260501P00342500           PUT    2026-05-01   $1.1M        8.0
+  🔥 META   META260427C00645000          CALL   2026-04-27   $1.9M        7.98
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           $-667.00
+  Current bankroll:    $9,333.00
+  Open exposure:       $690.00 (7.4% of bankroll)
+  Max allowed (20%):   $1,866.60
+
+  Paper trades:
+  Total:               3
+  Open:                2
+  Closed:              1
+  Win rate:            0.0%  (0W / 1L)
+
+=================================================================
+  End of daily summary — 2026-04-24
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260424.log
+=================================================================
+

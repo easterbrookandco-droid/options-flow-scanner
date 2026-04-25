@@ -1,0 +1,93 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Thursday, April 23 2026
+  Generated: 2026-04-25 15:22:36 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Scanner log not found for 2026-04-23
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  1268
+  Tickers with signals:  19
+  🔥 HIGH:               126
+  💰 INST:               71
+  ⚡ WATCH:              1071
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 60.9%  $203.4M
+  ▼ Puts:  39.1%  $130.5M
+  Bias:    BULLISH
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  Scanner log not found — assessments unavailable
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  No positions opened today
+
+  No positions closed today
+
+  Currently open (2):
+  #3  TSLA260427C00377500
+       Entry: $4.35  Target: $8.70  Stop: $2.17
+       Held: 1d  Verdict at entry: None
+       💭 .2M premium in 4 DTE calls contradicts the 58% put bias, signaling potential gamma squeeze on a reversal.
+
+  #4  SPY260427P00712000
+       Entry: $2.55  Target: $5.10  Stop: $1.27
+       Held: 1d  Verdict at entry: None
+       💭 .9M in put premium with -0.41 delta at 3 DTE contradicts the 77% bullish call bias, signaling smart money hedging into SPY weakness.
+
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  No outcomes recorded for contracts expiring 2026-04-23
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 MSFT   MSFT260501P00457500          PUT    2026-05-01   $9.5M        9.0
+  🔥 XLF    XLF260515P00049500           PUT    2026-05-15   $1.2M        8.0
+  🔥 TSLA   TSLA260427C00327500          CALL   2026-04-27   $554K        7.0
+  🔥 TSLA   TSLA260429C00367500          CALL   2026-04-29   $503K        7.0
+  🔥 GOOGL  GOOGL260501P00357500         PUT    2026-05-01   $530K        6.84
+  🔥 SPY    SPY260428C00656000           CALL   2026-04-28   $1.3M        6.31
+  🔥 IWM    IWM260428C00264000           CALL   2026-04-28   $578K        6.05
+  🔥 GOOGL  GOOGL260504P00355000         PUT    2026-05-04   $488K        6.0
+  🔥 SPY    SPY260428C00651000           CALL   2026-04-28   $1.4M        5.97
+  🔥 SPY    SPY260428C00658000           CALL   2026-04-28   $1.2M        5.97
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           $-667.00
+  Current bankroll:    $9,333.00
+  Open exposure:       $690.00 (7.4% of bankroll)
+  Max allowed (20%):   $1,866.60
+
+  Paper trades:
+  Total:               3
+  Open:                2
+  Closed:              1
+  Win rate:            0.0%  (0W / 1L)
+
+=================================================================
+  End of daily summary — 2026-04-23
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260423.log
+=================================================================
+

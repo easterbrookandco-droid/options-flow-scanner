@@ -184,6 +184,8 @@ def cmd_enter(args):
 
     if len(args) < 4:
         print("\n  ✗ Missing arguments.")
+        print("  💡 PowerShell tip: use single quotes around thesis to preserve $ signs")
+        print("     python paper_trade.py enter <contract> <price> <contracts> '$5.2M...'")
         print("  Usage: python paper_trade.py enter <contract> "
               "<entry_price> <contracts> \"<thesis>\"")
         print("  Example: python paper_trade.py enter "
