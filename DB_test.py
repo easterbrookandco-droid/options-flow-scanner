@@ -2,25 +2,30 @@ import sqlite3
 conn = sqlite3.connect("signals.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
-today = "2026-04-24"
 
+# Verify backlog is cleared
 cursor.execute("""
-    SELECT COUNT(*) as total,
-           COUNT(DISTINCT contract) as unique_contracts
-    FROM signals
+    SELECT COUNT(*) as n FROM signals
+    WHERE expiration < date('now')
+    AND outcome IS NULL
+""")
+print(f"Unresolved expired contracts: {cursor.fetchone()['n']}")
+
+# Verify EXPIRED count looks right
+cursor.execute("""
+    SELECT COUNT(*) as n FROM signals
+    WHERE outcome = 'EXPIRED'
+""")
+print(f"Marked as EXPIRED: {cursor.fetchone()['n']}")
+
+# Check today's expiring list size
+from datetime import datetime
+today = datetime.now().strftime("%Y-%m-%d")
+cursor.execute("""
+    SELECT COUNT(DISTINCT contract) as n FROM signals
     WHERE expiration = ?
-""", (today,))
-row = cursor.fetchone()
-print(f"Total rows expiring today: {row['total']}")
-print(f"Unique contracts expiring today: {row['unique_contracts']}")
-
-cursor.execute("""
-    SELECT COUNT(*) as already_expired_pending
-    FROM signals  
-    WHERE expiration < ?
     AND outcome IS NULL
 """, (today,))
-row = cursor.fetchone()
-print(f"Expired with no outcome: {row['already_expired_pending']}")
+print(f"Unique contracts expiring today (pending): {cursor.fetchone()['n']}")
 
 conn.close()
