@@ -871,7 +871,7 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False, share_
         )
 
         if should_log:
-            if not check_duplicate(symbol, today):
+            if not check_duplicate(symbol, today, current_score=score):
                 try:
                     strike = float(symbol[-8:]) / 1000
                 except:
