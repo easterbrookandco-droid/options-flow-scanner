@@ -4,6 +4,7 @@ import sys
 from datetime import datetime, timedelta
 import pytz
 
+
 # =============================================================================
 # CONFIGURATION
 # =============================================================================
@@ -18,6 +19,7 @@ MARKET_TIMEZONE = "US/Eastern"
 # Path to the scanner script
 # Since scheduler.py lives in the same folder, this works as-is
 SCANNER_SCRIPT = "fetch_trades.py"
+
 
 
 # =============================================================================

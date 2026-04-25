@@ -521,6 +521,20 @@ def evaluate_trade_quality(signal, all_signals_today, market_overview):
     checks  = []
     verdict = "QUALIFIED"
 
+
+    # ── Check 0: Contract character — deep ITM filter ─────────────────────
+    # Contracts with |delta| >= 0.95 behave like stock, not options
+    # They're extremely expensive and offer no real leverage benefit
+    delta_raw = signal.get("delta_raw", 0) or 0
+    if abs(delta_raw) >= 0.95:
+        checks.append(
+            f"❌ Deep ITM (delta {delta_raw:+.3f}) — "
+            f"behaves like stock, not an options trade. "
+            f"Ask price likely far exceeds budget."
+        )
+        verdict = "SKIP"
+
+    
     # ── Check 1: DTE ──────────────────────────────────────────────────────
     if dte == 0:
         checks.append("❌ 0DTE — avoid, no time buffer")
@@ -549,22 +563,42 @@ def evaluate_trade_quality(signal, all_signals_today, market_overview):
     else:
         checks.append(f"⚠️  Premium moderate (${premium/1e3:.0f}K)")
 
-    # ── Check 4: IV vs baseline ───────────────────────────────────────────
+# ── Check 4: IV vs baseline ───────────────────────────────────────────
     baseline = IV_BASELINES.get(ticker, IV_BASELINES_DEFAULT)
-    iv_pct   = iv_raw * 100 if iv_raw <= 5 else iv_raw  # normalize if decimal
+    iv_pct   = iv_raw * 100 if iv_raw <= 5 else iv_raw
 
-    if iv_pct == 0:
-        checks.append("⚠️  IV unavailable")
+    if iv_pct == 0 and delta_raw is not None and abs(delta_raw) >= 0.95:
+        # Deep ITM — IV of zero is accurate, not missing
+        # Flag it as a characteristic, not a data gap
+        checks.append(
+            f"ℹ️  Deep ITM contract (delta {delta_raw:+.3f}) — "
+            f"IV near zero is expected, intrinsic value dominates"
+        )
+        # Deep ITM contracts are expensive per contract — flag for budget check
+        if verdict not in ("SKIP",):
+            checks.append(
+                "⚠️  Deep ITM — verify ask price fits $300-600 budget "
+                "before considering entry"
+            )
+    elif iv_pct == 0:
+        # Genuine missing data
+        checks.append("⚠️  IV unavailable — Greeks endpoint returned no data")
     elif iv_pct > baseline["high"]:
-        checks.append(f"❌ IV spiked ({iv_pct:.0f}% vs {ticker} "
-                      f"baseline high {baseline['high']}%) — expensive entry")
+        checks.append(
+            f"❌ IV spiked ({iv_pct:.0f}% vs {ticker} "
+            f"baseline high {baseline['high']}%) — expensive entry"
+        )
         if verdict != "SKIP":
             verdict = "CAUTION"
     elif iv_pct > baseline["moderate"]:
-        checks.append(f"⚠️  IV elevated ({iv_pct:.0f}%) — above normal "
-                      f"for {ticker}, price accordingly")
+        checks.append(
+            f"⚠️  IV elevated ({iv_pct:.0f}%) — above normal "
+            f"for {ticker}, price accordingly"
+        )
     else:
-        checks.append(f"✅ IV moderate ({iv_pct:.0f}%) — reasonable entry cost")
+        checks.append(
+            f"✅ IV moderate ({iv_pct:.0f}%) — reasonable entry cost"
+        )
 
     # ── Check 5: Directional lean ─────────────────────────────────────────
     # 5a: Does this signal match ticker's dominant flow today?
@@ -1187,11 +1221,9 @@ def main():
             except Exception:
                 dte = 0
 
-            greeks = greeks_data.get(symbol, {})
-            try:
-                iv_val = float(greeks.get("impliedVolatility", 0) or 0)
-            except (ValueError, TypeError):
-                iv_val = 0
+            raw_g     = greeks_data.get(symbol, {})
+            delta_raw = float(raw_g.get("delta") or 0)
+            iv_val    = float(raw_g.get("impliedVolatility") or 0)
 
             sig = {
                 "ticker":          ticker,
@@ -1201,6 +1233,8 @@ def main():
                 "premium":         contract.get("_premium", 0),
                 "iv":              iv_val,
                 "decoded":         {"days_out": dte},
+                "ask":             float(contract.get("ask") or 0),
+                "delta_raw":       delta_raw,
             }
 
             assessment_text = evaluate_trade_quality(
