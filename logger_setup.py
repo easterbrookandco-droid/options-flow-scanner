@@ -1,82 +1,91 @@
-import logging
 import os
 import sys
 from datetime import datetime
 
+
+class _Tee:
+    """
+    Writes to both the original stdout and a log file simultaneously.
+    Avoids routing through the logging module entirely, which prevents
+    the recursion error that occurs when logging tries to write to
+    a redirected stdout.
+    """
+
+    def __init__(self, original_stdout, log_file):
+        self.original_stdout = original_stdout
+        self.log_file        = log_file
+
+    def write(self, message):
+        self.original_stdout.write(message)
+        self.original_stdout.flush()
+        try:
+            self.log_file.write(message)
+            self.log_file.flush()
+        except Exception:
+            pass  # Never let logging errors crash the main script
+
+    def flush(self):
+        self.original_stdout.flush()
+        try:
+            self.log_file.flush()
+        except Exception:
+            pass
+
+    def isatty(self):
+        return False
+
+
+# Keep reference to log file so it can be closed on exit
+_active_log_file = None
+
+
 def setup_logger(script_name):
     """
-    Configure logging to write to both terminal and a dated log file.
-    
+    Configure output to write to both terminal and a dated log file.
+
+    Redirects sys.stdout to a Tee object that writes to both the
+    original terminal and a log file simultaneously. Uses no logging
+    module involvement to avoid recursion issues.
+
     Creates a logs/ directory if it doesn't exist.
     Log files are named: {script_name}_{YYYYMMDD}.log
-    Each run appends to the daily file rather than overwriting.
-    
+    Each run appends to the daily file.
+
     Parameters:
-        script_name (str): Short name for the log file
-                           e.g. 'scanner', 'monitor', 'outcome'
-    
+        script_name (str): Short name e.g. 'scanner', 'monitor', 'outcome'
+
     Returns:
         str: Path to the log file being written
     """
+    global _active_log_file
 
-    # Create logs directory
-    log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+    log_dir = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "logs"
+    )
     os.makedirs(log_dir, exist_ok=True)
 
-    # Daily log file name
     today        = datetime.now().strftime("%Y%m%d")
     log_filename = os.path.join(log_dir, f"{script_name}_{today}.log")
 
-    # Get the root logger
-    logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    # Always write to the real original stdout, not a previously
+    # redirected version — prevents chained Tee wrapping on restart
+    original_stdout = getattr(sys.stdout, "original_stdout", sys.stdout)
 
-    # Clear any existing handlers — prevents duplicate output
-    # if setup_logger is called more than once
-    if logger.handlers:
-        logger.handlers.clear()
+    # Close any previously open log file
+    if _active_log_file is not None:
+        try:
+            _active_log_file.close()
+        except Exception:
+            pass
 
-    # File handler — appends to daily log file
-    file_handler = logging.FileHandler(log_filename, encoding="utf-8")
-    file_handler.setLevel(logging.DEBUG)
-    file_handler.setFormatter(logging.Formatter("%(message)s"))
+    log_file         = open(log_filename, "a", encoding="utf-8")
+    _active_log_file = log_file
 
-    # Stream handler — mirrors to terminal exactly as before
-    stream_handler = logging.StreamHandler(sys.stdout)
-    stream_handler.setLevel(logging.DEBUG)
-    stream_handler.setFormatter(logging.Formatter("%(message)s"))
+    sys.stdout = _Tee(original_stdout, log_file)
 
-    logger.addHandler(file_handler)
-    logger.addHandler(stream_handler)
-
-    # Redirect print() to logging so existing print statements
-    # automatically go to both terminal and file without any changes
-    # to the rest of the codebase
-    class PrintToLogger:
-        def __init__(self, level=logging.INFO):
-            self.level = level
-            self.buffer = ""
-
-        def write(self, message):
-            if message != "\n":
-                # Buffer partial lines until newline received
-                self.buffer += message
-                if "\n" in self.buffer:
-                    lines = self.buffer.split("\n")
-                    for line in lines[:-1]:
-                        if line:  # skip empty lines from double newlines
-                            logging.log(self.level, line)
-                    self.buffer = lines[-1]
-            elif self.buffer:
-                logging.log(self.level, self.buffer)
-                self.buffer = ""
-
-        def flush(self):
-            if self.buffer:
-                logging.log(self.level, self.buffer)
-                self.buffer = ""
-
-    sys.stdout = PrintToLogger()
+    # Write a session start marker to the log
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    sys.stdout.write(f"\n[Session started: {now}]\n")
 
     return log_filename
 
@@ -84,11 +93,10 @@ def setup_logger(script_name):
 def get_todays_log_path(script_name):
     """
     Return the path to today's log file for a given script.
-    Used by daily_summary.py to read log content.
-    
+
     Parameters:
         script_name (str): 'scanner', 'monitor', or 'outcome'
-    
+
     Returns:
         str: Full path to log file, or None if it doesn't exist
     """
@@ -103,11 +111,11 @@ def get_todays_log_path(script_name):
 def get_log_path_for_date(script_name, date_str):
     """
     Return the path to a log file for a specific date.
-    
+
     Parameters:
         script_name (str): 'scanner', 'monitor', or 'outcome'
         date_str (str): Date in YYYY-MM-DD format
-    
+
     Returns:
         str: Full path to log file, or None if it doesn't exist
     """

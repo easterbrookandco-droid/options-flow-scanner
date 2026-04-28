@@ -356,7 +356,7 @@ def evaluate_positions(positions, prices, eastern):
             continue
 
         # STOP HIT
-        if mid <= stop:
+        if bid <= stop or mid <= stop:
             print(f"\n  {'='*65}")
             print(f"  🛑 STOP HIT — #{trade_id} {contract}")
             print(f"     Entry: ${entry_price:.2f}  →  Current: ${mid:.2f}")
