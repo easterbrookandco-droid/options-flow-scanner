@@ -444,20 +444,18 @@ def print_market_overview(overview):
     for ticker, label in LABELS.items():
         if ticker not in overview:
             continue
+
         d = overview[ticker]
         color_marker = "🟢" if d["change"] >= 0 else "🔴"
-        print(f"  {color_marker} {label:<16} "
-              f"${d['price']:>8.2f}   "
-              f"{d['arrow']} {d['sign']}{d['change']:.2f} "
-              f"({d['sign']}{d['chg_pct']:.2f}%)")
+
         if d.get("has_change"):
             print(f"  {color_marker} {label:<16} "
-                  f"${d['price']:>8.2f}   "
+                  f"${d['price']:>8.2f} "
                   f"{d['arrow']} {d['sign']}{d['change']:.2f} "
                   f"({d['sign']}{d['chg_pct']:.2f}%)")
         else:
             print(f"  {color_marker} {label:<16} "
-                  f"${d['price']:>8.2f}   "
+                  f"${d['price']:>8.2f} "
                   f"(change unavailable after hours)")
 
     print(f"  {'─'*48}")
