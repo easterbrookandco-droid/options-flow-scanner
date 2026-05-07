@@ -1,0 +1,946 @@
+
+[Session started: 2026-04-29 05:22:11]
+
+======================================================================
+  🔄 OPTIONS FLOW SCANNER — SCHEDULER
+  Started: 2026-04-29 05:22:11 EDT
+  Scan interval: every 30 minutes during market hours
+  Market hours: 9:30 — 16:00 Eastern
+  Scanner: fetch_trades.py
+  Press Ctrl+C to stop
+======================================================================
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (4h 7m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (3h 7m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (2h 7m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (1h 7m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 7m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-29 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #1
+  2026-04-29 09:30:00 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 10:01:52 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #2
+  2026-04-29 10:01:52 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 10:33:44 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #3
+  2026-04-29 10:33:44 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 11:05:38 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #4
+  2026-04-29 11:05:38 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 11:37:27 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #5
+  2026-04-29 11:37:27 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 12:09:23 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #6
+  2026-04-29 12:09:23 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 12:41:13 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #7
+  2026-04-29 12:41:13 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 13:13:01 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #8
+  2026-04-29 13:13:01 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 13:44:50 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #9
+  2026-04-29 13:44:50 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 14:16:44 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #10
+  2026-04-29 14:16:44 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 14:48:42 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #11
+  2026-04-29 14:48:44 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 15:20:34 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #12
+  2026-04-29 15:20:34 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 15:52:29 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #13
+  2026-04-29 15:52:29 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  Market closing soon — final scan complete for today.
+
+======================================================================
+  📋 END OF DAY REVIEW
+  2026-04-29 15:54:27 EDT
+======================================================================
+
+  Waiting until 4:01 PM for post-close settlement scan...
+
+  📡 SCAN #14 — POST-CLOSE SETTLEMENT
+  Launching scanner...
+
+  Recording outcomes for expiring contracts...
+
+[Session started: 2026-04-29 21:00:27]
+
+======================================================================
+  🔄 OPTIONS FLOW SCANNER — SCHEDULER
+  Started: 2026-04-29 21:00:33 EDT
+  Scan interval: every 30 minutes during market hours
+  Market hours: 9:30 — 16:00 Eastern
+  Scanner: fetch_trades.py
+  Press Ctrl+C to stop
+======================================================================
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (12h 29m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (8h 35m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (1h 54m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 54m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-04-30 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #1
+  2026-04-30 09:30:00 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 10:01:44 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #2
+  2026-04-30 10:01:45 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 10:33:30 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #3
+  2026-04-30 10:33:30 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 11:05:20 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #4
+  2026-04-30 11:05:20 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 11:37:12 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #5
+  2026-04-30 11:37:12 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 12:09:06 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #6
+  2026-04-30 12:09:06 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 12:41:10 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #7
+  2026-04-30 12:41:10 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 13:13:14 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #8
+  2026-04-30 13:13:14 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 13:45:08 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #9
+  2026-04-30 13:45:08 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 14:16:59 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #10
+  2026-04-30 14:16:59 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 14:48:53 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #11
+  2026-04-30 14:48:53 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 15:20:54 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #12
+  2026-04-30 15:20:54 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 15:52:50 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #13
+  2026-04-30 15:52:50 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  Market closing soon — final scan complete for today.
+
+======================================================================
+  📋 END OF DAY REVIEW
+  2026-04-30 15:54:45 EDT
+======================================================================
+
+  Waiting until 4:01 PM for post-close settlement scan...
+
+  📡 SCAN #14 — POST-CLOSE SETTLEMENT
+  Launching scanner...
+
+  Recording outcomes for expiring contracts...

@@ -1,0 +1,23 @@
+
+[Session started: 2026-05-07 06:02:48]
+
+=================================================================
+  📡 POSITION MONITOR
+  Started: 2026-05-07 06:02:48 EDT
+  Check interval: every 3 minutes
+  Auto-close: TARGET and STOP hits executed automatically
+  Press Ctrl+C to stop
+=================================================================
+
+  Market closed. Next open: 2026-05-07 09:29 EDT (3h 27m)
+  Sleeping until market open...
+
+  =================================================================
+  📊 SESSION SUMMARY — 2026-05-07 06:02 EDT
+  =================================================================
+  Price checks run:    0
+  Auto-closes today:   0
+  Open positions:      1
+  Total P&L:           +$69,743.00
+  Win rate:            14.3%  (1W/6L)
+  =================================================================

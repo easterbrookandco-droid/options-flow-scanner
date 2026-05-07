@@ -1,0 +1,101 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Monday, May 04 2026
+  Generated: 2026-05-04 16:02:47 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Market overview not found in scanner log
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  459
+  Tickers with signals:  18
+  🔥 HIGH:               66
+  💰 INST:               28
+  ⚡ WATCH:              365
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 48.0%  $172.3M
+  ▼ Puts:  52.0%  $186.4M
+  Bias:    NEUTRAL
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  No QUALIFIED signals found in today's log
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  No positions opened today
+
+  Closed today (1):
+  🟢 #5  SPY260504P00725000
+       Entry: $5.02  →  Exit: $717.58
+       Reason: TARGET  P&L: +$71,256.00 (+14194.4%)
+
+
+  No open positions
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  Contracts expiring 2026-05-04:
+  ✅ WIN:   308
+  ❌ LOSS:  203
+  ➖ FLAT:  0
+  Total:    511
+  Win rate: 60.3%
+
+  Top wins by premium:
+  ✅ SPY    SPY260504P00722000           PUT   Strike $722.00  Premium $30.3M
+  ✅ TSLA   TSLA260504C00385000          CALL  Strike $385.00  Premium $27.1M
+  ✅ TSLA   TSLA260504C00390000          CALL  Strike $390.00  Premium $25.1M
+  ✅ TSLA   TSLA260504C00380000          CALL  Strike $380.00  Premium $24.0M
+  ✅ TSLA   TSLA260504P00395000          PUT   Strike $395.00  Premium $22.0M
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 TSLA   TSLA260506P00405000          PUT    2026-05-06   $7.9M        8.56
+  🔥 QQQ    QQQ260505P00672000           PUT    2026-05-05   $9.4M        8.13
+  🔥 SPY    SPY260505P00734000           PUT    2026-05-05   $4.7M        8.0
+  🔥 QQQ    QQQ260505C00595000           CALL   2026-05-05   $2.6M        8.0
+  🔥 GOOGL  GOOGL260508C00150000         CALL   2026-05-08   $1.6M        8.0
+  🔥 SPY    SPY260506P00735000           PUT    2026-05-06   $1.1M        8.0
+  🔥 GOOGL  GOOGL260508C00120000         CALL   2026-05-08   $1.3M        7.8
+  🔥 TSLA   TSLA260506P00415000          PUT    2026-05-06   $5.7M        6.97
+  🔥 SPY    SPY260507C00698000           CALL   2026-05-07   $1.0M        6.38
+  🔥 META   META260508C00470000          CALL   2026-05-08   $549K        5.8
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           +$70,107.50
+  Current bankroll:    $80,107.50
+  Open exposure:       $0.00 (0.0% of bankroll)
+  Max allowed (20%):   $16,021.50
+
+  Paper trades:
+  Total:               4
+  Open:                0
+  Closed:              4
+  Win rate:            25.0%  (1W / 3L)
+
+  ✅ Bankroll healthy — +701.1% return on starting capital
+
+=================================================================
+  End of daily summary — 2026-05-04
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260504.log
+=================================================================
+

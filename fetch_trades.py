@@ -866,8 +866,15 @@ def analyze_and_display(chain_data, ticker, expiration_date, quiet=False, share_
         tier = contract.get("_signal_tier", "NONE")
         
         # Only log meaningful signals
+        # Also filter out deep ITM adjusted contracts (post-split artifacts)
+        # These have delta ~1.0 and IV = 0 — no optionality, not a real signal
+        delta_raw = float(contract.get("delta", 0) or 0)
+        iv_raw    = float(contract.get("impliedVolatility", 0) or 0)
+        is_adjusted_contract = (abs(delta_raw) >= 0.95 and iv_raw == 0.0)
+
         should_log = (
             tier in ["HIGH", "INST", "WATCH"]
+            and not is_adjusted_contract
         )
 
         if should_log:

@@ -1,0 +1,84 @@
+
+[Session started: 2026-04-28 16:02:21]
+
+=======================================================
+  📋 OUTCOME RECORDER
+  2026-04-28 16:02:21 EDT
+=======================================================
+
+  Authenticating...
+  ✓ Authenticated
+
+  Processing yesterday (2026-04-27)...
+  Found 463 unique contracts expiring 2026-04-27
+  Fetching closing prices for 10 tickers...
+  ✗ Could not fetch closing prices — outcomes not recorded
+
+  ───────────────────────────────────────────────────────
+  📊 OUTCOME RECORDING — 2026-04-27
+  ───────────────────────────────────────────────────────
+  Contracts processed: 463
+  Resolved:            0
+    ✅ WIN:            0
+    ❌ LOSS:           0
+    ➖ FLAT:           0
+  Skipped (no price):  463
+  Win rate:            0%
+  ───────────────────────────────────────────────────────
+
+  Processing today (2026-04-28)...
+  Found 166 unique contracts expiring 2026-04-28
+  Fetching closing prices for 3 tickers...
+  ✓ Closing prices fetched for 3 tickers
+
+  ───────────────────────────────────────────────────────
+  📊 OUTCOME RECORDING — 2026-04-28
+  ───────────────────────────────────────────────────────
+  Contracts processed: 166
+  Resolved:            166
+    ✅ WIN:            108
+    ❌ LOSS:           58
+    ➖ FLAT:           0
+  Skipped (no price):  0
+  Win rate:            65.1%
+  ───────────────────────────────────────────────────────
+
+  =======================================================
+  📊 COMBINED SUMMARY
+  =======================================================
+  Total processed: 629
+  Total wins:      108
+  Total losses:    58
+  Overall win rate:65.1%
+  =======================================================
+
+  Generating daily summary...
+
+[Session started: 2026-04-28 16:02:47]
+
+=======================================================
+  📋 OUTCOME RECORDER
+  2026-04-28 16:02:47 EDT
+=======================================================
+
+  Authenticating...
+  ✓ Authenticated
+
+  Processing yesterday (2026-04-27)...
+  Found 463 unique contracts expiring 2026-04-27
+  Fetching closing prices for 10 tickers...
+  ✗ Could not fetch closing prices — outcomes not recorded
+
+  ───────────────────────────────────────────────────────
+  📊 OUTCOME RECORDING — 2026-04-27
+  ───────────────────────────────────────────────────────
+  Contracts processed: 463
+  Resolved:            0
+    ✅ WIN:            0
+    ❌ LOSS:           0
+    ➖ FLAT:           0
+  Skipped (no price):  463
+  Win rate:            0%
+  ───────────────────────────────────────────────────────
+
+  Generating daily summary...

@@ -539,3 +539,14 @@ https://api.public.com:443 "POST /userapigateway/marketdata/5LT39200/quotes HTTP
   Total P&L:           $-1,148.50
   Win rate:            0.0%  (0W/3L)
   =================================================================
+  Market closed. Next open: 2026-04-28 09:29 EDT (12h 33m)
+  Sleeping until market open...
+  =================================================================
+  📊 SESSION SUMMARY — 2026-04-27 20:56 EDT
+  =================================================================
+  Price checks run:    2
+  Auto-closes today:   0
+  Open positions:      0
+  Total P&L:           $-1,148.50
+  Win rate:            0.0%  (0W/3L)
+  =================================================================

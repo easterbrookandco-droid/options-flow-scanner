@@ -1,0 +1,46 @@
+
+[Session started: 2026-05-02 08:30:29]
+
+======================================================================
+  🔄 OPTIONS FLOW SCANNER — SCHEDULER
+  Started: 2026-05-02 08:30:46 EDT
+  Scan interval: every 30 minutes during market hours
+  Market hours: 9:30 — 16:00 Eastern
+  Scanner: fetch_trades.py
+  Press Ctrl+C to stop
+======================================================================
+
+  Market is currently closed.
+  Next open: 2026-05-04 09:29 EDT (48h 59m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-04 09:29 EDT (47h 59m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-04 09:29 EDT (46h 59m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-04 09:29 EDT (45h 59m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-04 09:29 EDT (44h 59m from now)
+  Sleeping until market open...
+
+[Session started: 2026-05-02 20:14:05]
+
+======================================================================
+  🔄 OPTIONS FLOW SCANNER — SCHEDULER
+  Started: 2026-05-02 20:14:36 EDT
+  Scan interval: every 30 minutes during market hours
+  Market hours: 9:30 — 16:00 Eastern
+  Scanner: fetch_trades.py
+  Press Ctrl+C to stop
+======================================================================
+
+  Market is currently closed.
+  Next open: 2026-05-04 09:29 EDT (37h 15m from now)
+  Sleeping until market open...

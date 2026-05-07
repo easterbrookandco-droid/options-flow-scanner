@@ -1,0 +1,95 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Wednesday, April 29 2026
+  Generated: 2026-04-29 16:02:59 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Market overview not found in scanner log
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  643
+  Tickers with signals:  17
+  🔥 HIGH:               55
+  💰 INST:               125
+  ⚡ WATCH:              463
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 77.2%  $159.9M
+  ▼ Puts:  22.8%  $47.1M
+  Bias:    BULLISH
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  No QUALIFIED signals found in today's log
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  No positions opened today
+
+  No positions closed today
+
+  No open positions
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  Contracts expiring 2026-04-29:
+  ✅ WIN:   205
+  ❌ LOSS:  117
+  ➖ FLAT:  2
+  Total:    324
+  Win rate: 63.3%
+
+  Top wins by premium:
+  ✅ TSLA   TSLA260429P00377500          PUT   Strike $377.50  Premium $18.2M
+  ✅ NVDA   NVDA260429P00210000          PUT   Strike $210.00  Premium $17.2M
+  ✅ SPY    SPY260429C00712000           CALL  Strike $712.00  Premium $15.7M
+  ✅ TSLA   TSLA260429C00365000          CALL  Strike $365.00  Premium $11.9M
+  ✅ SPY    SPY260429C00711000           CALL  Strike $711.00  Premium $11.7M
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 SPY    SPY260504C00692000           CALL   2026-05-04   $1.6M        7.57
+  🔥 AAPL   AAPL260501C00145000          CALL   2026-05-01   $878K        7.0
+  🔥 QQQ    QQQ260501C00790000           CALL   2026-05-01   $806K        7.0
+  🔥 QQQ    QQQ260504P00500000           PUT    2026-05-04   $720K        7.0
+  🔥 GOOGL  GOOGL260508P00380000         PUT    2026-05-08   $591K        7.0
+  🔥 QQQ    QQQ260504P00515000           PUT    2026-05-04   $2.1M        6.79
+  🔥 AMZN   AMZN260504C00252500          CALL   2026-05-04   $1.9M        6.35
+  🔥 GOOGL  GOOGL260504C00307500         CALL   2026-05-04   $609K        6.27
+  🔥 SPY    SPY260501P00728000           PUT    2026-05-01   $5.2M        6.04
+  🔥 GOOGL  GOOGL260508C00377500         CALL   2026-05-08   $659K        5.9
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           $-1,148.50
+  Current bankroll:    $8,851.50
+  Open exposure:       $0.00 (0.0% of bankroll)
+  Max allowed (20%):   $1,770.30
+
+  Paper trades:
+  Total:               3
+  Open:                0
+  Closed:              3
+  Win rate:            0.0%  (0W / 3L)
+
+=================================================================
+  End of daily summary — 2026-04-29
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260429.log
+=================================================================
+
