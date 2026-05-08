@@ -39,51 +39,92 @@ def get_db_path():
 
 
 def get_open_positions():
-    """Fetch all open paper trades from DB."""
+    """
+    Fetch all active paper trades from DB.
+    
+    Returns both OPEN and STOP_TRIGGERED positions — STOP_TRIGGERED
+    means the theoretical stop was hit but we continue tracking the
+    position through expiration for data collection purposes.
+    """
     conn = sqlite3.connect(get_db_path())
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
+
     cursor.execute("""
         SELECT * FROM paper_trades
-        WHERE status = 'OPEN'
+        WHERE status IN ('OPEN', 'STOP_TRIGGERED')
         ORDER BY entry_date ASC, entry_time ASC
     """)
+
     trades = [dict(row) for row in cursor.fetchall()]
     conn.close()
     return trades
 
 
-def log_price_snapshot(trade_id, current_price, bid, ask, pnl, pnl_pct):
+def log_price_snapshot(
+    trade_id, current_price, bid, ask, pnl, pnl_pct,
+    dynamic_stop=None, current_dte=None,
+    market_context=None,
+    stop_triggered=0, target_triggered=0
+):
     """
     Log a price check to position_snapshots table.
-    Builds a full price history for each position over its lifetime.
+    Builds a full price history for each position over its lifetime,
+    including market context and dynamic stop at each moment.
+
+    Parameters:
+        trade_id (int): Paper trade ID
+        current_price (float): Mid price at snapshot time
+        bid (float): Bid price
+        ask (float): Ask price
+        pnl (float): Current P&L in dollars
+        pnl_pct (float): Current P&L as percentage
+        dynamic_stop (float): Current stop threshold (DTE-aware)
+        current_dte (int): Days to expiration at snapshot time
+        market_context (dict): Output of fetch_market_context()
+                               keyed by ticker with price/chg_pct
+        stop_triggered (int): 1 if this snapshot triggered the stop
+        target_triggered (int): 1 if this snapshot triggered the target
     """
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
 
-    # Create table if it doesn't exist yet
+    eastern = pytz.timezone(MARKET_TIMEZONE)
+    now = datetime.now(eastern).strftime("%Y-%m-%d %H:%M:%S")
+
+    # Extract market context safely
+    def ctx(ticker, field):
+        if not market_context:
+            return None
+        return market_context.get(ticker, {}).get(field)
+
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS position_snapshots (
-            id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            trade_id        INTEGER NOT NULL,
-            snapshot_time   TEXT NOT NULL,
-            current_price   REAL,
-            bid             REAL,
-            ask             REAL,
-            pnl             REAL,
-            pnl_pct         REAL,
-            created_at      TEXT DEFAULT CURRENT_TIMESTAMP
+        INSERT INTO position_snapshots (
+            trade_id, snapshot_time,
+            current_price, bid, ask, pnl, pnl_pct,
+            dynamic_stop, current_dte,
+            spy_price, spy_chg_pct,
+            qqq_price, qqq_chg_pct,
+            iwm_price, iwm_chg_pct,
+            tlt_price, tlt_chg_pct,
+            vix_price,
+            stop_triggered, target_triggered
+        ) VALUES (
+            ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?, ?, ?, ?, ?, ?, ?, ?,
+            ?, ?
         )
-    """)
-
-    eastern   = pytz.timezone(MARKET_TIMEZONE)
-    now       = datetime.now(eastern).strftime("%Y-%m-%d %H:%M:%S")
-
-    cursor.execute("""
-        INSERT INTO position_snapshots
-            (trade_id, snapshot_time, current_price, bid, ask, pnl, pnl_pct)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """, (trade_id, now, current_price, bid, ask, pnl, pnl_pct))
+    """, (
+        trade_id, now,
+        current_price, bid, ask, pnl, pnl_pct,
+        dynamic_stop, current_dte,
+        ctx("SPY", "price"), ctx("SPY", "chg_pct"),
+        ctx("QQQ", "price"), ctx("QQQ", "chg_pct"),
+        ctx("IWM", "price"), ctx("IWM", "chg_pct"),
+        ctx("TLT", "price"), ctx("TLT", "chg_pct"),
+        ctx("VIX", "price"),
+        stop_triggered, target_triggered
+    ))
 
     # Update max_value_seen on the trade if this is a new high
     cursor.execute("""
@@ -92,6 +133,123 @@ def log_price_snapshot(trade_id, current_price, bid, ask, pnl, pnl_pct):
         WHERE id = ?
         AND (max_value_seen IS NULL OR ? > max_value_seen)
     """, (current_price, trade_id, current_price))
+
+    conn.commit()
+    conn.close()
+
+
+def fetch_market_context(token, account_id):
+    """
+    Fetch current prices for key market indicators.
+
+    Called once per monitor cycle and passed to every snapshot
+    so each price check has full market backdrop recorded.
+
+    Tickers tracked:
+        SPY  — S&P 500 broad market
+        QQQ  — Nasdaq 100 tech-heavy
+        IWM  — Russell 2000 small caps
+        TLT  — 20yr Treasury bonds (inverse rate proxy)
+        VIX  — CBOE Volatility Index (fear gauge)
+
+    Returns:
+        dict: Keyed by ticker, each value contains:
+              price, chg_pct — or empty dict if call fails
+    """
+    CONTEXT_TICKERS = ["SPY", "QQQ", "IWM", "TLT"]
+
+    try:
+        response = requests.post(
+            f"{BASE_URL}/userapigateway/marketdata/{account_id}/quotes",
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "instruments": [
+                    {"symbol": t, "type": "EQUITY"} for t in CONTEXT_TICKERS
+                ]
+            }
+        )
+
+        if response.status_code != 200:
+            return {}
+
+        context = {}
+        for q in response.json().get("quotes", []):
+            if q.get("outcome") == "SUCCESS":
+                symbol = q["instrument"]["symbol"]
+                try:
+                    last  = float(q.get("last") or 0)
+                    prev  = float(q.get("previousClose") or 0)
+                    chg_pct = round(((last - prev) / prev) * 100, 3) if prev else 0
+                    context[symbol] = {
+                        "price":   last,
+                        "chg_pct": chg_pct,
+                    }
+                except (ValueError, TypeError):
+                    pass
+
+        # VIX requires a separate call as an INDEX type
+        try:
+            vix_resp = requests.post(
+                f"{BASE_URL}/userapigateway/marketdata/{account_id}/quotes",
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json"
+                },
+                json={"instruments": [{"symbol": "VIX", "type": "INDEX"}]}
+            )
+            if vix_resp.status_code == 200:
+                for q in vix_resp.json().get("quotes", []):
+                    if q.get("outcome") == "SUCCESS":
+                        context["VIX"] = {
+                            "price":   float(q.get("last") or 0),
+                            "chg_pct": None,
+                        }
+        except Exception:
+            pass  # VIX is nice to have, not critical
+
+        return context
+
+    except Exception as e:
+        print(f"  ✗ Market context fetch error: {e}")
+        return {}
+    
+
+def mark_stop_triggered(trade_id, triggered_price, dynamic_stop):
+    """
+    Record that the dynamic stop threshold was crossed without
+    closing the position.
+
+    The position status moves from OPEN to STOP_TRIGGERED so the
+    monitor keeps tracking it through expiration. This gives us
+    two data points per trade:
+        1. What P&L would have been if we exited at the stop
+        2. What P&L actually was at expiration
+
+    Over many trades this tells us whether our stop curve is
+    cutting winners early or correctly limiting losses.
+
+    Parameters:
+        trade_id (int): Paper trade ID
+        triggered_price (float): Mid price when stop was crossed
+        dynamic_stop (float): The stop threshold that was crossed
+    """
+    conn = sqlite3.connect(get_db_path())
+    cursor = conn.cursor()
+
+    eastern = pytz.timezone(MARKET_TIMEZONE)
+    now = datetime.now(eastern).strftime("%Y-%m-%d %H:%M:%S")
+
+    cursor.execute("""
+        UPDATE paper_trades
+        SET status = 'STOP_TRIGGERED',
+            notes  = COALESCE(notes || ' | ', '') ||
+                     'Stop triggered at ' || ? ||
+                     ' (threshold: ' || ? || ') on ' || ?
+        WHERE id = ? AND status = 'OPEN'
+    """, (triggered_price, dynamic_stop, now, trade_id))
 
     conn.commit()
     conn.close()
@@ -110,6 +268,48 @@ def auto_close_position(trade_id, exit_price, exit_reason, bid, ask):
         notes=f"Auto-closed by position monitor. Bid:{bid} Ask:{ask}"
     )
     return result
+
+
+def get_dynamic_stop(entry_price, expiration_date):
+    """
+    Calculate the current stop price based on remaining DTE.
+
+    Rather than a fixed stop set at entry, the stop tightens
+    automatically as expiration approaches. This reflects the
+    shrinking recovery window as time value bleeds away.
+
+    Stop tiers:
+        DTE > 14  : 20% of entry price — lots of runway, loose stop
+        DTE 6-14  : 30% of entry price — moderate time, tighter stop
+        DTE <= 5  : 50% of entry price — short fuse, cut losses fast
+
+    Parameters:
+        entry_price (float): Original entry price of the position
+        expiration_date (str): Contract expiration in YYYY-MM-DD format
+
+    Returns:
+        tuple: (stop_price, current_dte)
+            stop_price — the current dynamic stop threshold
+            current_dte — days remaining until expiration
+    """
+    eastern = pytz.timezone(MARKET_TIMEZONE)
+    today = datetime.now(eastern).date()
+
+    try:
+        exp_date = datetime.strptime(expiration_date, "%Y-%m-%d").date()
+        dte = (exp_date - today).days
+    except Exception:
+        dte = 0
+
+    if dte <= 5:
+        stop_mult = 0.50
+    elif dte <= 14:
+        stop_mult = 0.30
+    else:
+        stop_mult = 0.20
+
+    stop_price = round(entry_price * stop_mult, 2)
+    return stop_price, dte
 
 
 # =============================================================================
@@ -281,73 +481,151 @@ def progress_bar(current, entry, target, stop, width=20):
 # CORE MONITOR LOGIC
 # =============================================================================
 
-def evaluate_positions(positions, prices, eastern):
+def evaluate_positions(positions, prices, market_context, eastern):
     """
-    Evaluate all open positions against current prices.
-    Prints status, fires alerts, auto-closes when thresholds hit.
+    Evaluate all active positions against current prices.
+
+    Handles three position states:
+        OPEN           — normal monitoring, check stop and target
+        STOP_TRIGGERED — stop already hit, keep tracking for data
+
+    For OPEN positions:
+        - Calculate dynamic stop based on current DTE
+        - If stop crossed → mark STOP_TRIGGERED, keep tracking
+        - If target hit → auto-close as TARGET
+        - Log snapshot with full market context
+
+    For STOP_TRIGGERED positions:
+        - Keep logging snapshots through expiration
+        - No further stop/target checks
+        - Auto-close as EXPIRED when DTE hits 0
+
+    Parameters:
+        positions (list): Active trade dicts (OPEN + STOP_TRIGGERED)
+        prices (dict): Current option prices keyed by contract symbol
+        market_context (dict): Current market indicator prices/changes
+        eastern: Eastern timezone object
 
     Returns:
-        list: Trade IDs that were auto-closed this cycle
+        list: Trade IDs that were fully closed this cycle
     """
     closed_ids = []
-    now_str    = datetime.now(eastern).strftime("%H:%M:%S %Z")
+    now_str = datetime.now(eastern).strftime("%H:%M:%S %Z")
 
     print(f"\n  {'─'*65}")
     print(f"  📡 POSITION CHECK — {now_str}")
     print(f"  {'─'*65}")
 
     for trade in positions:
-        trade_id    = trade["id"]
-        contract    = trade["signal_contract"]
-        entry_price = trade["entry_price"]
-        contracts   = trade["contracts"]
-        target      = trade["target_price"]
-        stop        = trade["stop_price"]
-        total_cost  = trade["total_cost"]
-        thesis      = trade.get("thesis", "")
+        trade_id      = trade["id"]
+        contract      = trade["signal_contract"]
+        entry_price   = trade["entry_price"]
+        contracts     = trade["contracts"]
+        target        = trade["target_price"]
+        total_cost    = trade["total_cost"]
+        status        = trade["status"]
+        thesis        = trade.get("thesis", "")
 
-        price_data  = prices.get(contract)
+        # ── Parse expiration from contract symbol ──────────────────────
+        # Format: TICKER[YYMMDD][C/P][STRIKE]
+        # e.g. TSLA260513P00420000 → expiry = 2026-05-13
+        try:
+            date_str    = contract[-15:-9]   # YYMMDD
+            expiration  = datetime.strptime(date_str, "%y%m%d").strftime("%Y-%m-%d")
+        except Exception:
+            expiration  = None
+
+        # ── Dynamic stop and DTE ───────────────────────────────────────
+        if expiration:
+            dynamic_stop, current_dte = get_dynamic_stop(entry_price, expiration)
+        else:
+            dynamic_stop = trade["stop_price"]  # fallback to stored stop
+            current_dte  = None
+
+        # ── Get current price ──────────────────────────────────────────
+        price_data = prices.get(contract)
 
         if not price_data:
             print(f"\n  ⚠️  #{trade_id} {contract}")
-            print(f"     Price unavailable — skipping this cycle")
+            print(f"      Price unavailable — skipping this cycle")
             continue
 
-        mid     = price_data["mid"]
-        bid     = price_data["bid"]
-        ask     = price_data["ask"]
+        mid = price_data["mid"]
+        bid = price_data["bid"]
+        ask = price_data["ask"]
 
-        # P&L calculations using mid price
+        # ── P&L calculations ───────────────────────────────────────────
         pnl     = round((mid - entry_price) * contracts * 100, 2)
         pnl_pct = round((pnl / total_cost) * 100, 2) if total_cost else 0
 
-        # Log snapshot
-        log_price_snapshot(trade_id, mid, bid, ask, pnl, pnl_pct)
-
-        # Progress toward target/stop
-        bar = progress_bar(mid, entry_price, target, stop)
-
-        # P&L indicator
+        # ── Display ────────────────────────────────────────────────────
         icon = "🟢" if pnl >= 0 else "🔴"
+        status_badge = "⏸ TRACKING" if status == "STOP_TRIGGERED" else "▶ OPEN"
 
-        print(f"\n  {icon} #{trade_id}  {contract}")
-        print(f"     Entry: ${entry_price:.2f}  │  "
+        print(f"\n  {icon} #{trade_id} {contract}  [{status_badge}]")
+        print(f"      Entry: ${entry_price:.2f} │ "
               f"Bid: ${bid:.2f}  Mid: ${mid:.2f}  Ask: ${ask:.2f}")
-        print(f"     P&L:   {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})  │  "
-              f"Target: ${target:.2f}  Stop: ${stop:.2f}")
-        print(f"     {bar}  Stop ←→ Target")
+        print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)}) │ "
+              f"Target: ${target:.2f}  Stop: ${dynamic_stop:.2f}  DTE: {current_dte}d")
+
+        if status == "STOP_TRIGGERED":
+            print(f"      ⚠️  Stop was triggered — continuing to track for data")
+
         if thesis:
-            print(f"     💭 {thesis[:70]}{'...' if len(thesis) > 70 else ''}")
+            print(f"      💭 {thesis[:70]}{'...' if len(thesis) > 70 else ''}")
 
-        # ── Auto-close checks ──────────────────────────────────────────
+        # ── Market context display ─────────────────────────────────────
+        if market_context:
+            spy = market_context.get("SPY", {})
+            qqq = market_context.get("QQQ", {})
+            vix = market_context.get("VIX", {})
+            spy_str = f"SPY {spy.get('chg_pct', 0):+.2f}%" if spy else ""
+            qqq_str = f"QQQ {qqq.get('chg_pct', 0):+.2f}%" if qqq else ""
+            vix_str = f"VIX {vix.get('price', 0):.1f}" if vix else ""
+            print(f"      🌍 {spy_str}  {qqq_str}  {vix_str}")
 
-        # TARGET HIT
+        # ── Log snapshot with full context ─────────────────────────────
+        log_price_snapshot(
+            trade_id       = trade_id,
+            current_price  = mid,
+            bid            = bid,
+            ask            = ask,
+            pnl            = pnl,
+            pnl_pct        = pnl_pct,
+            dynamic_stop   = dynamic_stop,
+            current_dte    = current_dte,
+            market_context = market_context,
+            stop_triggered = 0,
+            target_triggered = 0,
+        )
+
+        # ── Skip stop/target checks for already-triggered positions ────
+        if status == "STOP_TRIGGERED":
+            # Only check for expiration auto-close
+            if current_dte is not None and current_dte <= 0:
+                print(f"\n  ⏰ CONTRACT EXPIRED — auto-closing #{trade_id}")
+                result = auto_close_position(trade_id, mid, "EXPIRED", bid, ask)
+                if result:
+                    print(f"  ✅ Closed as EXPIRED  P&L: {fmt_pnl(pnl)}")
+                    closed_ids.append(trade_id)
+            continue
+
+        # ── TARGET HIT ─────────────────────────────────────────────────
         if mid >= target:
             print(f"\n  {'='*65}")
             print(f"  🎯 TARGET HIT — #{trade_id} {contract}")
-            print(f"     Entry: ${entry_price:.2f}  →  Current: ${mid:.2f}")
-            print(f"     P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+            print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
+            print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
             print(f"  {'='*65}")
+
+            # Re-log snapshot with target flag
+            log_price_snapshot(
+                trade_id=trade_id, current_price=mid,
+                bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                dynamic_stop=dynamic_stop, current_dte=current_dte,
+                market_context=market_context,
+                stop_triggered=0, target_triggered=1,
+            )
 
             result = auto_close_position(trade_id, mid, "TARGET", bid, ask)
             if result:
@@ -355,57 +633,51 @@ def evaluate_positions(positions, prices, eastern):
                 closed_ids.append(trade_id)
             continue
 
-        # STOP HIT
-        if bid <= stop or mid <= stop:
+        # ── STOP HIT ───────────────────────────────────────────────────
+        if mid <= dynamic_stop or bid <= dynamic_stop:
             print(f"\n  {'='*65}")
-            print(f"  🛑 STOP HIT — #{trade_id} {contract}")
-            print(f"     Entry: ${entry_price:.2f}  →  Current: ${mid:.2f}")
-            print(f"     P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+            print(f"  🛑 STOP TRIGGERED — #{trade_id} {contract}")
+            print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
+            print(f"      Dynamic stop: ${dynamic_stop:.2f} (DTE: {current_dte}d)")
+            print(f"      Theoretical P&L if exited: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+            print(f"      Continuing to track through expiration for data collection")
             print(f"  {'='*65}")
 
-            result = auto_close_position(trade_id, mid, "STOP", bid, ask)
-            if result:
-                print(f"  ✅ Position auto-closed at STOP")
-                closed_ids.append(trade_id)
+            # Re-log snapshot with stop flag
+            log_price_snapshot(
+                trade_id=trade_id, current_price=mid,
+                bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                dynamic_stop=dynamic_stop, current_dte=current_dte,
+                market_context=market_context,
+                stop_triggered=1, target_triggered=0,
+            )
+
+            mark_stop_triggered(trade_id, mid, dynamic_stop)
             continue
 
-        # ── Alert checks (approaching but not yet hit) ─────────────────
-
-        # Approaching target
+        # ── Approaching alerts ─────────────────────────────────────────
         target_progress = (mid - entry_price) / (target - entry_price) \
-                          if target != entry_price else 0
+            if target != entry_price else 0
         if target_progress >= (TARGET_ALERT_PCT / 100):
-            remaining = target - mid
-            print(f"  ⚡ TARGET APPROACHING — ${remaining:.2f} away "
-                  f"({target_progress*100:.0f}% of the way there)")
+            print(f"  ⚡ TARGET APPROACHING — "
+                  f"${target - mid:.2f} away ({target_progress*100:.0f}%)")
 
-        # Approaching stop
-        stop_progress = (entry_price - mid) / (entry_price - stop) \
-                        if entry_price != stop else 0
+        stop_progress = (entry_price - mid) / (entry_price - dynamic_stop) \
+            if entry_price != dynamic_stop else 0
         if stop_progress >= (STOP_ALERT_PCT / 100):
-            remaining = mid - stop
-            print(f"  ⚠️  STOP APPROACHING — ${remaining:.2f} away "
-                  f"({stop_progress*100:.0f}% of the way to stop)")
+            print(f"  ⚠️  STOP APPROACHING — "
+                  f"${mid - dynamic_stop:.2f} away ({stop_progress*100:.0f}%)")
 
-        # DTE warning — if expiring within 2 days
-        try:
-            contract_date = datetime.strptime(
-                contract[-15:-9], "%y%m%d"
-            ).date()
-            dte = (contract_date - datetime.now(eastern).date()).days
-            if dte <= 1:
-                print(f"  ⏰ EXPIRING SOON — {dte} day(s) remaining")
-            if dte == 0 and not is_market_open():
-                # Market closed, contract expires today — auto-close as EXPIRED
-                print(f"\n  ⏰ CONTRACT EXPIRING TODAY — auto-closing")
-                result = auto_close_position(
-                    trade_id, mid, "EXPIRED", bid, ask
-                )
-                if result:
-                    print(f"  ✅ Position auto-closed as EXPIRED")
-                    closed_ids.append(trade_id)
-        except Exception:
-            pass
+        # ── Expiration warning ─────────────────────────────────────────
+        if current_dte is not None and current_dte <= 1:
+            print(f"  ⏰ EXPIRING SOON — {current_dte} day(s) remaining")
+
+        if current_dte == 0 and not is_market_open():
+            print(f"\n  ⏰ CONTRACT EXPIRING TODAY — auto-closing")
+            result = auto_close_position(trade_id, mid, "EXPIRED", bid, ask)
+            if result:
+                print(f"  ✅ Closed as EXPIRED  P&L: {fmt_pnl(pnl)}")
+                closed_ids.append(trade_id)
 
     return closed_ids
 
@@ -515,13 +787,14 @@ def main():
                     continue
 
             # Fetch prices for all open contracts in one batched call
-            contracts  = [t["signal_contract"] for t in positions]
-            prices     = fetch_option_prices(contracts, token, account_id)
+            contracts = [t["signal_contract"] for t in positions]
+            prices = fetch_option_prices(contracts, token, account_id)
+
+            # Fetch market context once per cycle — shared across all positions
+            market_context = fetch_market_context(token, account_id)
 
             # Evaluate and potentially auto-close
-            closed_ids = evaluate_positions(positions, prices, eastern)
-            auto_closed_total += len(closed_ids)
-            check_count       += 1
+            closed_ids = evaluate_positions(positions, prices, market_context, eastern)
 
             # Sleep until next check
             print(f"\n  ⏳ Next check in {CHECK_INTERVAL_SECONDS // 60} minutes...")

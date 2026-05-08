@@ -1,0 +1,102 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Thursday, May 07 2026
+  Generated: 2026-05-07 18:42:42 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Market overview not found in scanner log
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  757
+  Tickers with signals:  18
+  🔥 HIGH:               179
+  💰 INST:               65
+  ⚡ WATCH:              513
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 46.1%  $414.3M
+  ▼ Puts:  53.9%  $483.5M
+  Bias:    NEUTRAL
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  No QUALIFIED signals found in today's log
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  No positions opened today
+
+  No positions closed today
+
+  Currently open (1):
+  #7  NFLX260515P00092000
+       Entry: $3.72  Target: $7.44  Stop: $1.86
+       Held: 2d  Verdict at entry: None
+       💭 Deep ITM put with 0.73 delta and 10 days to expiration offers defined risk for a short volatility play if Netflix bounces.
+
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  Contracts expiring 2026-05-07:
+  ✅ WIN:   104
+  ❌ LOSS:  73
+  ➖ FLAT:  0
+  Total:    177
+  Win rate: 58.8%
+
+  Top wins by premium:
+  ✅ SPY    SPY260507P00734000           PUT   Strike $734.00  Premium $58.4M
+  ✅ SPY    SPY260507P00732000           PUT   Strike $732.00  Premium $25.3M
+  ✅ SPY    SPY260507P00735000           PUT   Strike $735.00  Premium $12.6M
+  ✅ SPY    SPY260507P00733000           PUT   Strike $733.00  Premium $7.2M
+  ✅ QQQ    QQQ260507C00692000           CALL  Strike $692.00  Premium $6.3M
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 META   META260515P00750000          PUT    2026-05-15   $18.4M       9.0
+  🔥 TSLA   TSLA260508P00435000          PUT    2026-05-08   $4.5M        8.0
+  🔥 TSLA   TSLA260515P00427500          PUT    2026-05-15   $4.0M        8.0
+  🔥 QQQ    QQQ260508P00699000           PUT    2026-05-08   $1.8M        8.0
+  🔥 TSLA   TSLA260513P00420000          PUT    2026-05-13   $865K        7.0
+  🔥 SPY    SPY260512P00746000           PUT    2026-05-12   $849K        7.0
+  🔥 TSLA   TSLA260511C00412500          CALL   2026-05-11   $7.5M        6.84
+  🔥 QQQ    QQQ260512P00699000           PUT    2026-05-12   $712K        6.8
+  🔥 TSLA   TSLA260508P00407500          PUT    2026-05-08   $7.9M        6.75
+  🔥 TSLA   TSLA260511P00412500          PUT    2026-05-11   $1.0M        6.51
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           +$69,743.00
+  Current bankroll:    $79,743.00
+  Open exposure:       $372.00 (0.5% of bankroll)
+  Max allowed (20%):   $15,948.60
+
+  Paper trades:
+  Total:               8
+  Open:                1
+  Closed:              7
+  Win rate:            14.3%  (1W / 6L)
+
+  ✅ Bankroll healthy — +697.4% return on starting capital
+
+=================================================================
+  End of daily summary — 2026-05-07
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260507.log
+=================================================================
+

@@ -193,7 +193,17 @@ def insert_paper_trade(
 
     total_cost   = round(entry_price * contracts * 100, 2)
     target_price = round(entry_price * 2, 2)
-    stop_price   = round(entry_price * 0.5, 2)
+
+    # DTE-aware stop loss — give longer-dated positions more room to breathe
+    if dte_at_entry is None or dte_at_entry <= 2:
+        stop_mult = 0.50   # 50% stop — very short DTE, cut fast
+    elif dte_at_entry <= 5:
+        stop_mult = 0.65   # 35% stop
+    elif dte_at_entry <= 14:
+        stop_mult = 0.75   # 25% stop
+    else:
+        stop_mult = 0.80   # 20% stop — long DTE, lots of runway
+    stop_price = round(entry_price * stop_mult, 2)
 
     # Extract macro snapshot values safely
     def chg(ticker):

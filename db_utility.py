@@ -5,13 +5,19 @@ DB_PATH = "signals.db"
 conn = sqlite3.connect(DB_PATH)
 cursor = conn.cursor()
 
-# Fix exit price on SPY paper trade (ID 5 in paper_trades table)
-cursor.execute("UPDATE paper_trades SET exit_price = 7.42 WHERE id = 5")
-print(f"Updated {cursor.rowcount} row(s) — exit price fix")
-
-# Remove deep ITM GOOGL adjusted contracts from signals table
-cursor.execute("DELETE FROM signals WHERE ticker = 'GOOGL' AND strike = 150.0")
-print(f"Deleted {cursor.rowcount} row(s) — GOOGL adjusted contracts")
+# Fix entry price AND recalculate P&L on SPY paper trade (ID 5)
+# Entry: $4.93 (mid estimate), Exit: $7.42 (intrinsic at expiration)
+# P&L: (7.42 - 4.93) * 1 contract * 100 = $249.00
+cursor.execute("""
+    UPDATE paper_trades 
+    SET entry_price = 4.93,
+        exit_price = 7.42,
+        total_cost = 493.0,
+        pnl = 249.0,
+        pnl_pct = 50.51
+    WHERE id = 5
+""")
+print(f"Updated {cursor.rowcount} row(s) — SPY paper trade corrected")
 
 conn.commit()
 conn.close()
