@@ -324,6 +324,31 @@ def is_signal_stale(signal, live_price):
         f"(${scanned_ask:.2f} → ${live_ask:.2f}) — within threshold"
     )
 
+# =============================================================================
+# PARSE DTE FROM CONTRACT
+# =============================================================================
+def get_dte_from_contract(contract):
+    """
+    Parse days to expiration directly from contract symbol.
+    More reliable than relying on cached _dte key.
+
+    Format: TICKER[YYMMDD][C/P][STRIKE]
+    e.g. TSLA260511P00430000 → exp 2026-05-11 → DTE calculated from today
+
+    Parameters:
+        contract (str): Full contract symbol
+
+    Returns:
+        int: Days to expiration, or 0 if parsing fails
+    """
+    try:
+        date_str = contract[-15:-9]
+        exp_date = datetime.strptime(date_str, "%y%m%d").date()
+        eastern  = pytz.timezone(MARKET_TIMEZONE)
+        return (exp_date - datetime.now(eastern).date()).days
+    except Exception:
+        return 0
+
 
 # =============================================================================
 # ENTRY DECISION LOGIC
@@ -360,17 +385,24 @@ def select_entry_candidate(signals, open_tickers):
     """
     skipped = []
 
-    # ── Step 1: Filter already-held tickers ───────────────────────────
-    eligible = []
-    for s in signals:
-        ticker = s.get("ticker", "")
-        if ticker in open_tickers:
-            skipped.append((s, f"Already holding {ticker} position"))
-        else:
-            eligible.append(s)
+    # ── Step 1: Ticker deduplication — DISABLED for paper trading ─────
+    # Re-enable for live trading to prevent correlated risk and
+    # burning through budget on multiple positions per ticker.
+    # ─────────────────────────────────────────────────────────────────
+    # eligible = []
+    # for s in signals:
+    #     ticker = s.get("ticker", "")
+    #     if ticker in open_tickers:
+    #         skipped.append((s, f"Already holding {ticker} position"))
+    #     else:
+    #         eligible.append(s)
+    # if not eligible:
+    #     return None, "No eligible signals — all tickers already in open positions", skipped
+    # ─────────────────────────────────────────────────────────────────
+    eligible = list(signals)  # Paper trading: enter all eligible signals
 
     if not eligible:
-        return None, "No eligible signals — all tickers already in open positions", skipped
+        return None, "No eligible signals found", skipped
 
     # ── Step 2: Filter 0DTE ───────────────────────────────────────────
     non_zero_dte = []
@@ -424,8 +456,8 @@ def select_entry_candidate(signals, open_tickers):
     second_score = float(second.get("composite_score", 0))
     gap          = round(top_score - second_score, 3)
 
-    if gap < MIN_SCORE_GAP:
-        # Too close — skip both, log why
+    if gap < MIN_SCORE_GAP and gap != 0.0:
+        # Too close but not identical — skip both
         skipped.append((top,    f"Score gap too small ({gap:.2f} < {MIN_SCORE_GAP}) — skipping"))
         skipped.append((second, f"Score gap too small ({gap:.2f} < {MIN_SCORE_GAP}) — skipping"))
         return None, (
@@ -434,7 +466,54 @@ def select_entry_candidate(signals, open_tickers):
             f"no clear winner, waiting for next scan"
         ), skipped
 
+    if gap == 0.0:
+        # Exact tie — fall through to tiebreaker logic below
+        pass
+
     # Clear winner — enter the top scorer
+    # If scores are exactly equal, use premium as tiebreaker
+    if gap == 0.0:
+        top_premium    = float(top.get("premium", 0))
+        second_premium = float(second.get("premium", 0))
+        prem_gap       = abs(top_premium - second_premium)
+        prem_gap_pct   = prem_gap / max(top_premium, second_premium) if max(top_premium, second_premium) > 0 else 0
+
+        if prem_gap_pct < 0.10:
+            # Score and premium both tied — use DTE as final tiebreaker
+            # Prefer longer-dated contract for more recovery runway
+            top_dte    = top.get("_dte") or get_dte_from_contract(top.get("contract", ""))
+            second_dte = second.get("_dte") or get_dte_from_contract(second.get("contract", ""))
+            print(f"  DEBUG: top_dte={top_dte} second_dte={second_dte} top_contract={top.get('contract')} second_contract={second.get('contract')}")
+
+            if top_dte == second_dte:
+                # Truly identical — nothing to choose, skip both
+                skipped.append((top,    f"Score, premium, and DTE all tied — skipping"))
+                skipped.append((second, f"Score, premium, and DTE all tied — skipping"))
+                return None, (
+                    f"Perfect tie on score, premium, and DTE — "
+                    f"no basis for decision, waiting for next scan"
+                ), skipped
+
+            # Pick longer DTE
+            if second_dte > top_dte:
+                top, second = second, top
+                top_dte, second_dte = second_dte, top_dte
+
+            return top, (
+                f"Score and premium tied — DTE breaks tie "
+                f"({top_dte}d vs {second_dte}d, preferring longer expiration)"
+            ), skipped
+
+        # Premium breaks the tie — pick higher premium
+        if second_premium > top_premium:
+            top, second = second, top
+            top_premium, second_premium = second_premium, top_premium
+
+        return top, (
+            f"Score tie ({top_score}) broken by premium "
+            f"(${top_premium/1000:.0f}K vs ${second_premium/1000:.0f}K)"
+        ), skipped
+
     return top, (
         f"Clear winner — score {top_score} vs next best {second_score} "
         f"(gap {gap:.2f} ≥ {MIN_SCORE_GAP} threshold)"
@@ -519,7 +598,7 @@ def execute_entry(signal, token, account_id, market_context):
     score         = signal.get("composite_score", 0)
     premium       = signal.get("premium", 0)
     tier          = signal.get("signal_tier", "")
-    dte           = signal.get("_dte", 0)
+    dte           = signal.get("_dte") or get_dte_from_contract(contract)
     signal_id     = signal.get("id")
 
     # ── Step 1: Fetch live price ───────────────────────────────────────
@@ -553,7 +632,37 @@ def execute_entry(signal, token, account_id, market_context):
     # Try AI thesis first
     try:
         from thesis_generator import generate_thesis
-        thesis = generate_thesis(signal)
+
+        # Build greeks dict from signal fields
+        greeks = {
+            "delta":     signal.get("delta_raw", "unavailable"),
+            "iv":        signal.get("iv", "unavailable"),
+            "moneyness": "ITM" if signal.get("delta_raw", 0) and abs(float(signal.get("delta_raw", 0))) > 0.5 else "OTM",
+        }
+
+        # Build flow bias from contract type
+        is_call = signal.get("contract_type", "") == "CALL"
+        flow_bias = {
+            "call_pct":   100 if is_call else 0,
+            "put_pct":    0 if is_call else 100,
+            "bias_label": "BULLISH" if is_call else "BEARISH",
+        }
+
+        # Build market overview from context we already have
+        market_overview = {}
+        for ctx_ticker in ["SPY", "QQQ", "IWM"]:
+            ctx = market_context.get(ctx_ticker, {})
+            if ctx:
+                chg = ctx.get("chg_pct", 0)
+                market_overview[ctx_ticker] = {
+                    "price":    ctx.get("price", 0),
+                    "chg_pct":  chg,
+                    "has_change": ctx.get("has_change", False),
+                    "sign":     "+" if chg >= 0 else "",
+                }
+
+        thesis = generate_thesis(signal, greeks, market_overview, flow_bias)
+
     except Exception as e:
         print(f"  ⚠️  Thesis generator failed ({e}) — using rule-based fallback")
 
@@ -729,13 +838,12 @@ def main():
 
             # ── Query eligible signals ─────────────────────────────────
             signals = get_qualified_signals_today()
-            open_tickers = get_open_position_tickers()
+            # open_tickers = get_open_position_tickers()
 
             now_str = now.strftime("%H:%M:%S %Z")
             print(f"\n  {'─'*65}")
             print(f"  🔍 AGENT SCAN — {now_str}")
-            print(f"  Eligible signals: {len(signals)}  "
-                  f"Open tickers: {len(open_tickers)}")
+            print(f"  Eligible signals: {len(signals)}")
             print(f"  {'─'*65}")
 
             if not signals:
@@ -745,7 +853,8 @@ def main():
 
             # ── Entry decision ─────────────────────────────────────────
             candidate, decision_reason, skipped_list = select_entry_candidate(
-                signals, open_tickers
+                signals, set()  # Pass empty set — ticker filter disabled for paper trading
+                # signals, open_tickers  # Restore for live trading
             )
 
             # Print skipped signals with reasons
