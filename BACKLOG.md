@@ -18,6 +18,36 @@ Each item has a **priority tier**, **category**, and **effort estimate**.
 - L — Large (2+ sessions, may need to break into phases)
 
 ---
+## DATA-DRIVEN MODEL IMPROVEMENT PLAN
+*Established 2026-05-15 after week 1 analysis*
+
+### The sequence (do not skip ahead):
+
+**Week 2 (now) — Build analytics, run unchanged**
+- Build entry quality analyzer query (score/premium/DTE/delta by outcome)
+- Do NOT change agent entry logic
+- Let data accumulate across different market conditions
+
+**Week 3 — Second data review**
+- Run pnl_report.py + entry quality analyzer
+- Look for score/premium thresholds where win rate jumps
+- Compare week 1 vs week 2 patterns — do they hold?
+
+**Week 4 — First model change if data supports it**
+- ONE change only — likely minimum score threshold increase
+- Measure for two weeks before any second change
+
+**Later — OI confirmation integration**
+- Check overnight OI growth before agent enters next-morning signals
+- Highest conviction improvement, needs clean baseline first
+
+### Key principles to not violate:
+- One change at a time — can't diagnose what worked otherwise
+- Don't filter market context yet — need cross-condition data first
+- Concentration in paper trading is a feature not a bug
+- Losses are data — let them accumulate, analyze them properly
+- TSLA call vs put performance by market context is the pattern to watch
+
 
 ## PHASE 2 SCANNER IMPROVEMENTS
 
