@@ -1,0 +1,2145 @@
+
+[Session started: 2026-05-13 10:33:34]
+
+=================================================================
+  📡 POSITION MONITOR
+  Started: 2026-05-13 10:33:34 EDT
+  Check interval: every 3 minutes
+  Auto-close: TARGET and STOP hits executed automatically
+  Press Ctrl+C to stop
+=================================================================
+
+  Refreshing auth token...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:33:38 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.31  Mid: $0.32  Ask: $0.32
+      P&L: $-1,138.50 (-97.3%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🟢 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $22.50  Mid: $22.82  Ask: $23.15
+      P&L: +$22.50 (+1.0%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.65  Mid: $2.67  Ask: $2.69
+      P&L: $-833.00 (-75.7%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.55  Mid: $19.25  Ask: $19.95
+      P&L: +$187.50 (+10.8%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.37  Mid: $16.70  Ask: $18.03
+      P&L: $-590.00 (-26.1%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $11.35  Mid: $11.47  Ask: $11.60
+      P&L: $-1,745.00 (-60.3%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $67.20  Mid: $68.65  Ask: $70.10
+      P&L: $-392.50 (-5.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $77.85  Mid: $79.80  Ask: $81.75
+      P&L: +$682.50 (+9.3%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.65  Mid: $20.02  Ask: $20.40
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #28 TSLA260513C00425000  [▶ OPEN]
+      Entry: $6.95 │ Bid: $19.40  Mid: $19.57  Ask: $19.75
+      P&L: +$1,262.50 (+181.7%) │ Target: $13.90  Stop: $3.48  DTE: 0d
+      💭 TSLA 425 calls expiring today show $25.9M premium with 100% bullish fl...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  =================================================================
+  🎯 TARGET HIT — #28 TSLA260513C00425000
+      Entry: $6.95 → Current: $19.57
+      P&L: +$1,262.50 (+181.7%)
+  =================================================================
+  ✅ Position auto-closed at TARGET
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.93  Mid: $0.94  Ask: $0.94
+      P&L: $-409.00 (-81.4%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.78  Mid: $0.79  Ask: $0.79
+      P&L: $-811.50 (-91.2%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $1.73  Mid: $1.74  Ask: $1.75
+      P&L: +$70.00 (+67.3%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.20  Mid: $0.20  Ask: $0.21
+      P&L: $-437.00 (-95.5%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #33 TSLA260513C00427500  [▶ OPEN]
+      Entry: $7.00 │ Bid: $16.90  Mid: $17.07  Ask: $17.25
+      P&L: +$1,007.50 (+143.9%) │ Target: $14.00  Stop: $3.50  DTE: 0d
+      💭 $8.5M premium on TSLA calls with 100% bullish flow bias warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  =================================================================
+  🎯 TARGET HIT — #33 TSLA260513C00427500
+      Entry: $7.00 → Current: $17.07
+      P&L: +$1,007.50 (+143.9%)
+  =================================================================
+  ✅ Position auto-closed at TARGET
+
+  🟢 #34 TSLA260513C00432500  [▶ OPEN]
+      Entry: $5.60 │ Bid: $12.25  Mid: $12.38  Ask: $12.50
+      P&L: +$677.50 (+121.0%) │ Target: $11.20  Stop: $2.80  DTE: 0d
+      💭 $17.4M premium accumulated on a single OTM call expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  =================================================================
+  🎯 TARGET HIT — #34 TSLA260513C00432500
+      Entry: $5.60 → Current: $12.38
+      P&L: +$677.50 (+121.0%)
+  =================================================================
+  ✅ Position auto-closed at TARGET
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.22  Mid: $22.30  Ask: $22.37
+      P&L: +$150.00 (+7.2%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:36:40 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.26  Mid: $0.27  Ask: $0.27
+      P&L: $-1,143.50 (-97.7%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $21.70  Mid: $22.05  Ask: $22.40
+      P&L: $-55.00 (-2.4%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.51  Mid: $2.54  Ask: $2.56
+      P&L: $-846.50 (-77.0%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.55  Mid: $19.25  Ask: $19.95
+      P&L: +$187.50 (+10.8%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.28  Mid: $16.61  Ask: $17.95
+      P&L: $-598.50 (-26.5%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $10.90  Mid: $11.03  Ask: $11.15
+      P&L: $-1,790.00 (-61.9%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $67.20  Mid: $68.65  Ask: $70.10
+      P&L: $-392.50 (-5.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $78.95  Mid: $80.40  Ask: $81.85
+      P&L: +$742.50 (+10.2%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.65  Mid: $20.02  Ask: $20.40
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.60  Mid: $0.61  Ask: $0.63
+      P&L: $-441.00 (-87.8%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.67  Mid: $0.68  Ask: $0.69
+      P&L: $-822.00 (-92.4%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $1.67  Mid: $1.68  Ask: $1.68
+      P&L: +$63.50 (+61.1%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.17  Mid: $0.17  Ask: $0.18
+      P&L: $-440.00 (-96.2%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.29  Mid: $22.37  Ask: $22.45
+      P&L: +$157.50 (+7.6%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:39:42 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.20  Mid: $0.20  Ask: $0.21
+      P&L: $-1,149.50 (-98.2%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🟢 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $22.95  Mid: $23.38  Ask: $23.80
+      P&L: +$77.50 (+3.4%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.25  Mid: $2.27  Ask: $2.30
+      P&L: $-872.50 (-79.3%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.60  Mid: $18.93  Ask: $19.25
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.90  Mid: $17.12  Ask: $18.35
+      P&L: $-547.50 (-24.2%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $9.70  Mid: $9.82  Ask: $9.95
+      P&L: $-1,910.00 (-66.0%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $67.20  Mid: $68.58  Ask: $69.95
+      P&L: $-400.00 (-5.5%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $78.95  Mid: $80.42  Ask: $81.90
+      P&L: +$745.00 (+10.2%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.65  Mid: $20.02  Ask: $20.40
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.71  Mid: $0.72  Ask: $0.73
+      P&L: $-430.50 (-85.7%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.50  Mid: $0.51  Ask: $0.51
+      P&L: $-839.50 (-94.3%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.00  Mid: $2.02  Ask: $2.04
+      P&L: +$98.00 (+94.2%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.14  Mid: $0.14  Ask: $0.15
+      P&L: $-443.00 (-96.8%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $21.74  Mid: $21.82  Ask: $21.91
+      P&L: +$103.00 (+5.0%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.1
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:42:44 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.15  Mid: $0.15  Ask: $0.16
+      P&L: $-1,154.50 (-98.7%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $21.85  Mid: $22.20  Ask: $22.55
+      P&L: $-40.00 (-1.8%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.02  Mid: $2.04  Ask: $2.06
+      P&L: $-896.00 (-81.5%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.60  Mid: $18.93  Ask: $19.25
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.56  Mid: $16.88  Ask: $18.19
+      P&L: $-572.50 (-25.3%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $8.45  Mid: $8.55  Ask: $8.65
+      P&L: $-2,037.50 (-70.4%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $67.20  Mid: $68.50  Ask: $69.80
+      P&L: $-407.50 (-5.6%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $78.95  Mid: $80.42  Ask: $81.90
+      P&L: +$745.00 (+10.2%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.65  Mid: $20.02  Ask: $20.40
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.57  Mid: $0.57  Ask: $0.58
+      P&L: $-445.00 (-88.6%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.35  Mid: $0.36  Ask: $0.37
+      P&L: $-854.00 (-96.0%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.41  Mid: $2.43  Ask: $2.45
+      P&L: +$139.00 (+133.7%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.11  Mid: $0.12  Ask: $0.12
+      P&L: $-446.00 (-97.5%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.07  Mid: $22.14  Ask: $22.22
+      P&L: +$135.00 (+6.5%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:45:46 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.18  Mid: $0.18  Ask: $0.19
+      P&L: $-1,151.50 (-98.4%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $21.85  Mid: $22.32  Ask: $22.80
+      P&L: $-27.50 (-1.2%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.10  Mid: $2.12  Ask: $2.14
+      P&L: $-888.00 (-80.7%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.61  Mid: $16.95  Ask: $18.28
+      P&L: $-565.50 (-25.0%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $9.05  Mid: $9.15  Ask: $9.25
+      P&L: $-1,977.50 (-68.4%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $68.03  Ask: $69.65
+      P&L: $-455.00 (-6.3%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $78.20  Mid: $80.22  Ask: $82.25
+      P&L: +$725.00 (+9.9%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.65  Mid: $20.02  Ask: $20.40
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.63  Mid: $0.64  Ask: $0.65
+      P&L: $-438.50 (-87.3%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.40  Mid: $0.41  Ask: $0.42
+      P&L: $-849.00 (-95.4%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $1.98  Mid: $2.00  Ask: $2.02
+      P&L: +$96.00 (+92.3%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.13  Mid: $0.14  Ask: $0.14
+      P&L: $-444.00 (-97.0%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $21.95  Mid: $22.03  Ask: $22.11
+      P&L: +$123.50 (+5.9%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:48:49 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.22  Mid: $0.23  Ask: $0.24
+      P&L: $-1,147.00 (-98.0%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $21.15  Mid: $21.70  Ask: $22.25
+      P&L: $-90.00 (-4.0%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.17  Mid: $2.19  Ask: $2.20
+      P&L: $-881.50 (-80.1%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.46  Mid: $16.80  Ask: $18.13
+      P&L: $-580.50 (-25.7%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $9.85  Mid: $9.95  Ask: $10.05
+      P&L: $-1,897.50 (-65.6%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $68.03  Ask: $69.65
+      P&L: $-455.00 (-6.3%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $77.45  Mid: $78.88  Ask: $80.30
+      P&L: +$590.00 (+8.1%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.02  Ask: $20.35
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.55  Mid: $0.56  Ask: $0.57
+      P&L: $-446.50 (-88.9%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.50  Mid: $0.51  Ask: $0.52
+      P&L: $-839.00 (-94.3%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $1.80  Mid: $1.81  Ask: $1.83
+      P&L: +$77.50 (+74.5%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.16  Mid: $0.17  Ask: $0.18
+      P&L: $-440.50 (-96.3%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.11  Mid: $22.18  Ask: $22.26
+      P&L: +$139.00 (+6.7%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:51:52 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.19  Mid: $0.20  Ask: $0.20
+      P&L: $-1,150.50 (-98.3%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $21.15  Mid: $21.52  Ask: $21.90
+      P&L: $-107.50 (-4.8%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.10  Mid: $2.12  Ask: $2.14
+      P&L: $-888.00 (-80.7%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.37  Mid: $16.65  Ask: $17.93
+      P&L: $-595.00 (-26.3%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $9.65  Mid: $9.75  Ask: $9.85
+      P&L: $-1,917.50 (-66.3%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.95  Ask: $69.50
+      P&L: $-462.50 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $77.50  Mid: $79.65  Ask: $81.80
+      P&L: +$667.50 (+9.2%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.02  Ask: $20.35
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.43  Mid: $0.43  Ask: $0.44
+      P&L: $-459.00 (-91.3%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.44  Mid: $0.45  Ask: $0.46
+      P&L: $-845.00 (-94.9%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $1.95  Mid: $1.96  Ask: $1.97
+      P&L: +$92.00 (+88.5%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.13  Mid: $0.14  Ask: $0.15
+      P&L: $-443.50 (-96.9%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.30  Mid: $22.38  Ask: $22.46
+      P&L: +$158.50 (+7.6%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:54:55 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.18  Mid: $0.18  Ask: $0.19
+      P&L: $-1,151.50 (-98.4%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $19.85  Mid: $20.20  Ask: $20.55
+      P&L: $-240.00 (-10.6%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.10  Mid: $2.12  Ask: $2.13
+      P&L: $-888.50 (-80.8%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.18  Mid: $16.36  Ask: $17.54
+      P&L: $-624.00 (-27.6%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $9.65  Mid: $9.72  Ask: $9.80
+      P&L: $-1,920.00 (-66.4%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.95  Ask: $69.50
+      P&L: $-462.50 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $78.00  Mid: $80.40  Ask: $82.80
+      P&L: +$742.50 (+10.2%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.02  Ask: $20.35
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.34  Mid: $0.34  Ask: $0.35
+      P&L: $-468.00 (-93.1%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.40  Mid: $0.41  Ask: $0.41
+      P&L: $-849.50 (-95.5%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $1.73  Mid: $1.75  Ask: $1.76
+      P&L: +$70.50 (+67.8%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.13  Mid: $0.14  Ask: $0.15
+      P&L: $-443.50 (-96.9%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.63  Mid: $22.71  Ask: $22.80
+      P&L: +$192.00 (+9.2%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 17.9
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 10:57:58 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.16  Mid: $0.17  Ask: $0.17
+      P&L: $-1,153.50 (-98.6%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $19.35  Mid: $19.85  Ask: $20.35
+      P&L: $-275.00 (-12.2%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $2.02  Mid: $2.04  Ask: $2.05
+      P&L: $-896.50 (-81.5%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.18  Mid: $16.43  Ask: $17.69
+      P&L: $-616.50 (-27.3%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $8.65  Mid: $8.75  Ask: $8.85
+      P&L: $-2,017.50 (-69.8%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.95  Ask: $69.50
+      P&L: $-462.50 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $79.05  Mid: $81.05  Ask: $83.05
+      P&L: +$807.50 (+11.1%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.02  Ask: $20.35
+      P&L: +$167.50 (+9.1%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.29  Mid: $0.29  Ask: $0.30
+      P&L: $-473.00 (-94.1%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.31  Mid: $0.32  Ask: $0.33
+      P&L: $-858.00 (-96.4%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.12  Mid: $2.14  Ask: $2.16
+      P&L: +$110.00 (+105.8%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.12  Mid: $0.13  Ask: $0.14
+      P&L: $-444.50 (-97.2%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.50  Mid: $22.58  Ask: $22.66
+      P&L: +$178.50 (+8.6%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 11:01:01 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.16  Mid: $0.17  Ask: $0.17
+      P&L: $-1,153.50 (-98.6%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $18.50  Mid: $18.77  Ask: $19.05
+      P&L: $-382.50 (-16.9%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $1.98  Mid: $2.00  Ask: $2.01
+      P&L: $-900.50 (-81.9%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.18  Mid: $16.27  Ask: $17.37
+      P&L: $-632.50 (-28.0%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $8.30  Mid: $8.38  Ask: $8.45
+      P&L: $-2,055.00 (-71.0%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.92  Ask: $69.45
+      P&L: $-465.00 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $78.90  Mid: $81.08  Ask: $83.25
+      P&L: +$810.00 (+11.1%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.00  Ask: $20.30
+      P&L: +$165.00 (+9.0%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.22  Mid: $0.23  Ask: $0.23
+      P&L: $-480.00 (-95.5%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.32  Mid: $0.33  Ask: $0.33
+      P&L: $-857.50 (-96.3%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.18  Mid: $2.19  Ask: $2.21
+      P&L: +$115.50 (+111.1%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.12  Mid: $0.13  Ask: $0.14
+      P&L: $-444.50 (-97.2%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.82  Mid: $22.90  Ask: $22.98
+      P&L: +$210.50 (+10.1%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #36 AAPL260520C00282500  [▶ OPEN]
+      Entry: $14.47 │ Bid: $13.80  Mid: $14.60  Ask: $15.40
+      P&L: +$12.50 (+0.9%) │ Target: $28.95  Stop: $4.34  DTE: 7d
+      💭 $2.6M premium in AAPL calls with 100% bullish flow and 6.56 score warr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 11:04:03 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.13  Mid: $0.14  Ask: $0.14
+      P&L: $-1,156.50 (-98.8%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $17.70  Mid: $18.07  Ask: $18.45
+      P&L: $-452.50 (-20.0%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $1.77  Mid: $1.79  Ask: $1.81
+      P&L: $-921.00 (-83.7%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.18  Mid: $16.18  Ask: $17.19
+      P&L: $-641.50 (-28.4%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $6.80  Mid: $6.88  Ask: $6.95
+      P&L: $-2,205.00 (-76.2%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.92  Ask: $69.45
+      P&L: $-465.00 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #24 NVDA260513C00145000  [▶ OPEN]
+      Entry: $72.97 │ Bid: $79.25  Mid: $81.53  Ask: $83.80
+      P&L: +$855.00 (+11.7%) │ Target: $145.95  Stop: $36.49  DTE: 0d
+      💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flo...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 0 day(s) remaining
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.00  Ask: $20.30
+      P&L: +$165.00 (+9.0%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.22  Mid: $0.23  Ask: $0.23
+      P&L: $-480.00 (-95.5%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.25  Mid: $0.26  Ask: $0.26
+      P&L: $-864.50 (-97.1%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.95  Mid: $2.96  Ask: $2.98
+      P&L: +$192.50 (+185.1%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.11  Mid: $0.12  Ask: $0.12
+      P&L: $-446.00 (-97.5%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.99  Mid: $23.06  Ask: $23.13
+      P&L: +$226.50 (+10.9%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #36 AAPL260520C00282500  [▶ OPEN]
+      Entry: $14.47 │ Bid: $13.90  Mid: $14.62  Ask: $15.35
+      P&L: +$15.00 (+1.0%) │ Target: $28.95  Stop: $4.34  DTE: 7d
+      💭 $2.6M premium in AAPL calls with 100% bullish flow and 6.56 score warr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 11:07:04 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.19  Mid: $0.20  Ask: $0.20
+      P&L: $-1,150.50 (-98.3%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $17.00  Mid: $17.45  Ask: $17.90
+      P&L: $-515.00 (-22.8%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $1.90  Mid: $1.92  Ask: $1.94
+      P&L: $-908.00 (-82.5%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $15.18  Mid: $16.45  Ask: $17.73
+      P&L: $-614.50 (-27.2%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $7.65  Mid: $7.75  Ask: $7.85
+      P&L: $-2,117.50 (-73.2%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.92  Ask: $69.45
+      P&L: $-465.00 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.00  Ask: $20.30
+      P&L: +$165.00 (+9.0%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.17  Mid: $0.17  Ask: $0.18
+      P&L: $-485.00 (-96.5%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.34  Mid: $0.34  Ask: $0.35
+      P&L: $-855.50 (-96.1%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.23  Mid: $2.25  Ask: $2.27
+      P&L: +$121.00 (+116.3%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.15  Mid: $0.15  Ask: $0.16
+      P&L: $-442.00 (-96.6%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.85  Mid: $22.92  Ask: $22.99
+      P&L: +$212.50 (+10.2%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #36 AAPL260520C00282500  [▶ OPEN]
+      Entry: $14.47 │ Bid: $13.90  Mid: $14.57  Ask: $15.25
+      P&L: +$10.00 (+0.7%) │ Target: $28.95  Stop: $4.34  DTE: 7d
+      💭 $2.6M premium in AAPL calls with 100% bullish flow and 6.56 score warr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #37 QQQ260514P00705000  [▶ OPEN]
+      Entry: $1.82 │ Bid: $1.78  Mid: $1.78  Ask: $1.79
+      P&L: $-4.00 (-2.2%) │ Target: $3.65  Stop: $0.91  DTE: 1d
+      💭 $7.1M premium into QQQ 705 puts (expiring today) with 100% put flow bi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 1 day(s) remaining
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 11:10:07 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.18  Mid: $0.19  Ask: $0.20
+      P&L: $-1,151.00 (-98.4%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $17.80  Mid: $18.15  Ask: $18.50
+      P&L: $-445.00 (-19.7%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $1.82  Mid: $1.83  Ask: $1.85
+      P&L: $-916.50 (-83.3%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.65  Mid: $18.93  Ask: $19.20
+      P&L: +$155.00 (+8.9%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $14.68  Mid: $15.99  Ask: $17.31
+      P&L: $-660.50 (-29.2%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $7.25  Mid: $7.33  Ask: $7.40
+      P&L: $-2,160.00 (-74.7%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.90  Ask: $69.40
+      P&L: $-467.50 (-6.4%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $20.00  Ask: $20.30
+      P&L: +$165.00 (+9.0%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.16  Mid: $0.17  Ask: $0.18
+      P&L: $-485.50 (-96.6%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.30  Mid: $0.31  Ask: $0.32
+      P&L: $-859.00 (-96.5%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.58  Mid: $2.61  Ask: $2.64
+      P&L: +$157.00 (+151.0%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.14  Mid: $0.14  Ask: $0.15
+      P&L: $-443.00 (-96.8%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.88  Mid: $22.95  Ask: $23.02
+      P&L: +$215.50 (+10.4%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #36 AAPL260520C00282500  [▶ OPEN]
+      Entry: $14.47 │ Bid: $13.90  Mid: $14.55  Ask: $15.20
+      P&L: +$7.50 (+0.5%) │ Target: $28.95  Stop: $4.34  DTE: 7d
+      💭 $2.6M premium in AAPL calls with 100% bullish flow and 6.56 score warr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #37 QQQ260514P00705000  [▶ OPEN]
+      Entry: $1.82 │ Bid: $1.79  Mid: $1.79  Ask: $1.80
+      P&L: $-3.00 (-1.6%) │ Target: $3.65  Stop: $0.91  DTE: 1d
+      💭 $7.1M premium into QQQ 705 puts (expiring today) with 100% put flow bi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 1 day(s) remaining
+
+  ⏳ Next check in 3 minutes...
+
+  ─────────────────────────────────────────────────────────────────
+  📡 POSITION CHECK — 11:13:09 EDT
+  ─────────────────────────────────────────────────────────────────
+
+  🔴 #10 SPY260511P00745000  [⏸ TRACKING]
+      Entry: $9.88 │ Bid: $6.03  Mid: $6.17  Ask: $6.31
+      P&L: $-370.50 (-37.5%) │ Target: $19.75  Stop: $4.94  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH SPY put signal — score 8.0, $4.4M premium, 3 DTE, bearish thesis....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #10
+
+  🔴 #11 TSLA260511P00425000  [⏸ TRACKING]
+      Entry: $7.83 │ Bid: $0.00  Mid: $0.02  Ask: $0.01
+      P&L: $-780.50 (-99.7%) │ Target: $15.65  Stop: $3.91  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 HIGH TSLA put signal — score 5.62, $1.6M premium, 3 DTE, bearish thesi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #11
+
+  🔴 #13 TSLA260511P00430000  [⏸ TRACKING]
+      Entry: $7.33 │ Bid: $0.00  Mid: $0.01  Ask: $0.01
+      P&L: $-731.50 (-99.9%) │ Target: $14.65  Stop: $3.66  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.8M premium on TSLA puts with 100% bearish flow and 8.0 score warran...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #13
+
+  🔴 #14 TSLA260513P00430000  [⏸ TRACKING]
+      Entry: $11.70 │ Bid: $0.18  Mid: $0.18  Ask: $0.19
+      P&L: $-1,151.50 (-98.4%) │ Target: $23.40  Stop: $5.85  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $1.1M premium on TSLA 430 puts expiring today with 100% bearish flow a...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #14
+
+  🔴 #15 AMD260515P00457500  [⏸ TRACKING]
+      Entry: $22.60 │ Bid: $18.40  Mid: $18.88  Ask: $19.35
+      P&L: $-372.50 (-16.5%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $2.0M premium in AMD puts expiring today with 100% bearish flow and 8....
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #16 QQQ260511P00706000  [⏸ TRACKING]
+      Entry: $2.11 │ Bid: $0.01  Mid: $0.02  Ask: $0.03
+      P&L: $-209.00 (-99.0%) │ Target: $4.22  Stop: $1.05  DTE: -2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 QQQ put with $1.8M premium and 8.0 score expiring today in 100% bearis...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #16
+
+  🔴 #17 TSLA260515P00427500  [⏸ TRACKING]
+      Entry: $11.00 │ Bid: $1.79  Mid: $1.80  Ask: $1.82
+      P&L: $-919.50 (-83.6%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $6M premium on TSLA puts with 8.8 score and 100% bearish flow concentr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #18 NFLX260515P00106000  [▶ OPEN]
+      Entry: $17.38 │ Bid: $18.70  Mid: $18.95  Ask: $19.20
+      P&L: +$157.50 (+9.1%) │ Target: $34.75  Stop: $8.69  DTE: 2d
+      💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score i...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #19 SPY260515P00755000  [▶ OPEN]
+      Entry: $22.60 │ Bid: $14.97  Mid: $16.29  Ask: $17.61
+      P&L: $-631.00 (-27.9%) │ Target: $45.20  Stop: $11.30  DTE: 2d
+      💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #20 TSLA260513P00455000  [⏸ TRACKING]
+      Entry: $28.93 │ Bid: $7.10  Mid: $7.20  Ask: $7.30
+      P&L: $-2,172.50 (-75.1%) │ Target: $57.85  Stop: $14.46  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #20
+
+  🔴 #22 CRM260605C00100000  [▶ OPEN]
+      Entry: $72.58 │ Bid: $66.40  Mid: $67.88  Ask: $69.35
+      P&L: $-470.00 (-6.5%) │ Target: $145.15  Stop: $14.52  DTE: 23d
+      💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 10...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #26 NFLX260515P00107000  [▶ OPEN]
+      Entry: $18.35 │ Bid: $19.70  Mid: $19.98  Ask: $20.25
+      P&L: +$162.50 (+8.9%) │ Target: $36.70  Stop: $9.18  DTE: 2d
+      💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🔴 #29 NVDA260513P00222500  [⏸ TRACKING]
+      Entry: $5.03 │ Bid: $0.24  Mid: $0.24  Ask: $0.25
+      P&L: $-478.00 (-95.1%) │ Target: $10.05  Stop: $2.51  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #29
+
+  🔴 #30 TSLA260513P00435000  [⏸ TRACKING]
+      Entry: $8.90 │ Bid: $0.28  Mid: $0.28  Ask: $0.29
+      P&L: $-861.50 (-96.8%) │ Target: $17.80  Stop: $4.45  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration crea...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #30
+
+  🟢 #31 TSLA260513C00450000  [⏸ TRACKING]
+      Entry: $1.04 │ Bid: $2.56  Mid: $2.58  Ask: $2.60
+      P&L: +$154.00 (+148.1%) │ Target: $2.08  Stop: $0.52  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow sign...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #31
+
+  🔴 #32 TSLA260513P00427500  [⏸ TRACKING]
+      Entry: $4.58 │ Bid: $0.15  Mid: $0.15  Ask: $0.16
+      P&L: $-442.00 (-96.6%) │ Target: $9.15  Stop: $2.29  DTE: 0d
+      ⚠️  Stop was triggered — continuing to track for data
+      💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏰ CONTRACT EXPIRED — auto-closing #32
+
+  🟢 #35 SPY260518C00717000  [▶ OPEN]
+      Entry: $20.80 │ Bid: $22.55  Mid: $22.62  Ask: $22.69
+      P&L: +$182.50 (+8.8%) │ Target: $41.59  Stop: $10.40  DTE: 5d
+      💭 $4.0M call premium into SPY 717 strike with zero DTE and 100% bullish ...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #36 AAPL260520C00282500  [▶ OPEN]
+      Entry: $14.47 │ Bid: $13.90  Mid: $14.62  Ask: $15.35
+      P&L: +$15.00 (+1.0%) │ Target: $28.95  Stop: $4.34  DTE: 7d
+      💭 $2.6M premium in AAPL calls with 100% bullish flow and 6.56 score warr...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  🟢 #37 QQQ260514P00705000  [▶ OPEN]
+      Entry: $1.82 │ Bid: $1.93  Mid: $1.94  Ask: $1.94
+      P&L: +$11.00 (+6.0%) │ Target: $3.65  Stop: $0.91  DTE: 1d
+      💭 $7.1M premium into QQQ 705 puts (expiring today) with 100% put flow bi...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+  ⏰ EXPIRING SOON — 1 day(s) remaining
+
+  🟢 #38 SPY260515P00750000  [▶ OPEN]
+      Entry: $11.00 │ Bid: $11.26  Mid: $11.34  Ask: $11.42
+      P&L: +$34.00 (+3.1%) │ Target: $22.00  Stop: $5.50  DTE: 2d
+      💭 $6.8M premium in puts expiring today at 750 strike signals institution...
+      🌍 SPY +0.00%  QQQ +0.00%  VIX 18.0
+
+  ⏳ Next check in 3 minutes...

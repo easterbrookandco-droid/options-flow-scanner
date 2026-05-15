@@ -1,0 +1,55 @@
+
+[Session started: 2026-05-14 16:02:34]
+
+=======================================================
+  📋 OUTCOME RECORDER
+  2026-05-14 16:02:34 EDT
+=======================================================
+
+  Authenticating...
+  ✓ Authenticated
+
+  Processing yesterday (2026-05-13)...
+  Found 377 unique contracts expiring 2026-05-13
+  Fetching closing prices for 10 tickers...
+  ✗ Could not fetch closing prices — outcomes not recorded
+
+  ───────────────────────────────────────────────────────
+  📊 OUTCOME RECORDING — 2026-05-13
+  ───────────────────────────────────────────────────────
+  Contracts processed: 377
+  Resolved:            0
+    ✅ WIN:            0
+    ❌ LOSS:           0
+    ➖ FLAT:           0
+  Skipped (no price):  377
+  Win rate:            0%
+  ───────────────────────────────────────────────────────
+
+  Processing today (2026-05-14)...
+  Found 156 unique contracts expiring 2026-05-14
+  Fetching closing prices for 3 tickers...
+  ✓ Closing prices fetched for 3 tickers
+
+  ───────────────────────────────────────────────────────
+  📊 OUTCOME RECORDING — 2026-05-14
+  ───────────────────────────────────────────────────────
+  Contracts processed: 156
+  Resolved:            156
+    ✅ WIN:            100
+    ❌ LOSS:           56
+    ➖ FLAT:           0
+  Skipped (no price):  0
+  Win rate:            64.1%
+  ───────────────────────────────────────────────────────
+
+  =======================================================
+  📊 COMBINED SUMMARY
+  =======================================================
+  Total processed: 533
+  Total wins:      100
+  Total losses:    56
+  Overall win rate:64.1%
+  =======================================================
+
+  Generating daily summary...

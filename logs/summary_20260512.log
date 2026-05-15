@@ -1,0 +1,265 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Tuesday, May 12 2026
+  Generated: 2026-05-12 16:02:47 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Market overview not found in scanner log
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  809
+  Tickers with signals:  18
+  🔥 HIGH:               95
+  💰 INST:               46
+  ⚡ WATCH:              668
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 62.9%  $344.5M
+  ▼ Puts:  37.1%  $203.1M
+  Bias:    BULLISH
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  No QUALIFIED signals found in today's log
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  Opened today (17):
+  #18  NFLX260515P00106000
+       Entry: $17.38  × 1 contract(s)  = $1,737.50
+       Target: $34.75  Stop: $11.29
+       💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score in 100% bearish flow, signaling institutional downside conviction worth testing.
+
+  #19  SPY260515P00755000
+       Entry: $22.60  × 1 contract(s)  = $2,260.00
+       Target: $45.20  Stop: $14.69
+       💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with 100% bearish flow bias presents extreme tail-risk positioning worth monitoring for intraday volatility execution.
+
+  #20  TSLA260513P00455000
+       Entry: $28.93  × 1 contract(s)  = $2,892.50
+       Target: $57.85  Stop: $14.46
+       💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA $455 put warrants a paper trade to test execution on extreme tail positioning.
+
+  #21  QQQ260513C00707000
+       Entry: $1.25  × 1 contract(s)  = $125.50
+       Target: $2.51  Stop: $0.63
+       💭 $1.2M premium on QQQ calls with 100% bullish flow bias and 7.68 score warrants paper trading to test execution on expiration day edge case.
+
+  #22  CRM260605C00100000
+       Entry: $72.58  × 1 contract(s)  = $7,257.50
+       Target: $145.15  Stop: $58.06
+       💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 100% bullish flow, worth testing if intrinsic value exists near expiration.
+
+  #23  QQQ260513C00709000
+       Entry: $0.80  × 1 contract(s)  = $79.50
+       Target: $1.59  Stop: $0.40
+       💭 $1.2M bullish call premium on QQQ expiration with 100% call-to-put flow ratio warrants paper trading to test moneyness repricing into close.
+
+  #24  NVDA260513C00145000
+       Entry: $72.97  × 1 contract(s)  = $7,297.50
+       Target: $145.95  Stop: $36.49
+       💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flow warrant paper trading to test same-day gamma scalping against zero time decay.
+
+  #25  QQQ260513C00708000
+       Entry: $0.96  × 1 contract(s)  = $96.00
+       Target: $1.92  Stop: $0.48
+       💭 $1.9M premium concentration in a single QQQ call with 100% bullish flow bias warrants testing entry mechanics at this extreme moneyness extreme.
+
+  #26  NFLX260515P00107000
+       Entry: $18.35  × 1 contract(s)  = $1,835.00
+       Target: $36.70  Stop: $11.93
+       💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals coordinated bearish conviction that demands immediate paper trade execution to capture flow-driven volatility.
+
+  #27  IWM260513C00283000
+       Entry: $0.51  × 1 contract(s)  = $50.50
+       Target: $1.01  Stop: $0.25
+       💭 $1.4M premium concentrated in OTM calls with 100% bullish flow bias warrants testing if IV crush or gamma scalping opportunities exist before expiration.
+
+  #28  TSLA260513C00425000
+       Entry: $6.95  × 1 contract(s)  = $695.00
+       Target: $13.90  Stop: $3.48
+       💭 TSLA 425 calls expiring today show $25.9M premium with 100% bullish flow bias, worth testing if underlying trades near strike into close.
+
+  #29  NVDA260513P00222500
+       Entry: $5.03  × 1 contract(s)  = $502.50
+       Target: $10.05  Stop: $2.51
+       💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow bias signals institutional downside conviction worth testing.
+
+  #30  TSLA260513P00435000
+       Entry: $8.90  × 1 contract(s)  = $890.00
+       Target: $17.80  Stop: $4.45
+       💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration creates a liquidity event worth testing execution timing.
+
+  #31  TSLA260513C00450000
+       Entry: $1.04  × 1 contract(s)  = $104.00
+       Target: $2.08  Stop: $0.52
+       💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow signals strong conviction despite zero DTE risk.
+
+  #32  TSLA260513P00427500
+       Entry: $4.58  × 1 contract(s)  = $457.50
+       Target: $9.15  Stop: $2.29
+       💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper trading to validate if deep OTM protection converts to profitable decay or assignment risk.
+
+  #33  TSLA260513C00427500
+       Entry: $7.00  × 1 contract(s)  = $700.00
+       Target: $14.00  Stop: $3.50
+       💭 $8.5M premium on TSLA calls with 100% bullish flow bias warrants paper trade execution to test entry/exit mechanics before live deployment.
+
+  #34  TSLA260513C00432500
+       Entry: $5.60  × 1 contract(s)  = $560.00
+       Target: $11.20  Stop: $2.80
+       💭 $17.4M premium accumulated on a single OTM call expiring today signals aggressive institutional bullish positioning that warrants paper trade execution to test flow-following entry mechanics.
+
+
+  Closed today (4):
+  🟢 #23  QQQ260513C00709000
+       Entry: $0.80  →  Exit: $1.62
+       Reason: TARGET  P&L: +$82.50 (+103.8%)
+       📝 Auto-closed by position monitor. Bid:1.61 Ask:1.63
+
+  🟢 #25  QQQ260513C00708000
+       Entry: $0.96  →  Exit: $2.00
+       Reason: TARGET  P&L: +$103.50 (+107.8%)
+       📝 Auto-closed by position monitor. Bid:1.99 Ask:2.0
+
+  🟢 #21  QQQ260513C00707000
+       Entry: $1.25  →  Exit: $2.56
+       Reason: TARGET  P&L: +$130.50 (+104.0%)
+       📝 Auto-closed by position monitor. Bid:2.55 Ask:2.57
+
+  🟢 #27  IWM260513C00283000
+       Entry: $0.51  →  Exit: $1.01
+       Reason: TARGET  P&L: +$50.50 (+100.0%)
+       📝 Auto-closed by position monitor. Bid:0.99 Ask:1.03
+
+
+  Currently open (13):
+  #18  NFLX260515P00106000
+       Entry: $17.38  Target: $34.75  Stop: $11.29
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 NFLX $106 puts expiring today generated $7.9M premium with 8.2 score in 100% bearish flow, signaling institutional downside conviction worth testing.
+
+  #19  SPY260515P00755000
+       Entry: $22.60  Target: $45.20  Stop: $14.69
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $1.5M premium accumulated in deep OTM SPY 755 puts expiring today with 100% bearish flow bias presents extreme tail-risk positioning worth monitoring for intraday volatility execution.
+
+  #20  TSLA260513P00455000
+       Entry: $28.93  Target: $57.85  Stop: $14.46
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $18.8M in put premium with 100% bearish flow bias into a zero-DTE TSLA $455 put warrants a paper trade to test execution on extreme tail positioning.
+
+  #22  CRM260605C00100000
+       Entry: $72.58  Target: $145.15  Stop: $58.06
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 CRM $100 calls expiring today show $1.0M premium with 7.53 score in 100% bullish flow, worth testing if intrinsic value exists near expiration.
+
+  #24  NVDA260513C00145000
+       Entry: $72.97  Target: $145.95  Stop: $36.49
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 NVDA $145 calls expiring today with $954K premium and 100% bullish flow warrant paper trading to test same-day gamma scalping against zero time decay.
+
+  #26  NFLX260515P00107000
+       Entry: $18.35  Target: $36.70  Stop: $11.93
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $9.9M in put premium flowing into $107 OTM puts expiring today signals coordinated bearish conviction that demands immediate paper trade execution to capture flow-driven volatility.
+
+  #28  TSLA260513C00425000
+       Entry: $6.95  Target: $13.90  Stop: $3.48
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 TSLA 425 calls expiring today show $25.9M premium with 100% bullish flow bias, worth testing if underlying trades near strike into close.
+
+  #29  NVDA260513P00222500
+       Entry: $5.03  Target: $10.05  Stop: $2.51
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $8.0M premium concentrated in zero-DTE NVDA puts at 100% bearish flow bias signals institutional downside conviction worth testing.
+
+  #30  TSLA260513P00435000
+       Entry: $8.90  Target: $17.80  Stop: $4.45
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $21.2M in put premium with 100% bearish flow and 0 DTE expiration creates a liquidity event worth testing execution timing.
+
+  #31  TSLA260513C00450000
+       Entry: $1.04  Target: $2.08  Stop: $0.52
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $9.2M premium in TSLA calls expiring today with 100% bullish flow signals strong conviction despite zero DTE risk.
+
+  #32  TSLA260513P00427500
+       Entry: $4.58  Target: $9.15  Stop: $2.29
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 TSLA put with $11.5M premium and 100% bearish flow skew warrants paper trading to validate if deep OTM protection converts to profitable decay or assignment risk.
+
+  #33  TSLA260513C00427500
+       Entry: $7.00  Target: $14.00  Stop: $3.50
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $8.5M premium on TSLA calls with 100% bullish flow bias warrants paper trade execution to test entry/exit mechanics before live deployment.
+
+  #34  TSLA260513C00432500
+       Entry: $5.60  Target: $11.20  Stop: $2.80
+       Held: 0d  Verdict at entry: QUALIFIED
+       💭 $17.4M premium accumulated on a single OTM call expiring today signals aggressive institutional bullish positioning that warrants paper trade execution to test flow-following entry mechanics.
+
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  Contracts expiring 2026-05-12:
+  ✅ WIN:   103
+  ❌ LOSS:  63
+  ➖ FLAT:  0
+  Total:    166
+  Win rate: 62.0%
+
+  Top wins by premium:
+  ✅ QQQ    QQQ260512P00708000           PUT   Strike $708.00  Premium $11.4M
+  ✅ QQQ    QQQ260512P00707000           PUT   Strike $707.00  Premium $11.0M
+  ✅ SPY    SPY260512C00703000           CALL  Strike $703.00  Premium $10.6M
+  ✅ SPY    SPY260512P00738000           PUT   Strike $738.00  Premium $7.6M
+  ✅ SPY    SPY260512C00730000           CALL  Strike $730.00  Premium $7.4M
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 NFLX   NFLX260515P00106000          PUT    2026-05-15   $7.9M        8.2
+  🔥 AAPL   AAPL260515C00170000          CALL   2026-05-15   $1.6M        8.0
+  🔥 SPY    SPY260515P00755000           PUT    2026-05-15   $1.5M        8.0
+  🔥 TSLA   TSLA260513P00455000          PUT    2026-05-13   $18.8M       7.79
+  🔥 QQQ    QQQ260513C00707000           CALL   2026-05-13   $1.2M        7.68
+  🔥 CRM    CRM260605C00100000           CALL   2026-06-05   $1.0M        7.53
+  🔥 GOOGL  GOOGL260515C00060000         CALL   2026-05-15   $1.4M        7.4
+  🔥 QQQ    QQQ260513C00709000           CALL   2026-05-13   $1.2M        7.39
+  🔥 NVDA   NVDA260513C00145000          CALL   2026-05-13   $954K        7.0
+  🔥 QQQ    QQQ260513C00708000           CALL   2026-05-13   $1.9M        6.77
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           $-141.50
+  Current bankroll:    $9,858.50
+  Open exposure:       $27,189.00 (275.8% of bankroll)
+  Max allowed (20%):   $1,971.70
+
+  Paper trades:
+  Total:               33
+  Open:                13
+  Closed:              13
+  Win rate:            53.8%  (7W / 6L)
+
+=================================================================
+  End of daily summary — 2026-05-12
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260512.log
+=================================================================
+

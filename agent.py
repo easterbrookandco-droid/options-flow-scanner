@@ -28,7 +28,7 @@ STALENESS_THRESHOLD = 0.25
 
 # Minimum score gap between top two candidates to enter
 # If two signals are within this gap, skip both — no edge cases
-MIN_SCORE_GAP = 0.5
+MIN_SCORE_GAP = 0.25
 
 # Maximum ask price per contract — budget ceiling per position
 # Paper trading — set high to capture full price spectrum for data collection
@@ -116,22 +116,21 @@ def get_qualified_signals_today():
         AND s.signal_tier IN ('HIGH', 'INST')
         AND s.composite_score > 0
 
-        -- Exclude contracts already entered as paper trades today
+        -- Exclude 0DTE contracts — expiration date is today
+        AND s.expiration != ?
+
         AND s.contract NOT IN (
             SELECT signal_contract
             FROM paper_trades
             WHERE entry_date = ?
         )
-
-        -- Exclude contracts already in open or tracked positions
         AND s.contract NOT IN (
             SELECT signal_contract
             FROM paper_trades
             WHERE status IN ('OPEN', 'STOP_TRIGGERED')
         )
-
         ORDER BY s.composite_score DESC
-    """, (f"{today}%", today))
+    """, (f"{today}%", today, today))
 
     signals = [dict(row) for row in cursor.fetchall()]
     conn.close()
@@ -456,15 +455,19 @@ def select_entry_candidate(signals, open_tickers):
     second_score = float(second.get("composite_score", 0))
     gap          = round(top_score - second_score, 3)
 
-    if gap < MIN_SCORE_GAP and gap != 0.0:
-        # Too close but not identical — skip both
-        skipped.append((top,    f"Score gap too small ({gap:.2f} < {MIN_SCORE_GAP}) — skipping"))
-        skipped.append((second, f"Score gap too small ({gap:.2f} < {MIN_SCORE_GAP}) — skipping"))
-        return None, (
-            f"Top two signals too close in score "
-            f"({top_score} vs {second_score}, gap {gap:.2f}) — "
-            f"no clear winner, waiting for next scan"
-        ), skipped
+    # ── Score gap check — DISABLED for paper trading data collection ──
+    # Re-enable once scoring model is refined empirically.
+    # Need data first to know what gap threshold actually predicts
+    # better outcomes before enforcing it as an entry filter.
+    # ─────────────────────────────────────────────────────────────────
+    # if gap < MIN_SCORE_GAP and gap != 0.0:
+    #     skipped.append((top,    f"Score gap too small ({gap:.2f} < {MIN_SCORE_GAP}) — skipping"))
+    #     skipped.append((second, f"Score gap too small ({gap:.2f} < {MIN_SCORE_GAP}) — skipping"))
+    #     return None, (
+    #         f"Top two signals too close in score "
+    #         f"({top_score} vs {second_score}, gap {gap:.2f}) — "
+    #         f"no clear winner, waiting for next scan"
+    #     ), skipped
 
     if gap == 0.0:
         # Exact tie — fall through to tiebreaker logic below
@@ -515,8 +518,8 @@ def select_entry_candidate(signals, open_tickers):
         ), skipped
 
     return top, (
-        f"Clear winner — score {top_score} vs next best {second_score} "
-        f"(gap {gap:.2f} ≥ {MIN_SCORE_GAP} threshold)"
+        f"Entering top scorer — score {top_score} vs next {second_score} "
+        f"(gap {gap:.2f} — gap check disabled for data collection)"
     ), skipped
 
 

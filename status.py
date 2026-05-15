@@ -18,41 +18,62 @@ MARKET_TIMEZONE = "US/Eastern"
 # PROCESS CHECKS
 # =============================================================================
 
-def find_python_process(script_name):
+def find_python_processes(script_name):
     """
     Search running processes for a Python script by name.
-    Returns the process if found, None if not running.
+    Returns LIST of all matching processes — detects duplicates.
     """
+    matches = []
     try:
         for proc in psutil.process_iter(["pid", "name", "cmdline"]):
             try:
                 cmdline = proc.info.get("cmdline") or []
-                # Check if any argument in the command line matches script name
                 if any(script_name in arg for arg in cmdline):
-                    return proc
+                    matches.append(proc)
             except (psutil.NoSuchProcess, psutil.AccessDenied):
                 pass
     except Exception:
         pass
-    return None
+    return matches
 
 
 def check_processes():
     """
-    Check if scheduler.py and position_monitor.py are running.
+    Check if scheduler.py, position_monitor.py, and agent.py are running.
+    Also detects duplicate instances of the same script.
     Returns dict with status for each script.
     """
     scripts = {
-        "scheduler.py":         "Options Scanner",
-        "position_monitor.py":  "Position Monitor",
+        "scheduler.py":        "Options Scanner",
+        "position_monitor.py": "Position Monitor",
+        "agent.py":            "Trading Agent",
     }
 
     results = {}
     for script, label in scripts.items():
-        proc = find_python_process(script)
-        if proc:
+        procs = find_python_processes(script)
+
+        if len(procs) == 0:
+            results[script] = {
+                "running":   False,
+                "label":     label,
+                "duplicate": False,
+            }
+        elif len(procs) > 1:
+            # Multiple instances — flag as duplicate
+            pids = [p.pid for p in procs]
+            results[script] = {
+                "running":   True,
+                "duplicate": True,
+                "label":     label,
+                "pid":       pids,
+                "count":     len(procs),
+                "runtime":   "unknown",
+                "memory_mb": 0,
+            }
+        else:
+            proc = procs[0]
             try:
-                # Get process start time and memory usage
                 start_time = datetime.fromtimestamp(proc.create_time())
                 runtime    = datetime.now() - start_time
                 hours      = int(runtime.total_seconds() // 3600)
@@ -61,6 +82,7 @@ def check_processes():
 
                 results[script] = {
                     "running":   True,
+                    "duplicate": False,
                     "label":     label,
                     "pid":       proc.pid,
                     "runtime":   f"{hours}h {mins}m",
@@ -68,17 +90,13 @@ def check_processes():
                 }
             except Exception:
                 results[script] = {
-                    "running": True,
-                    "label":   label,
-                    "pid":     proc.pid,
-                    "runtime": "unknown",
+                    "running":   True,
+                    "duplicate": False,
+                    "label":     label,
+                    "pid":       proc.pid,
+                    "runtime":   "unknown",
                     "memory_mb": 0,
                 }
-        else:
-            results[script] = {
-                "running": False,
-                "label":   label,
-            }
 
     return results
 
@@ -279,9 +297,11 @@ def check_open_positions():
 
         cursor.execute("""
             SELECT id, signal_contract, entry_price,
-                   target_price, stop_price, total_cost
+                   target_price, stop_price, total_cost,
+                   status, entry_date
             FROM paper_trades
-            WHERE status = 'OPEN'
+            WHERE status IN ('OPEN', 'STOP_TRIGGERED')
+            ORDER BY entry_date ASC
         """)
         positions = [dict(row) for row in cursor.fetchall()]
         conn.close()
@@ -296,14 +316,12 @@ def check_open_positions():
 
         alerts = []
         for p in positions:
-            entry  = p["entry_price"]
-            stop   = p["stop_price"]
-            target = p["target_price"]
+            entry    = p["entry_price"]
+            target   = p["target_price"]
+            status   = p["status"]
+            contract = p["signal_contract"]
 
-            # We can't check current price without an API call here
-            # Just flag DTE if contract is expiring soon
             try:
-                contract = p["signal_contract"]
                 date_str = contract[-15:-9]
                 year  = int("20" + date_str[0:2])
                 month = int(date_str[2:4])
@@ -314,13 +332,31 @@ def check_open_positions():
                 today   = datetime.now(eastern).date()
                 dte     = (expiry - today).days
 
+                # Dynamic stop calculation
+                if dte <= 5:
+                    stop_mult = 0.50
+                elif dte <= 14:
+                    stop_mult = 0.30
+                else:
+                    stop_mult = 0.20
+                dynamic_stop = round(entry * stop_mult, 2)
+
+                status_badge = "⏸ TRACKING" if status == "STOP_TRIGGERED" else "▶ OPEN"
+
                 if dte == 0:
                     alerts.append(
-                        f"⚠️  #{p['id']} {contract} expires TODAY"
+                        f"⚠️  #{p['id']} {contract} [{status_badge}] expires TODAY  "
+                        f"Stop: ${dynamic_stop:.2f}"
                     )
                 elif dte == 1:
                     alerts.append(
-                        f"⚠️  #{p['id']} {contract} expires TOMORROW"
+                        f"⚠️  #{p['id']} {contract} [{status_badge}] expires TOMORROW  "
+                        f"Stop: ${dynamic_stop:.2f}"
+                    )
+                elif status == "STOP_TRIGGERED":
+                    alerts.append(
+                        f"⏸  #{p['id']} {contract} stop triggered — tracking until expiry  "
+                        f"DTE: {dte}d"
                     )
             except Exception:
                 pass
@@ -434,7 +470,12 @@ def print_status():
 
     processes = check_processes()
     for script, info in processes.items():
-        if info["running"]:
+        if info.get("duplicate"):
+            pids = ", ".join(str(p) for p in info["pid"])
+            print(f"  ⚠️  {info['label']:<22} DUPLICATE — {info['count']} instances running  PIDs: {pids}")
+            print(f"       → Kill extras: taskkill /PID <old_pid> /F")
+            all_ok = False
+        elif info["running"]:
             print(f"  ✅ {info['label']:<22} RUNNING  "
                   f"PID {info['pid']}  "
                   f"up {info['runtime']}  "
@@ -494,6 +535,19 @@ def print_status():
     positions = check_open_positions()
     icon = "✅" if positions["ok"] else "❌"
     print(f"  {icon} Paper positions        {positions['message']}")
+    if positions.get("count", 0) > 0:
+        # Show breakdown of OPEN vs STOP_TRIGGERED
+        try:
+            from journal import DB_PATH
+            conn = sqlite3.connect(DB_PATH)
+            cursor = conn.cursor()
+            cursor.execute("SELECT status, COUNT(*) FROM paper_trades WHERE status IN ('OPEN','STOP_TRIGGERED') GROUP BY status")
+            for row in cursor.fetchall():
+                badge = "▶ OPEN" if row[0] == "OPEN" else "⏸ TRACKING"
+                print(f"     {badge}: {row[1]}")
+            conn.close()
+        except Exception:
+            pass
 
     if positions.get("alerts"):
         for alert in positions["alerts"]:

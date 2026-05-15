@@ -1,0 +1,104 @@
+
+=================================================================
+  📅 DAILY SUMMARY — Monday, May 11 2026
+  Generated: 2026-05-11 16:02:19 EDT
+=================================================================
+
+  ────────────────────────────────────────────────────────────
+  📈 MARKET OVERVIEW
+  ────────────────────────────────────────────────────────────
+  Market overview not found in scanner log
+
+  ────────────────────────────────────────────────────────────
+  🎯 SIGNAL SUMMARY
+  ────────────────────────────────────────────────────────────
+  Total signals logged:  680
+  Tickers with signals:  18
+  🔥 HIGH:               102
+  💰 INST:               42
+  ⚡ WATCH:              536
+
+  Flow bias (HIGH signals):
+  ▲ Calls: 81.0%  $534.7M
+  ▼ Puts:  19.0%  $125.7M
+  Bias:    BULLISH
+
+  ────────────────────────────────────────────────────────────
+  ✅ QUALIFIED ASSESSMENTS TODAY
+  ────────────────────────────────────────────────────────────
+  No QUALIFIED signals found in today's log
+
+  ────────────────────────────────────────────────────────────
+  📂 POSITION ACTIVITY
+  ────────────────────────────────────────────────────────────
+
+  No positions opened today
+
+  Closed today (2):
+  🟢 #12  TSLA260515C00437500
+       Entry: $4.40  →  Exit: $8.88
+       Reason: TARGET  P&L: +$447.50 (+101.7%)
+       📝 Auto-closed by position monitor. Bid:8.8 Ask:8.95
+
+  🟢 #7  NFLX260515P00092000
+       Entry: $3.72  →  Exit: $6.80
+       Reason: MANUAL  P&L: +$308.00 (+82.8%)
+
+
+  No open positions
+
+  ────────────────────────────────────────────────────────────
+  📊 OUTCOMES RECORDED TODAY
+  ────────────────────────────────────────────────────────────
+  Contracts expiring 2026-05-11:
+  ✅ WIN:   272
+  ❌ LOSS:  164
+  ➖ FLAT:  0
+  Total:    436
+  Win rate: 62.4%
+
+  Top wins by premium:
+  ✅ TSLA   TSLA260511C00422500          CALL  Strike $422.50  Premium $125.7M
+  ✅ TSLA   TSLA260511C00430000          CALL  Strike $430.00  Premium $116.2M
+  ✅ TSLA   TSLA260511C00435000          CALL  Strike $435.00  Premium $49.1M
+  ✅ TSLA   TSLA260511C00432500          CALL  Strike $432.50  Premium $42.1M
+  ✅ TSLA   TSLA260511C00420000          CALL  Strike $420.00  Premium $27.4M
+
+  ────────────────────────────────────────────────────────────
+  🔭 SIGNALS TO WATCH TOMORROW
+  ────────────────────────────────────────────────────────────
+  10 signal(s) carrying forward:
+
+  Ticker   Contract                     Type   Expiry       Premium      Score
+  ---------------------------------------------------------------------------
+  🔥 AAPL   AAPL260515C00210000          CALL   2026-05-15   $17.3M       9.0
+  🔥 AAPL   AAPL260515C00215000          CALL   2026-05-15   $16.3M       9.0
+  🔥 AAPL   AAPL260515C00165000          CALL   2026-05-15   $15.3M       9.0
+  🔥 AAPL   AAPL260515C00180000          CALL   2026-05-15   $5.5M        9.0
+  🔥 AAPL   AAPL260515C00220000          CALL   2026-05-15   $45.5M       8.29
+  🔥 AMD    AMD260522P00475000           PUT    2026-05-22   $4.3M        8.0
+  🔥 AAPL   AAPL260515C00125000          CALL   2026-05-15   $4.2M        8.0
+  🔥 AMD    AMD260605C00165000           CALL   2026-06-05   $3.5M        8.0
+  🔥 AMD    AMD260605C00175000           CALL   2026-06-05   $3.4M        8.0
+  🔥 TSLA   TSLA260513P00462500          PUT    2026-05-13   $1.9M        8.0
+
+  ────────────────────────────────────────────────────────────
+  💰 BANKROLL STATUS
+  ────────────────────────────────────────────────────────────
+  Starting bankroll:   $10,000.00
+  Total P&L:           $-508.50
+  Current bankroll:    $9,491.50
+  Open exposure:       $0.00 (0.0% of bankroll)
+  Max allowed (20%):   $1,898.30
+
+  Paper trades:
+  Total:               16
+  Open:                0
+  Closed:              9
+  Win rate:            33.3%  (3W / 6L)
+
+=================================================================
+  End of daily summary — 2026-05-11
+  Saved to: C:\Users\neast\options-flow-scanner\logs\summary_20260511.log
+=================================================================
+

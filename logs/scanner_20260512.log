@@ -1,0 +1,4369 @@
+
+[Session started: 2026-05-12 06:19:20]
+
+======================================================================
+  🔄 OPTIONS FLOW SCANNER — SCHEDULER
+  Started: 2026-05-12 06:19:25 EDT
+  Scan interval: every 30 minutes during market hours
+  Market hours: 9:30 — 16:00 Eastern
+  Scanner: fetch_trades.py
+  Press Ctrl+C to stop
+======================================================================
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (3h 10m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (2h 10m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (1h 10m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 10m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+  Market is currently closed.
+  Next open: 2026-05-12 09:29 EDT (0h 0m from now)
+  Sleeping until market open...
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #1
+  2026-05-12 09:30:00 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 10:01:21 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #2
+  2026-05-12 10:01:21 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 10:32:40 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #3
+  2026-05-12 10:32:40 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 11:04:02 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #4
+  2026-05-12 11:04:02 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 11:35:25 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #5
+  2026-05-12 11:35:25 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 12:06:45 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #6
+  2026-05-12 12:06:45 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 12:38:05 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #7
+  2026-05-12 12:38:04 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 13:09:23 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #8
+  2026-05-12 13:09:23 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 13:39:35 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #9
+  2026-05-12 13:39:35 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 14:11:00 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #10
+  2026-05-12 14:11:00 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+  ✗ Scanner exited with error code 1
+  ⚠ Scan #10 encountered an error (1 total errors)
+
+  ⏳ Next scan at 14:41:02 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #11
+  2026-05-12 14:41:02 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 15:12:18 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #12
+  2026-05-12 15:12:18 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  ⏳ Next scan at 15:43:37 EDT
+
+──────────────────────────────────────────────────────────────────────
+  📡 SCAN #13
+  2026-05-12 15:43:37 EDT
+──────────────────────────────────────────────────────────────────────
+  Launching scanner...
+
+  Market closing soon — final scan complete for today.
+
+======================================================================
+  📋 END OF DAY REVIEW
+  2026-05-12 15:45:37 EDT
+======================================================================
+
+  Waiting until 4:01 PM for post-close settlement scan...
+
+  📡 SCAN #14 — POST-CLOSE SETTLEMENT
+  Launching scanner...
+
+  Recording outcomes for expiring contracts...

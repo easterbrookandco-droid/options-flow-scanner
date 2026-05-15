@@ -456,7 +456,7 @@ def print_market_overview(overview):
         else:
             print(f"  {color_marker} {label:<16} "
                   f"${d['price']:>8.2f} "
-                  f"(change unavailable after hours)")
+                  f"(change N/A)")
 
     print(f"  {'─'*48}")
 
