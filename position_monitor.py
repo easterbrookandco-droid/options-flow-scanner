@@ -672,6 +672,79 @@ def evaluate_positions(positions, prices, market_context, eastern):
         if current_dte is not None and current_dte <= 1:
             print(f"  ⏰ EXPIRING SOON — {current_dte} day(s) remaining")
 
+        # ── Auto take-profit — expiration day profit protection ────────
+        # Don't let profitable positions expire unmanaged on OPEN status
+        if status == "OPEN" and current_dte == 0 and pnl_pct > 0:
+            eastern_now = datetime.now(eastern)
+            hour = eastern_now.hour
+            minute = eastern_now.minute
+            time_decimal = hour + minute / 60
+
+            # Determine if we should take profit based on time of day
+            take_profit = False
+            take_reason = ""
+
+            if time_decimal >= 15.5 and pnl_pct > 5:
+                # After 3:30pm — take any meaningful profit
+                take_profit = True
+                take_reason = f"Expiration day, after 3:30pm, +{pnl_pct:.1f}% profit — protecting gain"
+            elif time_decimal >= 12.0 and pnl_pct > 25:
+                # After noon — take if up more than 25%
+                take_profit = True
+                take_reason = f"Expiration day, after 12pm, +{pnl_pct:.1f}% profit — protecting gain"
+
+            if take_profit:
+                print(f"\n  {'='*65}")
+                print(f"  💰 AUTO TAKE-PROFIT — #{trade_id} {contract}")
+                print(f"      {take_reason}")
+                print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
+                print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+                print(f"  {'='*65}")
+
+                log_price_snapshot(
+                    trade_id=trade_id, current_price=mid,
+                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                    dynamic_stop=dynamic_stop, current_dte=current_dte,
+                    market_context=market_context,
+                    stop_triggered=0, target_triggered=1,
+                )
+
+                result = auto_close_position(trade_id, mid, "MANUAL", bid, ask)
+                if result:
+                    print(f"  ✅ Auto take-profit executed")
+                    closed_ids.append(trade_id)
+                continue
+
+        # ── DTE=1 take-profit ──────────────────────────────────────────
+        if status == "OPEN" and current_dte == 1 and pnl_pct > 50:
+            eastern_now = datetime.now(eastern)
+            hour = eastern_now.hour
+            minute = eastern_now.minute
+            time_decimal = hour + minute / 60
+
+            if time_decimal >= 14.0:
+                print(f"\n  {'='*65}")
+                print(f"  💰 AUTO TAKE-PROFIT — #{trade_id} {contract}")
+                print(f"      1 DTE, after 2pm, +{pnl_pct:.1f}% profit — protecting gain")
+                print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
+                print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+                print(f"  {'='*65}")
+
+                log_price_snapshot(
+                    trade_id=trade_id, current_price=mid,
+                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                    dynamic_stop=dynamic_stop, current_dte=current_dte,
+                    market_context=market_context,
+                    stop_triggered=0, target_triggered=1,
+                )
+
+                result = auto_close_position(trade_id, mid, "MANUAL", bid, ask)
+                if result:
+                    print(f"  ✅ Auto take-profit executed")
+                    closed_ids.append(trade_id)
+                continue
+
+        # ── Expiration auto-close at market close ──────────────────────
         if current_dte == 0 and not is_market_open():
             print(f"\n  ⏰ CONTRACT EXPIRING TODAY — auto-closing")
             result = auto_close_position(trade_id, mid, "EXPIRED", bid, ask)
