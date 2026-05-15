@@ -3,6 +3,7 @@ import subprocess
 import sys
 from datetime import datetime, timedelta
 import pytz
+from fetch_trades import get_access_token, get_account_id, get_market_overview
 
 
 # =============================================================================
@@ -19,6 +20,9 @@ MARKET_TIMEZONE = "US/Eastern"
 # Path to the scanner script
 # Since scheduler.py lives in the same folder, this works as-is
 SCANNER_SCRIPT = "fetch_trades.py"
+
+# Track whether we've saved today's market close prices
+_close_saved_date = None
 
 
 
@@ -269,18 +273,45 @@ def main():
                     time.sleep(sleep_secs)
             
             else:
+                # ── End of day close price save ────────────────────────
+                # Fire once per day right after market closes
+                today_str = now.strftime("%Y-%m-%d")
+
+                if _close_saved_date != today_str:
+                    try:
+                        print(f"\n  📈 Saving end-of-day market close prices...")
+                        token      = get_access_token()
+                        account_id = get_account_id(token) if token else None
+
+                        if token and account_id:
+                            overview = get_market_overview(token, account_id)
+                            closes   = {
+                                ticker: data.get("price")
+                                for ticker, data in overview.items()
+                                if data.get("price")
+                            }
+                            if closes:
+                                from journal import save_market_close
+                                save_market_close(closes)
+                                _close_saved_date = today_str
+                                print(f"  ✅ Saved closes for: {list(closes.keys())}")
+                            else:
+                                print(f"  ⚠️  No close prices available")
+                        else:
+                            print(f"  ✗ Auth failed — close prices not saved")
+                    except Exception as e:
+                        print(f"  ✗ Close price save error: {e}")
+
                 # Market closed — wait until next open
                 secs = seconds_until_market_open()
                 hours = secs // 3600
                 minutes_remaining = (secs % 3600) // 60
                 next_open = (now + timedelta(seconds=secs)).strftime('%Y-%m-%d %H:%M %Z')
-                
+
                 print(f"\n  Market is currently closed.")
                 print(f"  Next open: {next_open} ({hours}h {minutes_remaining}m from now)")
                 print(f"  Sleeping until market open...")
-                
-                # Sleep in 1-hour chunks so we can show a heartbeat
-                # and catch any issues rather than sleeping for 16 hours straight
+
                 sleep_chunk = min(secs, 3600)
                 time.sleep(sleep_chunk)
     

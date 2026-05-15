@@ -54,6 +54,17 @@ def init_database():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS market_closes (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            trade_date  TEXT NOT NULL,
+            ticker      TEXT NOT NULL,
+            close_price REAL NOT NULL,
+            created_at  TEXT DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(trade_date, ticker)
+        )
+    """)
+
     # Add share_price column if it doesn't exist yet (safe to run repeatedly)
     try:
         cursor.execute("ALTER TABLE signals ADD COLUMN share_price REAL")
@@ -66,6 +77,61 @@ def init_database():
     conn.close()
     
     print(f"  ✓ Journal database ready ({DB_PATH})")
+
+
+def save_market_close(prices_dict):
+    """
+    Store end-of-day closing prices for market context tickers.
+    Called once at market close by scheduler.py.
+
+    Parameters:
+        prices_dict (dict): Keyed by ticker symbol, value is closing price
+                            e.g. {"SPY": 739.28, "QQQ": 694.73, ...}
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    eastern = pytz.timezone("US/Eastern")
+    today   = datetime.now(eastern).strftime("%Y-%m-%d")
+
+    for ticker, price in prices_dict.items():
+        if price and price > 0:
+            cursor.execute("""
+                INSERT INTO market_closes (trade_date, ticker, close_price)
+                VALUES (?, ?, ?)
+                ON CONFLICT(trade_date, ticker) DO UPDATE SET
+                    close_price = excluded.close_price
+            """, (today, ticker, price))
+
+    conn.commit()
+    conn.close()
+
+
+def get_previous_close(ticker):
+    """
+    Get the most recent stored closing price for a ticker.
+    Used by fetch_market_context() to calculate day change.
+
+    Parameters:
+        ticker (str): Ticker symbol e.g. "SPY"
+
+    Returns:
+        float: Most recent closing price, or None if not available
+    """
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT close_price
+        FROM market_closes
+        WHERE ticker = ?
+        ORDER BY trade_date DESC
+        LIMIT 1
+    """, (ticker,))
+
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else None
 
 
 def init_paper_trades_table():

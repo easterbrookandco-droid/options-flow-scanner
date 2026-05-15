@@ -180,12 +180,19 @@ def fetch_market_context(token, account_id):
             if q.get("outcome") == "SUCCESS":
                 symbol = q["instrument"]["symbol"]
                 try:
-                    last  = float(q.get("last") or 0)
-                    prev  = float(q.get("previousClose") or 0)
+                    last = float(q.get("last") or 0)
+
+                    # Try API previousClose first, fall back to stored close
+                    prev = float(q.get("previousClose") or 0)
+                    if not prev:
+                        from journal import get_previous_close
+                        prev = get_previous_close(symbol) or 0
+
                     chg_pct = round(((last - prev) / prev) * 100, 3) if prev else 0
                     context[symbol] = {
-                        "price":   last,
-                        "chg_pct": chg_pct,
+                        "price":      last,
+                        "chg_pct":    chg_pct,
+                        "has_change": prev > 0,
                     }
                 except (ValueError, TypeError):
                     pass

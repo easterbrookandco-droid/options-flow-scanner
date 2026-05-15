@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import sqlite3
+from blinker import signal
 import requests
 import os
 import pytz
@@ -258,11 +259,17 @@ def fetch_market_context(token, account_id):
                 symbol = q["instrument"]["symbol"]
                 try:
                     last = float(q.get("last") or 0)
+
+                    # Try API previousClose first, fall back to stored close
                     prev = float(q.get("previousClose") or 0)
+                    if not prev:
+                        from journal import get_previous_close
+                        prev = get_previous_close(symbol) or 0
+
                     chg_pct = round(((last - prev) / prev) * 100, 3) if prev else 0
                     context[symbol] = {
-                        "price":   last,
-                        "chg_pct": chg_pct,
+                        "price":      last,
+                        "chg_pct":    chg_pct,
                         "has_change": prev > 0,
                     }
                 except (ValueError, TypeError):
@@ -678,8 +685,8 @@ def execute_entry(signal, token, account_id, market_context):
         from journal import insert_paper_trade
 
         # Parse expiration for DTE and delta/IV context
-        iv_at_entry    = signal.get("iv")
-        delta_at_entry = signal.get("delta_raw")
+        iv_at_entry    = signal.get("impliedVolatility") or signal.get("iv")
+        delta_at_entry = signal.get("delta") or signal.get("delta_raw")
 
         # Market bias from context
         spy = market_context.get("SPY", {})
