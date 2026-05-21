@@ -264,6 +264,7 @@ def main():
                     print(f"\n  Next market open: {next_open} ({hours}h {minutes}m)")
                     print(f"  Sleeping until then...")
                     time.sleep(secs)
+                    continue  # Loop back to top — recheck is_market_open() fresh
                 
                 else:
                     # Sleep until next scan
@@ -314,6 +315,7 @@ def main():
 
                 sleep_chunk = min(secs, 3600)
                 time.sleep(sleep_chunk)
+                continue  # Loop back to top — recheck is_market_open() fresh
     
     except KeyboardInterrupt:
         now = datetime.now(eastern)
