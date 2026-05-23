@@ -3,3 +3,13 @@ venv/
 __pycache__/
 signals.db
 logs/
+# Excel exports
+scanner_export_*.xlsx
+
+# OS files
+*.DS_Store
+Thumbs.db
+
+# Swap files (Vim/editor)
+*.swp
+*.swo
