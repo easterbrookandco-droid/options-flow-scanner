@@ -226,37 +226,70 @@ def fetch_market_context(token, account_id):
 
 def mark_stop_triggered(trade_id, triggered_price, dynamic_stop):
     """
-    Record that the dynamic stop threshold was crossed without
-    closing the position.
-
-    The position status moves from OPEN to STOP_TRIGGERED so the
-    monitor keeps tracking it through expiration. This gives us
-    two data points per trade:
-        1. What P&L would have been if we exited at the stop
-        2. What P&L actually was at expiration
-
-    Over many trades this tells us whether our stop curve is
-    cutting winners early or correctly limiting losses.
-
-    Parameters:
-        trade_id (int): Paper trade ID
-        triggered_price (float): Mid price when stop was crossed
-        dynamic_stop (float): The stop threshold that was crossed
+    Record that the dynamic stop threshold was crossed.
+    
+    Writes a formal exit record at the stop price so P&L is
+    accurately captured, then sets status to STOP_TRIGGERED
+    so the position continues being tracked through expiration
+    for data collection purposes.
+    
+    This means we have two data points:
+        1. exit_price / pnl — what we would have realized exiting at stop
+        2. continued snapshots — what happened after the stop if held
     """
     conn = sqlite3.connect(get_db_path())
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
 
     eastern = pytz.timezone(MARKET_TIMEZONE)
-    now = datetime.now(eastern).strftime("%Y-%m-%d %H:%M:%S")
+    now     = datetime.now(eastern)
+    now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+    exit_date = now.strftime("%Y-%m-%d")
+    exit_time = now.strftime("%H:%M:%S")
+
+    # Fetch the trade to calculate P&L
+    cursor.execute("""
+        SELECT entry_price, contracts, total_cost
+        FROM paper_trades
+        WHERE id = ? AND status = 'OPEN'
+    """, (trade_id,))
+    trade = cursor.fetchone()
+
+    if not trade:
+        conn.close()
+        return
+
+    trade       = dict(trade)
+    entry_price = trade["entry_price"]
+    contracts   = trade["contracts"]
+    total_cost  = trade["total_cost"]
+
+    pnl     = round((triggered_price - entry_price) * contracts * 100, 2)
+    pnl_pct = round((pnl / total_cost) * 100, 2) if total_cost else 0
 
     cursor.execute("""
-        UPDATE paper_trades
-        SET status = 'STOP_TRIGGERED',
-            notes  = COALESCE(notes || ' | ', '') ||
-                     'Stop triggered at ' || ? ||
-                     ' (threshold: ' || ? || ') on ' || ?
+        UPDATE paper_trades SET
+            status      = 'STOP_TRIGGERED',
+            exit_date   = ?,
+            exit_time   = ?,
+            exit_price  = ?,
+            exit_reason = 'STOP',
+            pnl         = ?,
+            pnl_pct     = ?,
+            hold_days   = julianday(?) - julianday(entry_date),
+            notes       = COALESCE(notes || ' | ', '') ||
+                          'Stop triggered at $' || ? ||
+                          ' (threshold: $' || ? || ') on ' || ?
         WHERE id = ? AND status = 'OPEN'
-    """, (triggered_price, dynamic_stop, now, trade_id))
+    """, (
+        exit_date, exit_time,
+        triggered_price,
+        'STOP',
+        pnl, pnl_pct,
+        exit_date,
+        triggered_price, dynamic_stop, now_str,
+        trade_id
+    ))
 
     conn.commit()
     conn.close()
@@ -317,6 +350,23 @@ def get_dynamic_stop(entry_price, expiration_date):
 
     stop_price = round(entry_price * stop_mult, 2)
     return stop_price, dte
+
+
+def close_expired_tracking(trade_id):
+    """
+    Close a STOP_TRIGGERED position that has reached expiration.
+    Only updates status — preserves all exit data recorded at stop time.
+    """
+    conn = sqlite3.connect(get_db_path())
+    cursor = conn.cursor()
+    cursor.execute("""
+        UPDATE paper_trades
+        SET status = 'CLOSED'
+        WHERE id = ?
+        AND status = 'STOP_TRIGGERED'
+    """, (trade_id,))
+    conn.commit()
+    conn.close()
 
 
 # =============================================================================
@@ -608,13 +658,10 @@ def evaluate_positions(positions, prices, market_context, eastern):
 
         # ── Skip stop/target checks for already-triggered positions ────
         if status == "STOP_TRIGGERED":
-            # Only check for expiration auto-close
             if current_dte is not None and current_dte <= 0:
-                print(f"\n  ⏰ CONTRACT EXPIRED — auto-closing #{trade_id}")
-                result = auto_close_position(trade_id, mid, "EXPIRED", bid, ask)
-                if result:
-                    print(f"  ✅ Closed as EXPIRED  P&L: {fmt_pnl(pnl)}")
-                    closed_ids.append(trade_id)
+                print(f"\n  ⏰ CONTRACT EXPIRED — closing tracking #{trade_id}")
+                close_expired_tracking(trade_id)
+                closed_ids.append(trade_id)
             continue
 
         # ── TARGET HIT ─────────────────────────────────────────────────
