@@ -143,6 +143,7 @@ def run_scanner():
 
 def main():
     from logger_setup import setup_logger
+    global _close_saved_date
     log_path = setup_logger("scanner")
     """
     Main scheduler loop.
