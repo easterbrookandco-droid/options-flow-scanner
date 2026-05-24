@@ -29,7 +29,7 @@ jobs:
             | while read filepath; do
                 # Strip leading ./
                 clean_path="${filepath#./}"
-                echo "https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/${clean_path}"
+                echo "https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/${clean_path}"
               done >> GitHub_file_URLs.txt
 
       - name: Commit updated URLs
