@@ -2,9 +2,11 @@ GitHub Raw File URLs:
 Auto-generated on push — do not edit manually
 
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/BACKLOG.md
+https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/CLAUDE.md
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/DB_test.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/GitHub_file_URLs.txt
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/Historical_Log_Cleanup.py
+https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/PROJECT_STATE.md
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/README.md
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/agent.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/analytics.py
@@ -26,6 +28,7 @@ https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/ma
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/entry_analyzer.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/evaluate.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/exit_expiring.py
+https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/export_analysis_dataset.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/export_db.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/fetch_trades.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/fix_bad_exits.py
@@ -45,5 +48,6 @@ https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/ma
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/run_monitor.bat
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/run_scheduler.bat
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/scheduler.py
+https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/session_log.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/status.py
 https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/thesis_generator.py
