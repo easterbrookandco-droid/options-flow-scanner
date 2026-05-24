@@ -195,17 +195,48 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. **Tuesday morning** — check scheduler woke up at 9:30 ET, verify trailing stop fires
-2. **Set up Claude Code** — install, configure .claude/ with PROJECT_STATE.md context
-3. **Rebuild dashboard** — portfolio tab, positions tab, signals tab, analytics tab
-4. **Auto git pull cron on VM** — eliminates manual pull step
-5. **DB backup to S3** — peace of mind
-6. **OI confirmation filter** — build and backtest
-7. **session_log.py** — end-of-session summarizer using Claude API
+1. 1. Tuesday morning - verify scheduler woke up at 9:30 ET
+2. 2. Review first trailing stop fires
+3. 3. Run entry_analyzer for week 3 data
+4. 4. OI confirmation filter
+5. 5. Auto git pull cron on VM
+6. 6. DB backup to S3
+7. 7. Mobile responsive dashboard (low priority)
 
 ---
 
 ## 📝 SESSION LOG
+
+### 2026-05-24 | claude.ai + Claude Code | 12:25 EDT
+**What changed:**
+- Set up project infrastructure: PROJECT_STATE.md, session_log.py, CLAUDE.md for knowledge management
+- Implemented GitHub Action for auto raw URL generation, switched to jsDelivr CDN
+- Rebuilt dashboard with 4-tab layout: Portfolio, Positions, Signals, Analytics
+- Added flask-httpauth basic authentication to secure dashboard access
+- Opened port 5000 on AWS EC2 instance for public web access
+- Fixed signal history chart blur issue with canvas DPI settings
+- Added Key Insights section to Analytics tab for data summaries
+- Made VM publicly accessible at 3.144.128.166:5000
+
+**Key decisions:**
+- Used jsDelivr CDN over raw GitHub URLs for better reliability and caching
+- Chose flask-httpauth for simple basic authentication implementation
+- Opened public port 5000 to enable multi-device access to dashboard
+- Structured dashboard into logical tabs for better user experience organization
+
+**What we learned / what didn't work:**
+- GitHub raw URLs can be unreliable, CDN approach provides better stability
+- Canvas DPI fixes resolved chart rendering blur issues in web browsers
+- Basic auth provides adequate security layer for development/testing phase
+- Public port access enables testing across different devices and networks
+
+**Open questions:**
+- Monitor CDN performance and reliability compared to direct GitHub access
+- Evaluate if basic auth security level is sufficient for production use
+- Track dashboard performance with public access and multiple concurrent users
+- Assess if 4-tab layout meets all user workflow requirements
+
+---
 
 ### 2026-05-24 | claude.ai | Morning
 **Focus:** Knowledge infrastructure, GitHub Action, Claude Code planning
