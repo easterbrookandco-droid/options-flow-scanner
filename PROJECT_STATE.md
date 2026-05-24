@@ -84,7 +84,7 @@ market_closes        — End-of-day close prices (SPY/QQQ/IWM/TLT/GLD/USO)
 
 ### GitHub
 - **Repo:** https://github.com/easterbrookandco-droid/options-flow-scanner (public)
-- **Raw URLs:** https://raw.githubusercontent.com/easterbrookandco-droid/options-flow-scanner/master/GitHub_file_URLs.txt
+- **Raw URLs:** https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/GitHub_file_URLs.txt
 - **GitHub Action:** Auto-updates GitHub_file_URLs.txt on every push
 
 ---
