@@ -1,4 +1,5 @@
 from flask import Flask, render_template_string, jsonify, request
+from flask_httpauth import HTTPBasicAuth
 import sqlite3
 from datetime import datetime
 import pytz
@@ -8,7 +9,9 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-SECRET_KEY = os.getenv("PUBLIC_SECRET_KEY")
+SECRET_KEY      = os.getenv("PUBLIC_SECRET_KEY")
+DASHBOARD_USER  = os.getenv("DASHBOARD_USER", "nolan")
+DASHBOARD_PASS  = os.getenv("DASHBOARD_PASS", "scanner2026")
 BASE_URL = "https://api.public.com"
 DB_PATH = "signals.db"
 MARKET_TIMEZONE = "US/Eastern"
@@ -82,7 +85,12 @@ def fmt_pct(v):
 # FLASK APP
 # =============================================================================
 
-app = Flask(__name__)
+app  = Flask(__name__)
+auth = HTTPBasicAuth()
+
+@auth.verify_password
+def verify_password(username, password):
+    return username == DASHBOARD_USER and password == DASHBOARD_PASS
 
 
 # =============================================================================
@@ -386,6 +394,95 @@ def get_premium_tier_stats():
     return rows
 
 
+def get_key_insights():
+    """Generate plain English insights from actual DB performance numbers."""
+    MIN_SAMPLE = 10  # buckets with fewer trades are too noisy to call
+
+    def wr(r):
+        t = r.get('total') or 0
+        w = r.get('wins') or 0
+        return round((w / t) * 100, 1) if t > 0 else 0
+
+    score_buckets = get_score_bucket_stats()
+    dte_buckets   = get_dte_bucket_stats()
+    prem_tiers    = get_premium_tier_stats()
+
+    # Threshold stats enriched inline (avoid circular call)
+    conn = get_db_connection()
+    thresh_results = []
+    for thresh in [3.0, 4.0, 5.0, 6.0, 7.0, 7.5, 8.0]:
+        c = conn.cursor()
+        c.execute("""
+            SELECT COUNT(*) as total,
+                   SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+                   ROUND(SUM(pnl), 2) as total_pnl
+            FROM paper_trades
+            WHERE status = 'CLOSED' AND pnl IS NOT NULL AND score_at_entry >= ?
+        """, (thresh,))
+        row = dict(c.fetchone())
+        row['threshold'] = thresh
+        thresh_results.append(row)
+    conn.close()
+
+    insights = []
+
+    # ── Score bucket: best and worst ──────────────────────────────────────────
+    q_score = [r for r in score_buckets if (r.get('total') or 0) >= MIN_SAMPLE]
+    if q_score:
+        best  = max(q_score, key=wr)
+        worst = min(q_score, key=wr)
+        pnl_sign = '+' if (best.get('total_pnl') or 0) >= 0 else ''
+        insights.append(
+            f"Score {best['score_bucket']} is the sweet spot — {wr(best):.0f}% win rate "
+            f"across {best['total']} trades ({pnl_sign}${best.get('total_pnl') or 0:,.0f} total)."
+        )
+        if worst['score_bucket'] != best['score_bucket']:
+            insights.append(
+                f"Score {worst['score_bucket']} is the weakest bucket at {wr(worst):.0f}% win rate "
+                f"({worst['total']} trades) — likely late-stage or crowded flow."
+            )
+
+    # ── DTE: best range ───────────────────────────────────────────────────────
+    q_dte = [r for r in dte_buckets if (r.get('total') or 0) >= MIN_SAMPLE]
+    if q_dte:
+        best_dte  = max(q_dte, key=wr)
+        worst_dte = min(q_dte, key=wr)
+        insights.append(
+            f"{best_dte['dte_bucket']} DTE trades win at {wr(best_dte):.0f}% "
+            f"({best_dte['total']} trades) — the strongest time-to-expiry range."
+        )
+        if worst_dte['dte_bucket'] != best_dte['dte_bucket'] and wr(worst_dte) < 50:
+            insights.append(
+                f"{worst_dte['dte_bucket']} DTE is the weakest at {wr(worst_dte):.0f}% "
+                f"({worst_dte['total']} trades) — consider filtering these entries."
+            )
+
+    # ── Score threshold simulation: optimal cutoff ───────────────────────────
+    q_thresh = [r for r in thresh_results if (r.get('total') or 0) >= MIN_SAMPLE]
+    if q_thresh:
+        # Best by total P&L (not just win rate — higher thresholds mean fewer trades)
+        best_thresh = max(q_thresh, key=lambda r: r.get('total_pnl') or 0)
+        best_wr_thresh = wr(best_thresh)
+        pnl_sign = '+' if (best_thresh.get('total_pnl') or 0) >= 0 else ''
+        insights.append(
+            f"Score ≥ {best_thresh['threshold']:.1f} maximizes total P&L at "
+            f"{pnl_sign}${best_thresh.get('total_pnl') or 0:,.0f} "
+            f"({best_wr_thresh:.0f}% win rate, {best_thresh['total']} trades)."
+        )
+
+    # ── Premium tier: best ────────────────────────────────────────────────────
+    q_prem = [r for r in prem_tiers if (r.get('total') or 0) >= MIN_SAMPLE]
+    if q_prem:
+        best_prem = max(q_prem, key=wr)
+        pnl_sign = '+' if (best_prem.get('total_pnl') or 0) >= 0 else ''
+        insights.append(
+            f"{best_prem['premium_tier']} premium signals win at {wr(best_prem):.0f}% "
+            f"({best_prem['total']} trades, {pnl_sign}${best_prem.get('total_pnl') or 0:,.0f} total)."
+        )
+
+    return insights
+
+
 def get_threshold_stats():
     conn = get_db_connection()
     results = []
@@ -495,6 +592,7 @@ def is_market_open():
 # =============================================================================
 
 @app.route('/')
+@auth.login_required
 def dashboard():
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
@@ -625,6 +723,7 @@ def dashboard():
 
 
 @app.route('/api/positions')
+@auth.login_required
 def api_positions():
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
@@ -671,6 +770,7 @@ def api_positions():
 
 
 @app.route('/api/analytics')
+@auth.login_required
 def api_analytics():
     def enrich(rows):
         for r in rows:
@@ -696,10 +796,12 @@ def api_analytics():
         'dte_buckets': dte_buckets,
         'premium_tiers': premium_tiers,
         'thresholds': thresholds,
+        'insights': get_key_insights(),
     })
 
 
 @app.route('/api/record-outcome', methods=['POST'])
+@auth.login_required
 def record_outcome():
     data = request.get_json()
     contract = data.get('contract')
@@ -720,6 +822,7 @@ def record_outcome():
 
 
 @app.route('/api/data')
+@auth.login_required
 def api_data():
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
@@ -731,6 +834,7 @@ def api_data():
 
 
 @app.route('/api/last-scan')
+@auth.login_required
 def last_scan():
     conn = get_db_connection()
     c = conn.cursor()
@@ -745,6 +849,7 @@ def last_scan():
 
 
 @app.route('/api/signal-history')
+@auth.login_required
 def signal_history_route():
     rows = get_signal_history(days=30)
     return jsonify(rows)
@@ -1454,7 +1559,7 @@ async function loadAnalytics() {
 }
 
 function renderAnalytics(data) {
-    const { score_buckets, dte_buckets, premium_tiers, thresholds } = data;
+    const { score_buckets, dte_buckets, premium_tiers, thresholds, insights } = data;
 
     const pnlColor = v => (v || 0) >= 0 ? '#22c55e' : '#ef4444';
     const barHtml  = pct => `<div style="flex:1;margin:0 8px;height:4px;background:#334155;border-radius:2px;overflow:hidden">
@@ -1519,7 +1624,20 @@ function renderAnalytics(data) {
         </tr>`;
     }).join('');
 
-    const html = `
+    // Key Insights section
+    const insightsHtml = (insights && insights.length) ? `
+    <div class="card full-width" style="margin-bottom:16px;border-color:#3b82f644">
+        <div class="card-title" style="color:#3b82f6">Key Insights</div>
+        <ul style="list-style:none;padding:0;margin:0">
+            ${insights.map(txt => `
+            <li style="display:flex;align-items:baseline;gap:10px;padding:8px 0;border-bottom:1px solid #334155">
+                <span style="color:#3b82f6;font-size:14px;flex-shrink:0">→</span>
+                <span style="color:#e2e8f0;font-size:12px;line-height:1.6">${txt}</span>
+            </li>`).join('')}
+        </ul>
+    </div>` : '';
+
+    const html = insightsHtml + `
     <!-- Score Buckets — full width -->
     <div class="card full-width" style="margin-bottom:16px">
         <div class="card-title">Win Rate by Score Bucket</div>
@@ -1590,9 +1708,14 @@ function renderAnalytics(data) {
     const BAR_GAP = 0.25;
     const COLORS  = { high: '#f97316', inst: '#a855f7', watch: '#3b82f6', premium: '#e2e8f0' };
     const container = canvas.parentElement;
+    const dpr = window.devicePixelRatio || 1;
     const W = container.clientWidth || 800, H = 160;
-    canvas.width = W; canvas.height = H;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
     const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
     const innerW = W - PADDING.left - PADDING.right;
     const innerH = H - PADDING.top  - PADDING.bottom;
     const days     = SIGNAL_HISTORY;
