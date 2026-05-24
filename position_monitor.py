@@ -710,50 +710,61 @@ def evaluate_positions(positions, prices, market_context, eastern):
                 closed_ids.append(trade_id)
             continue
 
-        # ── TARGET HIT ─────────────────────────────────────────────────
-        if mid >= target:
-            print(f"\n  {'='*65}")
-            print(f"  🎯 TARGET HIT — #{trade_id} {contract}")
-            print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
-            print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
-            print(f"  {'='*65}")
+        # ── TWO-STAGE TRAILING STOP ────────────────────────────────────
+        # Stage 1: position must reach 1% gain hurdle
+        # Stage 2: exit if drops 20% from post-hurdle peak
+        # Replaces static TARGET and DTE-based STOP with one unified rule
+        hurdle_crossed, running_max, _ = get_trailing_stop_state(
+            trade_id, total_cost
+        )
 
-            # Re-log snapshot with target flag
-            log_price_snapshot(
-                trade_id=trade_id, current_price=mid,
-                bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
-                dynamic_stop=dynamic_stop, current_dte=current_dte,
-                market_context=market_context,
-                stop_triggered=0, target_triggered=1,
-            )
+        if hurdle_crossed and running_max > 0:
+            drawdown = (running_max - pnl) / running_max
+            if drawdown > 0.20:
+                print(f"\n  {'='*65}")
+                print(f"  📉 TRAILING STOP — #{trade_id} {contract}")
+                print(f"      Peak P&L: {fmt_pnl(running_max)}  "
+                      f"Current: {fmt_pnl(pnl)}")
+                print(f"      Drawdown from peak: {drawdown*100:.1f}% > 20%")
+                print(f"      Recording exit, continuing to track for data")
+                print(f"  {'='*65}")
 
-            result = auto_close_position(trade_id, mid, "TARGET", bid, ask)
-            if result:
-                print(f"  ✅ Position auto-closed at TARGET")
+                log_price_snapshot(
+                    trade_id=trade_id, current_price=mid,
+                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                    dynamic_stop=dynamic_stop, current_dte=current_dte,
+                    market_context=market_context,
+                    stop_triggered=1, target_triggered=0,
+                )
+
+                mark_stop_triggered(trade_id, mid, dynamic_stop)
                 closed_ids.append(trade_id)
-            continue
+                continue
 
-        # ── STOP HIT ───────────────────────────────────────────────────
-        if mid <= dynamic_stop or bid <= dynamic_stop:
-            print(f"\n  {'='*65}")
-            print(f"  🛑 STOP TRIGGERED — #{trade_id} {contract}")
-            print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
-            print(f"      Dynamic stop: ${dynamic_stop:.2f} (DTE: {current_dte}d)")
-            print(f"      Theoretical P&L if exited: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
-            print(f"      Continuing to track through expiration for data collection")
-            print(f"  {'='*65}")
+        # ── ITM SAFETY EXIT ────────────────────────────────────────────
+        # DTE=0, profitable, after 3:45pm — prevent auto-exercise
+        if status == "OPEN" and current_dte == 0 and pnl > 0:
+            now_et = datetime.now(eastern)
+            if now_et.hour > 15 or (now_et.hour == 15 and now_et.minute >= 45):
+                print(f"\n  {'='*65}")
+                print(f"  🔒 ITM SAFETY EXIT — #{trade_id} {contract}")
+                print(f"      DTE=0, profitable at {now_et.strftime('%H:%M')} ET")
+                print(f"      Preventing auto-exercise into stock position")
+                print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
+                print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+                print(f"  {'='*65}")
 
-            # Re-log snapshot with stop flag
-            log_price_snapshot(
-                trade_id=trade_id, current_price=mid,
-                bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
-                dynamic_stop=dynamic_stop, current_dte=current_dte,
-                market_context=market_context,
-                stop_triggered=1, target_triggered=0,
-            )
+                log_price_snapshot(
+                    trade_id=trade_id, current_price=mid,
+                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                    dynamic_stop=dynamic_stop, current_dte=current_dte,
+                    market_context=market_context,
+                    stop_triggered=0, target_triggered=1,
+                )
 
-            mark_stop_triggered(trade_id, mid, dynamic_stop)
-            continue
+                mark_stop_triggered(trade_id, mid, dynamic_stop)
+                closed_ids.append(trade_id)
+                continue
 
         # ── Approaching alerts ─────────────────────────────────────────
         target_progress = (mid - entry_price) / (target - entry_price) \
@@ -772,77 +783,6 @@ def evaluate_positions(positions, prices, market_context, eastern):
         if current_dte is not None and current_dte <= 1:
             print(f"  ⏰ EXPIRING SOON — {current_dte} day(s) remaining")
 
-        # ── Auto take-profit — expiration day profit protection ────────
-        # Don't let profitable positions expire unmanaged on OPEN status
-        if status == "OPEN" and current_dte == 0 and pnl_pct > 0:
-            eastern_now = datetime.now(eastern)
-            hour = eastern_now.hour
-            minute = eastern_now.minute
-            time_decimal = hour + minute / 60
-
-            # Determine if we should take profit based on time of day
-            take_profit = False
-            take_reason = ""
-
-            if time_decimal >= 15.5 and pnl_pct > 5:
-                # After 3:30pm — take any meaningful profit
-                take_profit = True
-                take_reason = f"Expiration day, after 3:30pm, +{pnl_pct:.1f}% profit — protecting gain"
-            elif time_decimal >= 12.0 and pnl_pct > 25:
-                # After noon — take if up more than 25%
-                take_profit = True
-                take_reason = f"Expiration day, after 12pm, +{pnl_pct:.1f}% profit — protecting gain"
-
-            if take_profit:
-                print(f"\n  {'='*65}")
-                print(f"  💰 AUTO TAKE-PROFIT — #{trade_id} {contract}")
-                print(f"      {take_reason}")
-                print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
-                print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
-                print(f"  {'='*65}")
-
-                log_price_snapshot(
-                    trade_id=trade_id, current_price=mid,
-                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
-                    dynamic_stop=dynamic_stop, current_dte=current_dte,
-                    market_context=market_context,
-                    stop_triggered=0, target_triggered=1,
-                )
-
-                result = auto_close_position(trade_id, mid, "MANUAL", bid, ask)
-                if result:
-                    print(f"  ✅ Auto take-profit executed")
-                    closed_ids.append(trade_id)
-                continue
-
-        # ── DTE=1 take-profit ──────────────────────────────────────────
-        if status == "OPEN" and current_dte == 1 and pnl_pct > 50:
-            eastern_now = datetime.now(eastern)
-            hour = eastern_now.hour
-            minute = eastern_now.minute
-            time_decimal = hour + minute / 60
-
-            if time_decimal >= 14.0:
-                print(f"\n  {'='*65}")
-                print(f"  💰 AUTO TAKE-PROFIT — #{trade_id} {contract}")
-                print(f"      1 DTE, after 2pm, +{pnl_pct:.1f}% profit — protecting gain")
-                print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
-                print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
-                print(f"  {'='*65}")
-
-                log_price_snapshot(
-                    trade_id=trade_id, current_price=mid,
-                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
-                    dynamic_stop=dynamic_stop, current_dte=current_dte,
-                    market_context=market_context,
-                    stop_triggered=0, target_triggered=1,
-                )
-
-                result = auto_close_position(trade_id, mid, "MANUAL", bid, ask)
-                if result:
-                    print(f"  ✅ Auto take-profit executed")
-                    closed_ids.append(trade_id)
-                continue
 
         # ── Expiration auto-close at market close ──────────────────────
         if current_dte == 0 and not is_market_open():
