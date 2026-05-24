@@ -205,7 +205,7 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ---
 
-## 📝 SESSION LOG
+## 📝 SESSION LOG (Last 3 Sessions)
 
 ### 2026-05-24 | claude.ai + Claude Code | 15:15 EDT
 **What changed:**
@@ -235,37 +235,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - How to prioritize mobile responsiveness improvements in next sessions?
 - Need to monitor CDN performance and reliability over time
 - Consider whether current tab structure serves all user workflows effectively
-
----
-
-### 2026-05-24 | claude.ai + Claude Code | 12:25 EDT
-**What changed:**
-- Set up project infrastructure: PROJECT_STATE.md, session_log.py, CLAUDE.md for knowledge management
-- Implemented GitHub Action for auto raw URL generation, switched to jsDelivr CDN
-- Rebuilt dashboard with 4-tab layout: Portfolio, Positions, Signals, Analytics
-- Added flask-httpauth basic authentication to secure dashboard access
-- Opened port 5000 on AWS EC2 instance for public web access
-- Fixed signal history chart blur issue with canvas DPI settings
-- Added Key Insights section to Analytics tab for data summaries
-- Made VM publicly accessible at 3.144.128.166:5000
-
-**Key decisions:**
-- Used jsDelivr CDN over raw GitHub URLs for better reliability and caching
-- Chose flask-httpauth for simple basic authentication implementation
-- Opened public port 5000 to enable multi-device access to dashboard
-- Structured dashboard into logical tabs for better user experience organization
-
-**What we learned / what didn't work:**
-- GitHub raw URLs can be unreliable, CDN approach provides better stability
-- Canvas DPI fixes resolved chart rendering blur issues in web browsers
-- Basic auth provides adequate security layer for development/testing phase
-- Public port access enables testing across different devices and networks
-
-**Open questions:**
-- Monitor CDN performance and reliability compared to direct GitHub access
-- Evaluate if basic auth security level is sufficient for production use
-- Track dashboard performance with public access and multiple concurrent users
-- Assess if 4-tab layout meets all user workflow requirements
 
 ---
 
@@ -336,11 +305,4 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ---
 
-### Prior sessions (summarized)
-- Core scanner, agent, monitor, dashboard built iteratively
-- Paper trading workflow established
-- Signal tiers and scoring model implemented
-- DTE-adjusted thresholds, deep ITM filter, adjusted contract filter
-- GitHub repo public with README and briefing docs
-- agent.py: autonomous entries, AI thesis + rule-based fallback
-- position_monitor.py: dynamic DTE-aware stops, STOP_TRIGGERED tracking
+*Older sessions in SESSION_HISTORY.md*
