@@ -18,7 +18,7 @@ MARKET_TIMEZONE = "US/Eastern"
 # =============================================================================
 
 # How often to check prices during market hours (seconds)
-CHECK_INTERVAL_SECONDS = 180  # 3 minutes
+CHECK_INTERVAL_SECONDS = 120  # 2 minutes
 
 # Alert thresholds — notify before hitting hard limits
 TARGET_ALERT_PCT  = 80   # Alert when position is 80% of the way to target
@@ -537,6 +537,52 @@ def progress_bar(current, entry, target, stop, width=20):
 # =============================================================================
 # CORE MONITOR LOGIC
 # =============================================================================
+
+
+def get_trailing_stop_state(trade_id, total_cost):
+    """
+    Calculate two-stage trailing stop state from snapshot history.
+    Stateless — recalculates from all snapshots on every cycle.
+
+    Stage 1: Position must reach HURDLE_PCT gain before trailing
+             stop activates (filters noise)
+    Stage 2: Once hurdle crossed, track running max and exit if
+             price drops TRAILING_STOP_PCT from that max
+
+    Returns:
+        tuple: (hurdle_crossed, running_max_pnl, should_trigger)
+    """
+    HURDLE_PCT       = 0.01   # 1% gain required to activate
+    TRAILING_STOP_PCT = 0.20  # 20% drop from post-hurdle peak
+
+    hurdle_pnl = total_cost * HURDLE_PCT
+
+    conn = sqlite3.connect(get_db_path())
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT pnl FROM position_snapshots
+        WHERE trade_id = ?
+        AND pnl IS NOT NULL
+        ORDER BY id ASC
+    """, (trade_id,))
+    snap_pnls = [row[0] for row in cursor.fetchall()]
+    conn.close()
+
+    if not snap_pnls:
+        return False, 0, False
+
+    hurdle_crossed        = False
+    running_max_after_hurdle = 0
+
+    for pnl in snap_pnls:
+        if not hurdle_crossed and pnl >= hurdle_pnl:
+            hurdle_crossed = True
+            running_max_after_hurdle = pnl
+        if hurdle_crossed and pnl > running_max_after_hurdle:
+            running_max_after_hurdle = pnl
+
+    return hurdle_crossed, running_max_after_hurdle, False
+
 
 def evaluate_positions(positions, prices, market_context, eastern):
     """
