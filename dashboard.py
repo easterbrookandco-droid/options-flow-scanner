@@ -1,71 +1,46 @@
-from flask import Flask, render_template_string, jsonify
+from flask import Flask, render_template_string, jsonify, request
 import sqlite3
 from datetime import datetime
 import pytz
 import requests
+import json
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
 SECRET_KEY = os.getenv("PUBLIC_SECRET_KEY")
 BASE_URL = "https://api.public.com"
+DB_PATH = "signals.db"
+MARKET_TIMEZONE = "US/Eastern"
+STARTING_BANKROLL = 10_000
+
+
+# =============================================================================
+# CONTRACT DECODER
+# =============================================================================
 
 def decode_contract(symbol):
-    """
-    Decode an options contract symbol into human-readable components.
-    
-    Format: {TICKER}{YYMMDD}{TYPE}{STRIKE8}
-    Example: SPY260420P00710000
-             → ticker: SPY
-             → expiry: Apr 20 2026
-             → type: Put
-             → strike: $710.00
-    
-    Parameters:
-        symbol (str): Full options contract symbol
-    
-    Returns:
-        dict: Decoded components, or raw symbol if parsing fails
-    """
     try:
-        # Work backwards from fixed-length suffix
-        # Last 8 chars = strike (padded integer, divide by 1000)
-        # Char before that = C or P
-        # 6 chars before that = YYMMDD
-        # Everything remaining = ticker
-        
         strike_str = symbol[-8:]
         contract_type_char = symbol[-9]
         date_str = symbol[-15:-9]
         ticker = symbol[:-15]
-        
-        # Parse strike
         strike = float(strike_str) / 1000
-        
-        # Parse contract type
         contract_type = "Call" if contract_type_char == "C" else "Put"
-        
-        # Parse expiration date
         year = int("20" + date_str[0:2])
         month = int(date_str[2:4])
         day = int(date_str[4:6])
         expiry = datetime(year, month, day)
-        
-        # Format expiration as readable string
-        expiry_display = expiry.strftime("%b %d")  # e.g. "Apr 20"
-        
-        # Calculate days to expiration
+        expiry_display = expiry.strftime("%b %d")
         eastern = pytz.timezone(MARKET_TIMEZONE)
         now = datetime.now(eastern)
         days_out = (expiry.date() - now.date()).days
-        
         if days_out == 0:
             dte_display = "0DTE"
         elif days_out == 1:
             dte_display = "1 day"
         else:
             dte_display = f"{days_out}d"
-        
         return {
             'ticker': ticker,
             'strike': strike,
@@ -76,27 +51,42 @@ def decode_contract(symbol):
             'days_out': days_out,
             'readable': f"{ticker} {expiry_display} ${strike:,.0f} {contract_type}"
         }
-    
     except Exception:
-        # If parsing fails for any reason, return safe fallback
         return {
-            'ticker': symbol,
-            'strike': 0,
-            'strike_display': '',
-            'contract_type': '',
-            'expiry_display': '',
-            'dte_display': '',
-            'days_out': 999,
-            'readable': symbol
+            'ticker': symbol, 'strike': 0, 'strike_display': '',
+            'contract_type': '', 'expiry_display': '', 'dte_display': '',
+            'days_out': 999, 'readable': symbol
         }
+
+
+# =============================================================================
+# FORMAT HELPERS
+# =============================================================================
+
+def fmt_premium(p):
+    if p is None: return '$0'
+    if p >= 1_000_000: return f"${p/1_000_000:.1f}M"
+    if p >= 1_000: return f"${p/1_000:.0f}K"
+    return f"${p:.0f}"
+
+def fmt_pnl(v):
+    if v is None: return '+$0.00'
+    return f"+${v:,.2f}" if v >= 0 else f"-${abs(v):,.2f}"
+
+def fmt_pct(v):
+    if v is None: return '0.0%'
+    return f"+{v:.1f}%" if v >= 0 else f"{v:.1f}%"
+
+
+# =============================================================================
+# FLASK APP
+# =============================================================================
 
 app = Flask(__name__)
 
-DB_PATH = "signals.db"
-MARKET_TIMEZONE = "US/Eastern"
 
 # =============================================================================
-# DATABASE HELPERS
+# DB — CONNECTION
 # =============================================================================
 
 def get_db_connection():
@@ -105,129 +95,58 @@ def get_db_connection():
     return conn
 
 
+# =============================================================================
+# DB — SIGNALS TAB
+# =============================================================================
+
 def get_todays_signals():
-    """Fetch all signals logged today."""
     conn = get_db_connection()
-    cursor = conn.cursor()
     today = datetime.now().strftime("%Y-%m-%d")
-    
-    cursor.execute("""
+    c = conn.cursor()
+    c.execute("""
         SELECT * FROM signals
         WHERE scan_time LIKE ?
         ORDER BY composite_score DESC, premium DESC
     """, (f"{today}%",))
-    
-    signals = [dict(row) for row in cursor.fetchall()]
+    rows = [dict(r) for r in c.fetchall()]
     conn.close()
-    return signals
+    return rows
 
 
 def get_expiring_today():
-    """Fetch all signals expiring today."""
     conn = get_db_connection()
-    cursor = conn.cursor()
     today = datetime.now().strftime("%Y-%m-%d")
-    
-    cursor.execute("""
+    c = conn.cursor()
+    c.execute("""
         SELECT * FROM signals
         WHERE expiration = ?
         AND signal_tier IN ('HIGH', 'INST')
         ORDER BY composite_score DESC
     """, (today,))
-    
-    signals = [dict(row) for row in cursor.fetchall()]
+    rows = [dict(r) for r in c.fetchall()]
     conn.close()
-    return signals
-
-
-def get_performance_stats():
-    """Calculate win rate statistics by tier."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT
-            signal_tier,
-            COUNT(*) as total,
-            SUM(CASE WHEN outcome = 'WIN' THEN 1 ELSE 0 END) as wins,
-            SUM(CASE WHEN outcome = 'LOSS' THEN 1 ELSE 0 END) as losses,
-            SUM(CASE WHEN outcome = 'FLAT' THEN 1 ELSE 0 END) as flats
-        FROM signals
-        WHERE outcome IS NOT NULL
-        GROUP BY signal_tier
-        ORDER BY CASE signal_tier
-            WHEN 'HIGH' THEN 1
-            WHEN 'INST' THEN 2
-            WHEN 'WATCH' THEN 3
-        END
-    """, )
-    
-    results = [dict(row) for row in cursor.fetchall()]
-    conn.close()
-    return results
+    return rows
 
 
 def get_directional_bias():
-    """Calculate call vs put bias from today's HIGH signals."""
     conn = get_db_connection()
-    cursor = conn.cursor()
     today = datetime.now().strftime("%Y-%m-%d")
-    
-    cursor.execute("""
-        SELECT
-            contract_type,
-            COUNT(*) as count,
-            SUM(premium) as total_premium
+    c = conn.cursor()
+    c.execute("""
+        SELECT contract_type, COUNT(*) as count, SUM(premium) as total_premium
         FROM signals
-        WHERE scan_time LIKE ?
-        AND signal_tier = 'HIGH'
+        WHERE scan_time LIKE ? AND signal_tier = 'HIGH'
         GROUP BY contract_type
     """, (f"{today}%",))
-    
-    results = {row['contract_type']: dict(row) 
-               for row in cursor.fetchall()}
+    results = {row['contract_type']: dict(row) for row in c.fetchall()}
     conn.close()
     return results
 
 
-def get_journal_summary():
-    """Get overall journal statistics."""
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    
-    cursor.execute("""
-        SELECT
-            COUNT(*) as total,
-            SUM(CASE WHEN outcome IS NULL THEN 1 ELSE 0 END) as pending,
-            SUM(CASE WHEN outcome = 'WIN' THEN 1 ELSE 0 END) as wins,
-            SUM(CASE WHEN outcome = 'LOSS' THEN 1 ELSE 0 END) as losses,
-            SUM(CASE WHEN signal_tier = 'HIGH' THEN 1 ELSE 0 END) as high_count,
-            SUM(CASE WHEN signal_tier = 'INST' THEN 1 ELSE 0 END) as inst_count,
-            SUM(CASE WHEN signal_tier = 'WATCH' THEN 1 ELSE 0 END) as watch_count
-        FROM signals
-    """)
-    
-    result = dict(cursor.fetchone())
-    conn.close()
-    return result
-
-
 def get_signal_history(days=30):
-    """
-    Fetch signal counts and premium volume grouped by scan date.
-    Returns last N days of data for the history chart.
-    
-    Each row contains:
-        scan_date   — YYYY-MM-DD string
-        high_count  — number of HIGH signals that day
-        inst_count  — number of INST signals that day
-        watch_count — number of WATCH signals that day
-        total_premium — sum of premium for all signals that day
-    """
     conn = get_db_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
+    c = conn.cursor()
+    c.execute("""
         SELECT
             DATE(scan_time) as scan_date,
             SUM(CASE WHEN signal_tier = 'HIGH'  THEN 1 ELSE 0 END) as high_count,
@@ -239,27 +158,262 @@ def get_signal_history(days=30):
         GROUP BY DATE(scan_time)
         ORDER BY scan_date ASC
     """, (f"-{days} days",))
-
-    rows = [dict(row) for row in cursor.fetchall()]
+    rows = [dict(r) for r in c.fetchall()]
     conn.close()
     return rows
 
 
+# =============================================================================
+# DB — PORTFOLIO TAB
+# =============================================================================
+
+def get_closed_summary():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+            COUNT(*) as total,
+            SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+            SUM(CASE WHEN pnl <= 0 THEN 1 ELSE 0 END) as losses,
+            ROUND(SUM(pnl), 2) as total_pnl,
+            ROUND(AVG(pnl), 2) as avg_pnl,
+            ROUND(AVG(CASE WHEN pnl > 0 THEN pnl END), 2) as avg_win,
+            ROUND(AVG(CASE WHEN pnl <= 0 THEN pnl END), 2) as avg_loss,
+            ROUND(AVG(hold_days), 1) as avg_hold_days,
+            MAX(pnl) as best_trade,
+            MIN(pnl) as worst_trade
+        FROM paper_trades
+        WHERE status = 'CLOSED'
+    """)
+    result = dict(c.fetchone())
+    conn.close()
+    return result
+
+
+def get_today_activity():
+    conn = get_db_connection()
+    c = conn.cursor()
+    today = datetime.now().strftime("%Y-%m-%d")
+    c.execute("""
+        SELECT pt.id, pt.signal_contract, pt.entry_price, pt.contracts,
+               pt.status, pt.dte_at_entry, s.ticker, s.contract_type
+        FROM paper_trades pt
+        JOIN signals s ON pt.signal_contract = s.contract
+        WHERE DATE(pt.entry_time) = ?
+        ORDER BY pt.entry_time DESC
+    """, (today,))
+    entered = [dict(r) for r in c.fetchall()]
+    c.execute("""
+        SELECT pt.id, pt.signal_contract, pt.entry_price, pt.exit_price,
+               pt.pnl, pt.pnl_pct, pt.exit_reason, pt.hold_days,
+               s.ticker, s.contract_type
+        FROM paper_trades pt
+        JOIN signals s ON pt.signal_contract = s.contract
+        WHERE DATE(pt.exit_time) = ? AND pt.status = 'CLOSED'
+        ORDER BY pt.exit_time DESC
+    """, (today,))
+    closed_today = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return entered, closed_today
+
+
+def get_exit_reason_breakdown():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+            exit_reason,
+            COUNT(*) as count,
+            SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+            ROUND(SUM(pnl), 2) as total_pnl,
+            ROUND(AVG(pnl_pct), 1) as avg_pct
+        FROM paper_trades
+        WHERE status = 'CLOSED'
+        GROUP BY exit_reason
+        ORDER BY total_pnl DESC
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_ticker_breakdown():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+            s.ticker,
+            COUNT(*) as count,
+            SUM(CASE WHEN pt.pnl > 0 THEN 1 ELSE 0 END) as wins,
+            SUM(CASE WHEN pt.pnl <= 0 THEN 1 ELSE 0 END) as losses,
+            ROUND(SUM(pt.pnl), 2) as total_pnl,
+            ROUND(AVG(pt.pnl_pct), 1) as avg_pct
+        FROM paper_trades pt
+        JOIN signals s ON pt.signal_contract = s.contract
+        WHERE pt.status = 'CLOSED'
+        GROUP BY s.ticker
+        ORDER BY total_pnl DESC
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+# =============================================================================
+# DB — POSITIONS TAB
+# =============================================================================
+
+def get_open_positions():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        WITH last_snapshots AS (
+            SELECT trade_id, MAX(id) as max_id
+            FROM position_snapshots
+            GROUP BY trade_id
+        )
+        SELECT
+            pt.id,
+            pt.signal_contract,
+            pt.entry_price,
+            pt.contracts,
+            pt.total_cost,
+            pt.status,
+            pt.dte_at_entry,
+            ps.current_price as last_price,
+            ps.pnl           as last_pnl,
+            ps.pnl_pct       as last_pnl_pct,
+            ps.snapshot_time,
+            ps.dynamic_stop,
+            ps.current_dte
+        FROM paper_trades pt
+        JOIN last_snapshots ls ON ls.trade_id = pt.id
+        JOIN position_snapshots ps ON ps.id = ls.max_id
+        WHERE pt.status IN ('OPEN', 'STOP_TRIGGERED')
+        ORDER BY ps.pnl DESC
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+# =============================================================================
+# DB — ANALYTICS TAB
+# =============================================================================
+
+def get_score_bucket_stats():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+            CASE
+                WHEN score_at_entry >= 8.0 THEN '8.0+'
+                WHEN score_at_entry >= 7.0 THEN '7.0-7.9'
+                WHEN score_at_entry >= 6.0 THEN '6.0-6.9'
+                WHEN score_at_entry >= 5.0 THEN '5.0-5.9'
+                WHEN score_at_entry >= 4.0 THEN '4.0-4.9'
+                ELSE 'Under 4.0'
+            END as score_bucket,
+            COUNT(*) as total,
+            SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+            ROUND(AVG(pnl), 2) as avg_pnl,
+            ROUND(AVG(pnl_pct), 1) as avg_pct,
+            ROUND(SUM(pnl), 2) as total_pnl
+        FROM paper_trades
+        WHERE status = 'CLOSED' AND pnl IS NOT NULL AND score_at_entry IS NOT NULL
+        GROUP BY score_bucket
+        ORDER BY MIN(score_at_entry) DESC
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_dte_bucket_stats():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+            CASE
+                WHEN dte_at_entry = 0  THEN '0DTE'
+                WHEN dte_at_entry <= 2 THEN '1-2d'
+                WHEN dte_at_entry <= 5 THEN '3-5d'
+                WHEN dte_at_entry <= 14 THEN '6-14d'
+                WHEN dte_at_entry <= 30 THEN '15-30d'
+                ELSE '30d+'
+            END as dte_bucket,
+            COUNT(*) as total,
+            SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+            ROUND(AVG(pnl), 2) as avg_pnl,
+            ROUND(AVG(pnl_pct), 1) as avg_pct,
+            ROUND(SUM(pnl), 2) as total_pnl
+        FROM paper_trades
+        WHERE status = 'CLOSED' AND pnl IS NOT NULL
+        GROUP BY dte_bucket
+        ORDER BY MIN(dte_at_entry)
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_premium_tier_stats():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        SELECT
+            CASE
+                WHEN s.premium >= 5000000 THEN '$5M+'
+                WHEN s.premium >= 2000000 THEN '$2M-5M'
+                WHEN s.premium >= 1000000 THEN '$1M-2M'
+                WHEN s.premium >= 500000  THEN '$500K-1M'
+                WHEN s.premium >= 100000  THEN '$100K-500K'
+                ELSE 'Under $100K'
+            END as premium_tier,
+            COUNT(*) as total,
+            SUM(CASE WHEN pt.pnl > 0 THEN 1 ELSE 0 END) as wins,
+            ROUND(AVG(pt.pnl), 2) as avg_pnl,
+            ROUND(AVG(pt.pnl_pct), 1) as avg_pct,
+            ROUND(SUM(pt.pnl), 2) as total_pnl
+        FROM paper_trades pt
+        JOIN signals s ON pt.signal_contract = s.contract
+        WHERE pt.status = 'CLOSED' AND pt.pnl IS NOT NULL
+        GROUP BY premium_tier
+        ORDER BY MIN(s.premium) DESC
+    """)
+    rows = [dict(r) for r in c.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_threshold_stats():
+    conn = get_db_connection()
+    results = []
+    for thresh in [3.0, 4.0, 5.0, 6.0, 7.0, 7.5, 8.0]:
+        c = conn.cursor()
+        c.execute("""
+            SELECT COUNT(*) as total,
+                   SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
+                   ROUND(SUM(pnl), 2) as total_pnl,
+                   ROUND(AVG(pnl_pct), 1) as avg_pct
+            FROM paper_trades
+            WHERE status = 'CLOSED' AND pnl IS NOT NULL AND score_at_entry >= ?
+        """, (thresh,))
+        row = dict(c.fetchone())
+        row['threshold'] = thresh
+        results.append(row)
+    conn.close()
+    return results
+
+
+# =============================================================================
+# API HELPERS
+# =============================================================================
+
 def get_api_token():
-    """
-    Get a fresh access token from Public API.
-    Called when dashboard needs to fetch live Greeks.
-    Token is valid for 60 minutes.
-    
-    Returns:
-        str: Access token or None if auth fails
-    """
     try:
         url = f"{BASE_URL}/userapiauthservice/personal/access-tokens"
-        response = requests.post(url, json={
-            "secret": SECRET_KEY,
-            "validityInMinutes": 60
-        })
+        response = requests.post(url, json={"secret": SECRET_KEY, "validityInMinutes": 60})
         if response.status_code == 200:
             return response.json().get("accessToken")
     except Exception as e:
@@ -268,13 +422,6 @@ def get_api_token():
 
 
 def get_account_id(token):
-    """
-    Get the brokerage account ID.
-    Needed for the Greeks endpoint URL.
-    
-    Returns:
-        str: Account ID or None
-    """
     try:
         url = f"{BASE_URL}/userapigateway/trading/account"
         headers = {"Authorization": f"Bearer {token}"}
@@ -290,94 +437,50 @@ def get_account_id(token):
 
 
 def get_greeks_for_signals(signals):
-    """
-    Fetch Greeks for a list of signals from Public API.
-    
-    Only fetches for HIGH tier signals to minimize API calls.
-    Returns a dict keyed by contract symbol for easy lookup.
-    
-    Parameters:
-        signals (list): List of signal dicts containing 'contract' key
-    
-    Returns:
-        dict: Greeks keyed by contract symbol, empty dict if unavailable
-    """
-    
     if not signals:
         return {}
-    
     try:
-        # Authenticate
         token = get_api_token()
-        if not token:
-            return {}
-        
+        if not token: return {}
         account_id = get_account_id(token)
-        if not account_id:
-            return {}
-        
-        # Build symbol list
+        if not account_id: return {}
         symbols = [s['contract'] for s in signals]
-        
         url = f"{BASE_URL}/userapigateway/option-details/{account_id}/greeks"
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "Content-Type": "application/json"
-        }
-        params = {"osiSymbols": symbols}
-        
-        response = requests.get(url, headers=headers, params=params)
-        
+        headers = {"Authorization": f"Bearer {token}", "Content-Type": "application/json"}
+        response = requests.get(url, headers=headers, params={"osiSymbols": symbols})
         if response.status_code != 200:
-            print(f"  Greeks fetch failed: {response.status_code}")
             return {}
-        
-        data = response.json()
-        greeks_list = data.get("greeks", [])
-        
-        # Key by symbol for easy template lookup
-        greeks_by_symbol = {}
+        greeks_list = response.json().get("greeks", [])
+        result = {}
         for item in greeks_list:
             symbol = item.get("symbol", "")
-            if symbol:
-                g = item.get("greeks", {})
-                try:
-                    delta = float(g.get("delta", 0) or 0)
-                    iv = float(g.get("impliedVolatility", 0) or 0)
-                    theta = float(g.get("theta", 0) or 0)
-                    
-                    # Delta context
-                    abs_delta = abs(delta)
-                    if abs_delta >= 0.7:
-                        moneyness = "ITM"
-                        moneyness_color = "#22c55e"
-                    elif abs_delta >= 0.3:
-                        moneyness = "ATM"
-                        moneyness_color = "#f59e0b"
-                    else:
-                        moneyness = "OTM"
-                        moneyness_color = "#64748b"
-                    
-                    greeks_by_symbol[symbol] = {
-                        'delta': f"{delta:+.3f}",
-                        'delta_raw': delta,
-                        'theta': f"{theta:.3f}",
-                        'iv': f"{iv*100:.1f}%",
-                        'moneyness': moneyness,
-                        'moneyness_color': moneyness_color
-                    }
-                except (ValueError, TypeError):
-                    pass
-        
-        return greeks_by_symbol
-    
+            if not symbol: continue
+            g = item.get("greeks", {})
+            try:
+                delta = float(g.get("delta", 0) or 0)
+                iv = float(g.get("impliedVolatility", 0) or 0)
+                theta = float(g.get("theta", 0) or 0)
+                abs_delta = abs(delta)
+                if abs_delta >= 0.7:
+                    moneyness, moneyness_color = "ITM", "#22c55e"
+                elif abs_delta >= 0.3:
+                    moneyness, moneyness_color = "ATM", "#f59e0b"
+                else:
+                    moneyness, moneyness_color = "OTM", "#64748b"
+                result[symbol] = {
+                    'delta': f"{delta:+.3f}", 'delta_raw': delta,
+                    'theta': f"{theta:.3f}", 'iv': f"{iv*100:.1f}%",
+                    'moneyness': moneyness, 'moneyness_color': moneyness_color
+                }
+            except (ValueError, TypeError):
+                pass
+        return result
     except Exception as e:
         print(f"  Greeks error: {e}")
         return {}
 
 
 def is_market_open():
-    """Check if market is currently open."""
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
     if now.weekday() > 4:
@@ -393,84 +496,58 @@ def is_market_open():
 
 @app.route('/')
 def dashboard():
-    """Main dashboard page."""
-    
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
-    
-    # Gather all data
-    todays_signals = get_todays_signals()
-    expiring_today = get_expiring_today()
-    performance = get_performance_stats()
-    bias = get_directional_bias()
-    summary = get_journal_summary()
     market_open = is_market_open()
 
-    # Fetch live Greeks for HIGH signals
-    # Only fetch during market hours to avoid unnecessary API calls
-    high_for_greeks = [s for s in todays_signals 
-                        if s['signal_tier'] == 'HIGH'][:15]
+    # ── Signals tab data ──────────────────────────────────────────────────────
+    todays_signals = get_todays_signals()
+    expiring_today = get_expiring_today()
+    bias = get_directional_bias()
+
+    high_for_greeks = [s for s in todays_signals if s['signal_tier'] == 'HIGH'][:15]
     greeks_data = get_greeks_for_signals(high_for_greeks)
-    
-    # Calculate directional bias
+
     call_data = bias.get('CALL', {'count': 0, 'total_premium': 0})
-    put_data = bias.get('PUT', {'count': 0, 'total_premium': 0})
+    put_data  = bias.get('PUT',  {'count': 0, 'total_premium': 0})
     call_premium = call_data['total_premium'] or 0
-    put_premium = put_data['total_premium'] or 0
-    total_premium = call_premium + put_premium
-    
-    if total_premium > 0:
-        call_pct = round((call_premium / total_premium) * 100, 1)
-        put_pct = round((put_premium / total_premium) * 100, 1)
+    put_premium  = put_data['total_premium']  or 0
+    total_bias_premium = call_premium + put_premium
+
+    if total_bias_premium > 0:
+        call_pct = round((call_premium / total_bias_premium) * 100, 1)
+        put_pct  = round((put_premium  / total_bias_premium) * 100, 1)
         bias_label = "BEARISH" if put_pct > 55 else "BULLISH" if call_pct > 55 else "NEUTRAL"
         bias_color = "#ef4444" if bias_label == "BEARISH" else "#22c55e" if bias_label == "BULLISH" else "#f59e0b"
     else:
         call_pct = put_pct = 0
         bias_label = "NO DATA"
         bias_color = "#6b7280"
-    
-    # Split signals by tier
+
     high_signals = [s for s in todays_signals if s['signal_tier'] == 'HIGH'][:15]
     inst_signals = [s for s in todays_signals if s['signal_tier'] == 'INST'][:10]
-    
-    # Format premium helper
-    def fmt_premium(p):
-        if p >= 1_000_000:
-            return f"${p/1_000_000:.1f}M"
-        elif p >= 1_000:
-            return f"${p/1_000:.0f}K"
-        return f"${p:.0f}"
-    
-    # Add formatted premium and decoded symbol to each signal
+
     for s in high_signals + inst_signals + expiring_today:
         s['premium_display'] = fmt_premium(s['premium'])
         s['decoded'] = decode_contract(s['contract'])
-        s['greeks'] = greeks_data.get(s['contract'], {})
+        s['greeks']  = greeks_data.get(s['contract'], {})
 
-    # Signal history for chart — serialize to JSON for JS consumption
-    import json
     signal_history = get_signal_history(days=30)
-    # Format premium for each day
     for day in signal_history:
         p = day['total_premium'] or 0
         day['total_premium'] = p
         day['premium_display'] = fmt_premium(p)
     signal_history_json = json.dumps(signal_history)
 
-    # Pass high/inst signals as JSON for DTE filter (days_out already decoded above)
     high_signals_json = json.dumps([{
-        'contract': s['contract'],
-        'contract_type': s['contract_type'],
-        'premium_display': s['premium_display'],
-        'composite_score': s['composite_score'],
-        'days_out': s['decoded']['days_out'],
-        'ticker': s['decoded']['ticker'],
+        'contract': s['contract'], 'contract_type': s['contract_type'],
+        'premium_display': s['premium_display'], 'composite_score': s['composite_score'],
+        'days_out': s['decoded']['days_out'], 'ticker': s['decoded']['ticker'],
         'strike_display': s['decoded']['strike_display'],
         'contract_type_display': s['decoded']['contract_type'],
         'expiry_display': s['decoded']['expiry_display'],
         'dte_display': s['decoded']['dte_display'],
-        'delta': s['greeks'].get('delta', ''),
-        'iv': s['greeks'].get('iv', ''),
+        'delta': s['greeks'].get('delta', ''), 'iv': s['greeks'].get('iv', ''),
         'moneyness': s['greeks'].get('moneyness', ''),
         'moneyness_color': s['greeks'].get('moneyness_color', ''),
         'has_greeks': bool(s['greeks']),
@@ -478,589 +555,433 @@ def dashboard():
     } for s in high_signals])
 
     inst_signals_json = json.dumps([{
-        'contract': s['contract'],
-        'contract_type': s['contract_type'],
-        'premium_display': s['premium_display'],
-        'composite_score': s['composite_score'],
-        'days_out': s['decoded']['days_out'],
-        'ticker': s['decoded']['ticker'],
+        'contract': s['contract'], 'contract_type': s['contract_type'],
+        'premium_display': s['premium_display'], 'composite_score': s['composite_score'],
+        'days_out': s['decoded']['days_out'], 'ticker': s['decoded']['ticker'],
         'strike_display': s['decoded']['strike_display'],
         'contract_type_display': s['decoded']['contract_type'],
         'expiry_display': s['decoded']['expiry_display'],
         'dte_display': s['decoded']['dte_display'],
         'share_price': f"${s['share_price']:,.2f}" if s.get('share_price') else '',
     } for s in inst_signals])
-    
+
+    # ── Portfolio tab data ────────────────────────────────────────────────────
+    closed = get_closed_summary()
+    today_entered, today_closed = get_today_activity()
+    exit_reasons = get_exit_reason_breakdown()
+    tickers = get_ticker_breakdown()
+
+    total  = closed.get('total') or 0
+    wins   = closed.get('wins')  or 0
+    losses = closed.get('losses') or 0
+    win_rate_pct = round((wins / total) * 100, 1) if total > 0 else 0
+    realized_pnl = closed.get('total_pnl') or 0
+
+    for t in today_entered:
+        t['decoded'] = decode_contract(t['signal_contract'])
+    for t in today_closed:
+        t['decoded'] = decode_contract(t['signal_contract'])
+        t['pnl_display'] = fmt_pnl(t.get('pnl'))
+        t['pnl_pct_display'] = fmt_pct(t.get('pnl_pct'))
+        t['pnl_positive'] = (t.get('pnl') or 0) >= 0
+
+    portfolio = {
+        'total_trades': total, 'wins': wins, 'losses': losses,
+        'win_rate': win_rate_pct,
+        'realized_pnl': realized_pnl,
+        'realized_pnl_display': fmt_pnl(realized_pnl),
+        'realized_pnl_positive': realized_pnl >= 0,
+        'avg_pnl_display': fmt_pnl(closed.get('avg_pnl')),
+        'avg_win_display': fmt_pnl(closed.get('avg_win')),
+        'avg_loss_display': fmt_pnl(closed.get('avg_loss')),
+        'avg_hold_days': closed.get('avg_hold_days') or 0,
+        'best_trade_display': fmt_pnl(closed.get('best_trade')),
+        'worst_trade_display': fmt_pnl(closed.get('worst_trade')),
+        'current_value': STARTING_BANKROLL + realized_pnl,
+        'return_pct': round((realized_pnl / STARTING_BANKROLL) * 100, 1),
+    }
+
     return render_template_string(DASHBOARD_HTML,
         now=now.strftime('%Y-%m-%d %H:%M:%S %Z'),
         market_open=market_open,
         market_status="OPEN" if market_open else "CLOSED",
         market_color="#22c55e" if market_open else "#ef4444",
-        high_signals=high_signals,
-        inst_signals=inst_signals,
+        # signals
+        high_signals=high_signals, inst_signals=inst_signals,
         expiring_today=expiring_today,
-        performance=performance,
-        summary=summary,
-        call_pct=call_pct,
-        put_pct=put_pct,
+        todays_signal_count=len(todays_signals),
+        call_pct=call_pct, put_pct=put_pct,
         call_premium_display=fmt_premium(call_premium),
         put_premium_display=fmt_premium(put_premium),
-        bias_label=bias_label,
-        bias_color=bias_color,
-        todays_signal_count=len(todays_signals),
-        greeks_data=greeks_data,
+        bias_label=bias_label, bias_color=bias_color,
         signal_history_json=signal_history_json,
         high_signals_json=high_signals_json,
         inst_signals_json=inst_signals_json,
+        # portfolio
+        portfolio=portfolio,
+        today_entered=today_entered, today_closed=today_closed,
+        exit_reasons=exit_reasons, tickers=tickers,
     )
+
+
+@app.route('/api/positions')
+def api_positions():
+    eastern = pytz.timezone(MARKET_TIMEZONE)
+    now = datetime.now(eastern)
+    positions = get_open_positions()
+    result = []
+    for p in positions:
+        decoded = decode_contract(p['signal_contract'])
+        last_pnl = p['last_pnl'] or 0
+        result.append({
+            'id': p['id'],
+            'contract': p['signal_contract'],
+            'ticker': decoded['ticker'],
+            'strike_display': decoded['strike_display'],
+            'contract_type': decoded['contract_type'],
+            'expiry_display': decoded['expiry_display'],
+            'entry_price': p['entry_price'],
+            'contracts': p['contracts'],
+            'last_price': p['last_price'],
+            'last_pnl': last_pnl,
+            'last_pnl_pct': p['last_pnl_pct'],
+            'last_pnl_display': fmt_pnl(last_pnl),
+            'last_pnl_pct_display': fmt_pct(p['last_pnl_pct']),
+            'status': p['status'],
+            'current_dte': p['current_dte'],
+            'dynamic_stop': p['dynamic_stop'],
+            'snapshot_time': p['snapshot_time'],
+        })
+    profitable = [p for p in result if p['last_pnl'] > 0]
+    total_unrealized = sum(p['last_pnl'] for p in result)
+    open_count    = sum(1 for p in result if p['status'] == 'OPEN')
+    stopped_count = sum(1 for p in result if p['status'] == 'STOP_TRIGGERED')
+    return jsonify({
+        'positions': result,
+        'summary': {
+            'open_count': open_count,
+            'stopped_count': stopped_count,
+            'profitable_count': len(profitable),
+            'losing_count': len(result) - len(profitable),
+            'total_unrealized': total_unrealized,
+            'total_unrealized_display': fmt_pnl(total_unrealized),
+        },
+        'timestamp': now.strftime('%Y-%m-%d %H:%M:%S %Z'),
+    })
+
+
+@app.route('/api/analytics')
+def api_analytics():
+    def enrich(rows):
+        for r in rows:
+            t = r.get('total') or 0
+            w = r.get('wins') or 0
+            r['win_rate'] = round((w / t) * 100, 1) if t > 0 else 0
+            r['total_pnl_display'] = fmt_pnl(r.get('total_pnl'))
+            r['avg_pnl_display']   = fmt_pnl(r.get('avg_pnl'))
+        return rows
+
+    score_buckets  = enrich(get_score_bucket_stats())
+    dte_buckets    = enrich(get_dte_bucket_stats())
+    premium_tiers  = enrich(get_premium_tier_stats())
+    thresholds     = get_threshold_stats()
+    for r in thresholds:
+        t = r.get('total') or 0
+        w = r.get('wins') or 0
+        r['win_rate'] = round((w / t) * 100, 1) if t > 0 else 0
+        r['total_pnl_display'] = fmt_pnl(r.get('total_pnl'))
+
+    return jsonify({
+        'score_buckets': score_buckets,
+        'dte_buckets': dte_buckets,
+        'premium_tiers': premium_tiers,
+        'thresholds': thresholds,
+    })
 
 
 @app.route('/api/record-outcome', methods=['POST'])
 def record_outcome():
-    """API endpoint to record signal outcomes from the dashboard."""
-    from flask import request
     data = request.get_json()
-    
     contract = data.get('contract')
-    outcome = data.get('outcome')
-    notes = data.get('notes', '')
-    
+    outcome  = data.get('outcome')
+    notes    = data.get('notes', '')
     if not contract or outcome not in ['WIN', 'LOSS', 'FLAT']:
         return jsonify({'success': False, 'error': 'Invalid input'})
-    
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE signals
-        SET outcome = ?, outcome_notes = ?
+        UPDATE signals SET outcome = ?, outcome_notes = ?
         WHERE contract = ? AND outcome IS NULL
     """, (outcome, notes, contract))
     updated = cursor.rowcount
     conn.commit()
     conn.close()
-    
     return jsonify({'success': True, 'updated': updated})
 
 
 @app.route('/api/data')
 def api_data():
-    """JSON endpoint for live data refresh."""
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
-    
     return jsonify({
         'timestamp': now.strftime('%Y-%m-%d %H:%M:%S %Z'),
         'market_open': is_market_open(),
-        'summary': get_journal_summary(),
         'bias': get_directional_bias(),
     })
 
+
 @app.route('/api/last-scan')
 def last_scan():
-    """
-    Returns the timestamp of the most recent completed scan.
-    Reads from scan_log table which updates every run regardless
-    of whether new signals were logged — reliable refresh trigger.
-    """
     conn = get_db_connection()
-    cursor = conn.cursor()
-    
+    c = conn.cursor()
     try:
-        cursor.execute("""
-            SELECT MAX(scan_time) as last_scan, 
-                   COUNT(*) as total_scans
-            FROM scan_log
-        """)
-        result = cursor.fetchone()
+        c.execute("SELECT MAX(scan_time) as last_scan FROM scan_log")
+        result = c.fetchone()
         last = result['last_scan'] if result else None
     except Exception:
-        # scan_log table might not exist yet on first run
         last = None
-    
     conn.close()
-    
     return jsonify({'last_scan': last})
 
 
 @app.route('/api/signal-history')
-def signal_history():
-    """
-    Returns last 30 days of signals grouped by date.
-    Used for the history chart on the dashboard.
-    """
+def signal_history_route():
     rows = get_signal_history(days=30)
     return jsonify(rows)
 
 
 # =============================================================================
-# DASHBOARD HTML TEMPLATE
+# HTML TEMPLATE
 # =============================================================================
 
-DASHBOARD_HTML = """
-<!DOCTYPE html>
+DASHBOARD_HTML = """<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Options Flow Scanner</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            background: #0f172a;
-            color: #e2e8f0;
-            font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-            font-size: 13px;
-            min-height: 100vh;
-        }
-        
-        /* ── Header ── */
-        .header {
-            background: #1e293b;
-            border-bottom: 1px solid #334155;
-            padding: 16px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .header h1 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #f1f5f9;
-            letter-spacing: 0.05em;
-        }
-        
-        .market-badge {
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            background: {{ market_color }}22;
-            color: {{ market_color }};
-            border: 1px solid {{ market_color }}44;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            color: #64748b;
-            font-size: 11px;
-        }
-        
-        .refresh-btn {
-            background: #334155;
-            border: none;
-            color: #94a3b8;
-            padding: 4px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 11px;
-        }
-        
-        .refresh-btn:hover { background: #475569; color: #e2e8f0; }
-        
-        /* ── Layout ── */
-        .main {
-            padding: 20px 24px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: auto auto auto;
-            gap: 16px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Options Flow Scanner</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Full-width cards span both columns */
-        .full-width {
-            grid-column: 1 / -1;
-        }
-        
-        /* ── Cards ── */
-        .card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 16px;
-        }
-        
-        .card-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: #64748b;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .card-title .count {
-            background: #334155;
-            color: #94a3b8;
-            padding: 1px 7px;
-            border-radius: 10px;
-            font-size: 10px;
-        }
-        
-        /* ── Stats Row ── */
-        .stats-row {
-            grid-column: 1 / -1;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-        }
-        
-        .stat-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 14px 16px;
-        }
-        
-        .stat-label {
-            font-size: 10px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 6px;
-        }
-        
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #f1f5f9;
-            line-height: 1;
-        }
-        
-        .stat-sub {
-            font-size: 10px;
-            color: #64748b;
-            margin-top: 4px;
-        }
+body {
+    background: #0f172a;
+    color: #e2e8f0;
+    font-family: 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+}
 
-        /* ── Signal History Chart ── */
-        .history-card {
-            grid-column: 1 / -1;
-        }
+/* ── Header ── */
+.header {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.header h1 { font-size: 15px; font-weight: 600; color: #f1f5f9; letter-spacing: 0.05em; }
+.market-badge {
+    padding: 3px 10px; border-radius: 4px; font-size: 11px;
+    font-weight: 700; letter-spacing: 0.1em;
+    background: {{ market_color }}22;
+    color: {{ market_color }};
+    border: 1px solid {{ market_color }}44;
+}
+.header-right { display: flex; align-items: center; gap: 14px; color: #64748b; font-size: 11px; }
+.refresh-btn {
+    background: #334155; border: none; color: #94a3b8;
+    padding: 4px 12px; border-radius: 4px; cursor: pointer;
+    font-family: inherit; font-size: 11px;
+}
+.refresh-btn:hover { background: #475569; color: #e2e8f0; }
+.live-dot {
+    width: 6px; height: 6px; background: #22c55e; border-radius: 50%;
+    display: inline-block; animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-        .chart-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 14px;
-        }
+/* ── Tab Bar ── */
+.tab-bar {
+    background: #1e293b;
+    border-bottom: 1px solid #334155;
+    display: flex;
+    padding: 0 24px;
+    gap: 4px;
+}
+.tab-btn {
+    padding: 11px 18px;
+    background: none; border: none;
+    border-bottom: 2px solid transparent;
+    color: #64748b;
+    font-family: inherit; font-size: 11px; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; margin-bottom: -1px;
+    transition: color 0.15s, border-color 0.15s;
+}
+.tab-btn:hover { color: #94a3b8; }
+.tab-btn.active { color: #f1f5f9; border-bottom-color: #3b82f6; }
 
-        .chart-legend {
-            display: flex;
-            gap: 16px;
-            font-size: 10px;
-            color: #64748b;
-        }
+/* ── Tab Content ── */
+.tab-content { display: none; padding: 20px 24px; max-width: 1440px; margin: 0 auto; }
+.tab-content.active { display: block; }
 
-        .legend-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 2px;
-            margin-right: 4px;
-            vertical-align: middle;
-        }
+/* ── Cards ── */
+.card {
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 8px; padding: 16px;
+}
+.card-title {
+    font-size: 11px; font-weight: 600; color: #64748b;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.card-title .count {
+    background: #334155; color: #94a3b8;
+    padding: 1px 7px; border-radius: 10px; font-size: 10px;
+}
 
-        .legend-line {
-            display: inline-block;
-            width: 14px;
-            height: 2px;
-            background: #e2e8f0;
-            border-radius: 1px;
-            vertical-align: middle;
-            margin-right: 4px;
-        }
+/* ── Grid helpers ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+.full-width { margin-bottom: 16px; }
 
-        #historyChart {
-            width: 100%;
-            height: 160px;
-            display: block;
-        }
+/* ── Stat Cards ── */
+.stat-card {
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 8px; padding: 14px 16px;
+}
+.stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.stat-value { font-size: 22px; font-weight: 700; color: #f1f5f9; line-height: 1; }
+.stat-value.positive { color: #22c55e; }
+.stat-value.negative { color: #ef4444; }
+.stat-sub { font-size: 10px; color: #64748b; margin-top: 4px; }
 
-        .chart-empty {
-            height: 160px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #475569;
-            font-style: italic;
-            font-size: 12px;
-        }
-        
-        /* ── Bias Bar ── */
-        .bias-card {
-            grid-column: 1 / -1;
-        }
-        
-        .bias-bar-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 4px;
-        }
-        
-        .bias-bar {
-            flex: 1;
-            height: 8px;
-            background: #334155;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .bias-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: {{ bias_color }};
-            width: {{ put_pct if bias_label == 'BEARISH' else call_pct }}%;
-            transition: width 0.5s ease;
-        }
-        
-        .bias-details {
-            display: flex;
-            gap: 20px;
-            margin-top: 10px;
-            font-size: 11px;
-        }
-        
-        .bias-call { color: #22c55e; }
-        .bias-put  { color: #ef4444; }
-        
-        .bias-label-display {
-            font-size: 18px;
-            font-weight: 700;
-            color: {{ bias_color }};
-            min-width: 80px;
-            text-align: right;
-        }
+/* ── Tables ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+    font-size: 10px; color: #475569; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 0 8px 8px 0; text-align: left;
+    border-bottom: 1px solid #334155;
+}
+.data-table td {
+    padding: 7px 8px 7px 0; border-bottom: 1px solid #1e293b; vertical-align: middle;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: #ffffff08; }
 
-        /* ── DTE Filter Tabs ── */
-        .dte-tabs {
-            display: flex;
-            gap: 4px;
-            margin-left: auto;  /* push tabs to right of card-title */
-        }
+/* ── Type colors ── */
+.type-call { color: #22c55e; font-weight: 600; }
+.type-put  { color: #ef4444; font-weight: 600; }
 
-        .dte-tab {
-            padding: 3px 10px;
-            border-radius: 4px;
-            border: 1px solid #334155;
-            background: transparent;
-            color: #64748b;
-            font-family: inherit;
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-            cursor: pointer;
-            transition: all 0.15s;
-            text-transform: uppercase;
-        }
+/* ── Win rate bar ── */
+.wr-bar { flex:1; margin: 0 10px; height: 4px; background: #334155; border-radius: 2px; overflow: hidden; }
+.wr-fill { height: 100%; background: #22c55e; border-radius: 2px; }
+.wr-row { display: flex; align-items: center; padding: 7px 0; border-bottom: 1px solid #334155; }
+.wr-row:last-child { border-bottom: none; }
 
-        .dte-tab:hover {
-            border-color: #475569;
-            color: #94a3b8;
-        }
+/* ── Badges ── */
+.badge {
+    display: inline-block; padding: 2px 7px; border-radius: 3px;
+    font-size: 10px; font-weight: 600; vertical-align: middle;
+}
+.badge-open     { background: #22c55e22; color: #22c55e; border: 1px solid #22c55e33; }
+.badge-tracking { background: #f97316aa; color: #fff; }
+.badge-stop     { background: #f9731622; color: #f97316; border: 1px solid #f9731633; }
+.badge-win      { background: #22c55e22; color: #22c55e; }
+.badge-loss     { background: #ef444422; color: #ef4444; }
+.badge-trail    { background: #f59e0b22; color: #f59e0b; border: 1px solid #f59e0b33; }
 
-        .dte-tab.active {
-            background: #334155;
-            color: #f1f5f9;
-            border-color: #475569;
-        }
-        
-        /* ── Signal Tables ── */
-        .signal-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .signal-table th {
-            font-size: 10px;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            padding: 0 8px 8px 0;
-            text-align: left;
-            border-bottom: 1px solid #334155;
-        }
-        
-        .signal-table td {
-            padding: 7px 8px 7px 0;
-            border-bottom: 1px solid #1e293b;
-            vertical-align: middle;
-        }
-        
-        .signal-table tr:last-child td { border-bottom: none; }
-        
-        .signal-table tr:hover td { background: #ffffff08; }
-        
-        .contract-cell {
-            font-family: 'SF Mono', monospace;
-            font-size: 11px;
-            color: #cbd5e1;
-        }
-        
-        .type-call { color: #22c55e; font-weight: 600; }
-        .type-put  { color: #ef4444; font-weight: 600; }
-        
-        .premium-cell {
-            color: #f1f5f9;
-            font-weight: 600;
-        }
-        
-        .score-cell { color: #94a3b8; }
-        
-        .tier-high  { color: #f97316; }
-        .tier-inst  { color: #a855f7; }
-        .tier-watch { color: #3b82f6; }
+.dte-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
+.dte-urgent { background: #ef444422; color: #ef4444; border: 1px solid #ef444433; }
+.dte-soon   { background: #f59e0b22; color: #f59e0b; border: 1px solid #f59e0b33; }
+.dte-normal { background: #334155; color: #64748b; }
 
-        .stock-price-cell {
-            color: #64748b;
-            font-size: 11px;
-            white-space: nowrap;
-        }
+/* ── Loading / empty states ── */
+.loading-msg { color: #475569; font-style: italic; text-align: center; padding: 40px 0; font-size: 12px; }
+.empty-msg   { color: #475569; font-style: italic; text-align: center; padding: 16px 0; font-size: 11px; }
 
-        .dte-badge {
-            display: inline-block;
-            padding: 1px 6px;
-            border-radius: 3px;
-            font-size: 10px;
-            font-weight: 600;
-            vertical-align: middle;
-        }
-        
-        /* ── Outcome Buttons ── */
-        .outcome-btn {
-            padding: 2px 8px;
-            border-radius: 3px;
-            border: 1px solid;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 10px;
-            font-weight: 600;
-            margin-right: 3px;
-            background: transparent;
-            transition: all 0.15s;
-        }
-        
-        .btn-win  { color: #22c55e; border-color: #22c55e33; }
-        .btn-loss { color: #ef4444; border-color: #ef443333; }
-        .btn-flat { color: #64748b; border-color: #64748b33; }
-        
-        .btn-win:hover  { background: #22c55e22; }
-        .btn-loss:hover { background: #ef444422; }
-        .btn-flat:hover { background: #64748b22; }
-        
-        .outcome-recorded {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: 3px;
-        }
-        
-        .outcome-WIN  { color: #22c55e; background: #22c55e11; }
-        .outcome-LOSS { color: #ef4444; background: #ef444411; }
-        .outcome-FLAT { color: #64748b; background: #64748b11; }
-        
-        /* ── Performance Table ── */
-        .perf-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #334155;
-        }
-        
-        .perf-row:last-child { border-bottom: none; }
-        
-        .perf-tier { font-weight: 600; }
-        
-        .win-rate-bar {
-            flex: 1;
-            margin: 0 12px;
-            height: 4px;
-            background: #334155;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        
-        .win-rate-fill {
-            height: 100%;
-            background: #22c55e;
-            border-radius: 2px;
-        }
-        
-        .win-rate-label {
-            font-size: 12px;
-            font-weight: 700;
-            min-width: 40px;
-            text-align: right;
-        }
-        
-        .no-data {
-            color: #475569;
-            font-style: italic;
-            text-align: center;
-            padding: 20px 0;
-        }
+/* ── Signal table specifics ── */
+.signal-table { width: 100%; border-collapse: collapse; }
+.signal-table th {
+    font-size: 10px; color: #475569; text-transform: uppercase;
+    letter-spacing: 0.06em; padding: 0 8px 8px 0; text-align: left;
+    border-bottom: 1px solid #334155;
+}
+.signal-table td { padding: 7px 8px 7px 0; border-bottom: 1px solid #1e293b; vertical-align: middle; }
+.signal-table tr:last-child td { border-bottom: none; }
+.signal-table tr:hover td { background: #ffffff08; }
 
-        .table-empty {
-            color: #475569;
-            font-style: italic;
-            text-align: center;
-            padding: 16px 0;
-            font-size: 11px;
-        }
-        
-        /* ── Auto refresh indicator ── */
-        .live-dot {
-            width: 6px;
-            height: 6px;
-            background: #22c55e;
-            border-radius: 50%;
-            display: inline-block;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
+/* ── DTE filter tabs ── */
+.dte-tabs { display: flex; gap: 4px; margin-left: auto; }
+.dte-tab {
+    padding: 3px 10px; border-radius: 4px;
+    border: 1px solid #334155; background: transparent;
+    color: #64748b; font-family: inherit; font-size: 10px;
+    font-weight: 600; letter-spacing: 0.05em; cursor: pointer;
+    transition: all 0.15s; text-transform: uppercase;
+}
+.dte-tab:hover { border-color: #475569; color: #94a3b8; }
+.dte-tab.active { background: #334155; color: #f1f5f9; border-color: #475569; }
 
-        .dte-urgent {
-            background: #ef444422 !important;
-            color: #ef4444 !important;
-            border: 1px solid #ef444433;
-        }
+/* ── Bias bar ── */
+.bias-bar-wrap { display: flex; align-items: center; gap: 12px; margin-top: 4px; }
+.bias-bar { flex: 1; height: 8px; background: #334155; border-radius: 4px; overflow: hidden; }
+.bias-bar-fill { height: 100%; border-radius: 4px; background: {{ bias_color }};
+    width: {{ put_pct if bias_label == 'BEARISH' else call_pct }}%; transition: width 0.5s ease; }
+.bias-label-big { font-size: 18px; font-weight: 700; color: {{ bias_color }}; min-width: 80px; text-align: right; }
+.bias-details { display: flex; gap: 20px; margin-top: 10px; font-size: 11px; }
 
-        .dte-soon {
-            background: #f59e0b22 !important;
-            color: #f59e0b !important;
-            border: 1px solid #f59e0b33;
-        }
+/* ── Chart ── */
+#historyChart { width: 100%; height: 160px; display: block; }
+.chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.chart-legend { display: flex; gap: 16px; font-size: 10px; color: #64748b; }
+.legend-dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+.legend-line { display: inline-block; width: 14px; height: 2px; background: #e2e8f0; border-radius: 1px; vertical-align: middle; margin-right: 4px; }
 
-        .dte-normal {
-            background: #334155;
-            color: #64748b;
-        }
-    </style>
+/* ── Outcome buttons ── */
+.outcome-btn {
+    padding: 2px 8px; border-radius: 3px; border: 1px solid;
+    cursor: pointer; font-family: inherit; font-size: 10px;
+    font-weight: 600; margin-right: 3px; background: transparent; transition: all 0.15s;
+}
+.btn-win  { color: #22c55e; border-color: #22c55e33; }
+.btn-loss { color: #ef4444; border-color: #ef443333; }
+.btn-flat { color: #64748b; border-color: #64748b33; }
+.btn-win:hover  { background: #22c55e22; }
+.btn-loss:hover { background: #ef444422; }
+.btn-flat:hover { background: #64748b22; }
+.outcome-recorded { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 3px; }
+.outcome-WIN  { color: #22c55e; background: #22c55e11; }
+.outcome-LOSS { color: #ef4444; background: #ef444411; }
+.outcome-FLAT { color: #64748b; background: #64748b11; }
+
+/* ── Analytics score highlight ── */
+.score-highlight { background: #22c55e18; }
+.score-dim       { opacity: 0.6; }
+
+/* ── Positions summary bar ── */
+.pos-summary {
+    display: flex; gap: 24px; align-items: center;
+    background: #1e293b; border: 1px solid #334155;
+    border-radius: 8px; padding: 14px 20px; margin-bottom: 16px;
+}
+.pos-stat-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+.pos-stat-val   { font-size: 18px; font-weight: 700; }
+.pos-divider    { width: 1px; height: 36px; background: #334155; }
+.pos-refresh-btn {
+    margin-left: auto; background: #334155; border: none; color: #94a3b8;
+    padding: 6px 14px; border-radius: 4px; cursor: pointer;
+    font-family: inherit; font-size: 11px;
+}
+.pos-refresh-btn:hover { background: #475569; color: #e2e8f0; }
+</style>
 </head>
 <body>
 
+<!-- ═══════════════════════════════════════════════════════ HEADER ═══ -->
 <div class="header">
     <div class="header-left">
         <h1>OPTIONS FLOW SCANNER</h1>
@@ -1072,42 +993,182 @@ DASHBOARD_HTML = """
     </div>
 </div>
 
-<div class="main">
+<!-- ═══════════════════════════════════════════════════════ TAB BAR ═══ -->
+<div class="tab-bar">
+    <button class="tab-btn" data-tab="portfolio"  onclick="switchTab('portfolio')">Portfolio</button>
+    <button class="tab-btn" data-tab="positions"  onclick="switchTab('positions')">Positions</button>
+    <button class="tab-btn" data-tab="signals"    onclick="switchTab('signals')">Signals</button>
+    <button class="tab-btn" data-tab="analytics"  onclick="switchTab('analytics')">Analytics</button>
+</div>
 
-    <!-- Stats Row -->
-    <div class="stats-row">
+
+<!-- ═══════════════════════════════════════════════ TAB: PORTFOLIO ═══ -->
+<div id="tab-portfolio" class="tab-content">
+
+    <!-- Hero stats row -->
+    <div class="grid-5">
         <div class="stat-card">
-            <div class="stat-label">Total Signals</div>
-            <div class="stat-value">{{ summary.total or 0 }}</div>
-            <div class="stat-sub">{{ summary.pending or 0 }} pending outcomes</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Today's Signals</div>
-            <div class="stat-value">{{ todays_signal_count }}</div>
-            <div class="stat-sub">logged this session</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Wins Recorded</div>
-            <div class="stat-value" style="color:#22c55e">{{ summary.wins or 0 }}</div>
-            <div class="stat-sub">{{ summary.losses or 0 }} losses · {{ summary.flats or 0 }} flat</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Signal Breakdown</div>
-            <div class="stat-value" style="font-size:16px; padding-top:4px">
-                <span style="color:#f97316">{{ summary.high_count or 0 }}H</span>
-                <span style="color:#64748b; font-size:12px"> · </span>
-                <span style="color:#a855f7">{{ summary.inst_count or 0 }}I</span>
-                <span style="color:#64748b; font-size:12px"> · </span>
-                <span style="color:#3b82f6">{{ summary.watch_count or 0 }}W</span>
+            <div class="stat-label">Realized P&L</div>
+            <div class="stat-value {{ 'positive' if portfolio.realized_pnl_positive else 'negative' }}">
+                {{ portfolio.realized_pnl_display }}
             </div>
-            <div class="stat-sub">HIGH · INST · WATCH</div>
+            <div class="stat-sub">{{ portfolio.return_pct }}% return on $10K</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value">{{ portfolio.win_rate }}%</div>
+            <div class="stat-sub">{{ portfolio.wins }}W / {{ portfolio.losses }}L</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Closed Trades</div>
+            <div class="stat-value">{{ portfolio.total_trades }}</div>
+            <div class="stat-sub">avg {{ portfolio.avg_hold_days }}d hold</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Avg Trade P&L</div>
+            <div class="stat-value" style="font-size:18px; padding-top:3px">{{ portfolio.avg_pnl_display }}</div>
+            <div class="stat-sub">W: {{ portfolio.avg_win_display }} · L: {{ portfolio.avg_loss_display }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Best / Worst</div>
+            <div class="stat-value" style="font-size:14px; padding-top:5px; color:#22c55e">{{ portfolio.best_trade_display }}</div>
+            <div class="stat-sub" style="color:#ef4444">{{ portfolio.worst_trade_display }}</div>
         </div>
     </div>
 
+    <!-- Today's activity -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">Today's Entries
+                <span class="count">{{ today_entered|length }}</span>
+            </div>
+            {% if today_entered %}
+            <table class="data-table">
+                <thead><tr>
+                    <th>Ticker</th><th>Type</th><th>Entry $</th><th>Contracts</th><th>DTE</th><th>Status</th>
+                </tr></thead>
+                <tbody>
+                {% for t in today_entered %}
+                <tr>
+                    <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
+                    <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
+                        {{ t.decoded.contract_type }}</span></td>
+                    <td style="color:#e2e8f0">${{ "%.2f"|format(t.entry_price) }}</td>
+                    <td style="color:#94a3b8">{{ t.contracts }}</td>
+                    <td><span class="dte-badge {{ 'dte-urgent' if t.dte_at_entry == 0 else 'dte-soon' if t.dte_at_entry <= 2 else 'dte-normal' }}">
+                        {{ t.dte_at_entry }}d</span></td>
+                    <td><span class="badge {{ 'badge-open' if t.status == 'OPEN' else 'badge-tracking' }}">
+                        {{ t.status }}</span></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-msg">No entries today</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-title">Today's Exits
+                <span class="count">{{ today_closed|length }}</span>
+            </div>
+            {% if today_closed %}
+            <table class="data-table">
+                <thead><tr>
+                    <th>Ticker</th><th>Type</th><th>P&L</th><th>%</th><th>Reason</th>
+                </tr></thead>
+                <tbody>
+                {% for t in today_closed %}
+                <tr>
+                    <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
+                    <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
+                        {{ t.decoded.contract_type }}</span></td>
+                    <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }};font-weight:600">
+                        {{ t.pnl_display }}</td>
+                    <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }}">
+                        {{ t.pnl_pct_display }}</td>
+                    <td style="color:#64748b;font-size:11px">{{ t.exit_reason or '—' }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-msg">No exits today</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Exit reason + Ticker breakdown -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title">By Exit Reason</div>
+            {% if exit_reasons %}
+            {% for r in exit_reasons %}
+            <div class="wr-row">
+                <span style="color:#94a3b8;min-width:110px;font-size:11px">{{ r.exit_reason or 'Unknown' }}</span>
+                <div class="wr-bar">
+                    <div class="wr-fill" style="width:{{ ((r.wins / r.count) * 100)|round|int if r.count > 0 else 0 }}%"></div>
+                </div>
+                <span style="color:#22c55e;font-weight:700;min-width:38px;text-align:right;font-size:12px">
+                    {{ ((r.wins / r.count) * 100)|round(1) if r.count > 0 else 0 }}%</span>
+                <span style="color:#475569;font-size:10px;margin-left:10px;min-width:60px">
+                    {{ r.wins }}/{{ r.count }}</span>
+                <span style="color:{{ '#22c55e' if (r.total_pnl or 0) >= 0 else '#ef4444' }};font-size:11px;min-width:80px;text-align:right">
+                    {{ '+' if (r.total_pnl or 0) >= 0 else '' }}${{ "{:,.0f}".format(r.total_pnl or 0) }}</span>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="empty-msg">No closed trades yet</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <div class="card-title">By Ticker</div>
+            {% if tickers %}
+            <table class="data-table">
+                <thead><tr>
+                    <th>Ticker</th><th>Trades</th><th>W/L</th><th style="text-align:right">Total P&L</th><th style="text-align:right">Avg%</th>
+                </tr></thead>
+                <tbody>
+                {% for t in tickers %}
+                <tr>
+                    <td style="color:#f1f5f9;font-weight:700">{{ t.ticker }}</td>
+                    <td style="color:#64748b">{{ t.count }}</td>
+                    <td style="font-size:11px">
+                        <span style="color:#22c55e">{{ t.wins }}W</span>
+                        <span style="color:#475569">/</span>
+                        <span style="color:#ef4444">{{ t.losses }}L</span>
+                    </td>
+                    <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if (t.total_pnl or 0) >= 0 else '#ef4444' }}">
+                        {{ '+' if (t.total_pnl or 0) >= 0 else '' }}${{ "{:,.0f}".format(t.total_pnl or 0) }}</td>
+                    <td style="text-align:right;color:#64748b;font-size:11px">{{ t.avg_pct or 0 }}%</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-msg">No closed trades yet</div>
+            {% endif %}
+        </div>
+    </div>
+
+</div><!-- /tab-portfolio -->
+
+
+<!-- ═══════════════════════════════════════════════ TAB: POSITIONS ═══ -->
+<div id="tab-positions" class="tab-content">
+    <div id="positions-loading" class="loading-msg">Loading positions...</div>
+    <div id="positions-content" style="display:none"></div>
+</div>
+
+
+<!-- ═════════════════════════════════════════════════ TAB: SIGNALS ═══ -->
+<div id="tab-signals" class="tab-content">
+
     <!-- Signal History Chart -->
-    <div class="card history-card">
+    <div class="card full-width">
         <div class="chart-header">
-            <div class="card-title" style="margin-bottom:0">📉 Signal History — Last 30 Days</div>
+            <div class="card-title" style="margin-bottom:0">Signal History — Last 30 Days</div>
             <div class="chart-legend">
                 <span><span class="legend-dot" style="background:#f97316"></span>HIGH</span>
                 <span><span class="legend-dot" style="background:#a855f7"></span>INST</span>
@@ -1115,368 +1176,497 @@ DASHBOARD_HTML = """
                 <span><span class="legend-line"></span>Premium Flow</span>
             </div>
         </div>
-        <div id="chartContainer">
-            <canvas id="historyChart"></canvas>
-        </div>
+        <div id="chartContainer"><canvas id="historyChart"></canvas></div>
     </div>
 
     <!-- Directional Bias -->
-    <div class="card bias-card">
-        <div class="card-title">📊 Directional Flow Bias — HIGH Signals Today</div>
-        <div class="bias-bar-container">
-            <div style="font-size:11px; color:#64748b; min-width:60px">
-                {{ call_pct }}% calls
-            </div>
-            <div class="bias-bar">
-                <div class="bias-bar-fill"></div>
-            </div>
-            <div style="font-size:11px; color:#64748b; min-width:60px; text-align:right">
-                {{ put_pct }}% puts
-            </div>
-            <div class="bias-label-display">{{ bias_label }}</div>
+    <div class="card full-width" style="margin-top:16px">
+        <div class="card-title">Directional Flow Bias — HIGH Signals Today</div>
+        <div class="bias-bar-wrap">
+            <div style="font-size:11px;color:#64748b;min-width:60px">{{ call_pct }}% calls</div>
+            <div class="bias-bar"><div class="bias-bar-fill"></div></div>
+            <div style="font-size:11px;color:#64748b;min-width:60px;text-align:right">{{ put_pct }}% puts</div>
+            <div class="bias-label-big">{{ bias_label }}</div>
         </div>
         <div class="bias-details">
-            <span class="bias-call">▲ Calls: {{ call_premium_display }}</span>
-            <span class="bias-put">▼ Puts: {{ put_premium_display }}</span>
+            <span style="color:#22c55e">▲ Calls: {{ call_premium_display }}</span>
+            <span style="color:#ef4444">▼ Puts: {{ put_premium_display }}</span>
         </div>
     </div>
 
-    <!-- High Conviction Signals — full width -->
-    <div class="card full-width">
+    <!-- HIGH Conviction Signals -->
+    <div class="card full-width" style="margin-top:16px">
         <div class="card-title">
             🔥 HIGH Conviction
             <span class="count" id="high-count">{{ high_signals|length }}</span>
             <div class="dte-tabs">
-                <button class="dte-tab active" onclick="setDteFilter('all')">All</button>
-                <button class="dte-tab" onclick="setDteFilter('0dte')">0DTE</button>
-                <button class="dte-tab" onclick="setDteFilter('1-2d')">1–2d</button>
-                <button class="dte-tab" onclick="setDteFilter('week')">Week</button>
-                <button class="dte-tab" onclick="setDteFilter('30d+')">30d+</button>
+                <button class="dte-tab active" onclick="setDteFilter('all','high')">All</button>
+                <button class="dte-tab" onclick="setDteFilter('0dte','high')">0DTE</button>
+                <button class="dte-tab" onclick="setDteFilter('1-2d','high')">1-2d</button>
+                <button class="dte-tab" onclick="setDteFilter('week','high')">Week</button>
+                <button class="dte-tab" onclick="setDteFilter('30d+','high')">30d+</button>
             </div>
         </div>
         <table class="signal-table" id="high-table">
-            <thead>
-                <tr>
-                    <th style="width:70px">Ticker</th>
-                    <th style="width:90px">Strike</th>
-                    <th style="width:60px">Type</th>
-                    <th style="width:90px">Expiry</th>
-                    <th style="width:90px">Stock @</th>
-                    <th style="width:90px">Premium</th>
-                    <th style="width:80px">Delta</th>
-                    <th style="width:60px">IV</th>
-                    <th style="width:55px">Score</th>
-                </tr>
-            </thead>
+            <thead><tr>
+                <th style="width:70px">Ticker</th>
+                <th style="width:90px">Strike</th>
+                <th style="width:60px">Type</th>
+                <th style="width:90px">Expiry</th>
+                <th style="width:90px">Stock @</th>
+                <th style="width:90px">Premium</th>
+                <th style="width:80px">Delta</th>
+                <th style="width:60px">IV</th>
+                <th style="width:55px">Score</th>
+            </tr></thead>
             <tbody id="high-tbody"></tbody>
         </table>
-        <div class="table-empty" id="high-empty" style="display:none">No signals match this filter</div>
+        <div class="empty-msg" id="high-empty" style="display:none">No signals match this filter</div>
     </div>
 
-    <!-- Institutional Flow — full width, stacked under HIGH -->
-    <div class="card full-width">
+    <!-- INST Flow -->
+    <div class="card full-width" style="margin-top:16px">
         <div class="card-title">
             💰 Institutional Flow
             <span class="count" id="inst-count">{{ inst_signals|length }}</span>
             <div class="dte-tabs">
-                <button class="dte-tab active" onclick="setDteFilter('all')">All</button>
-                <button class="dte-tab" onclick="setDteFilter('0dte')">0DTE</button>
-                <button class="dte-tab" onclick="setDteFilter('1-2d')">1–2d</button>
-                <button class="dte-tab" onclick="setDteFilter('week')">Week</button>
-                <button class="dte-tab" onclick="setDteFilter('30d+')">30d+</button>
+                <button class="dte-tab active" onclick="setDteFilter('all','inst')">All</button>
+                <button class="dte-tab" onclick="setDteFilter('0dte','inst')">0DTE</button>
+                <button class="dte-tab" onclick="setDteFilter('1-2d','inst')">1-2d</button>
+                <button class="dte-tab" onclick="setDteFilter('week','inst')">Week</button>
+                <button class="dte-tab" onclick="setDteFilter('30d+','inst')">30d+</button>
             </div>
         </div>
         <table class="signal-table" id="inst-table">
-            <thead>
-                <tr>
-                    <th style="width:70px">Ticker</th>
-                    <th style="width:90px">Strike</th>
-                    <th style="width:60px">Type</th>
-                    <th style="width:90px">Expiry</th>
-                    <th style="width:90px">Stock @</th>
-                    <th style="width:90px">Premium</th>
-                    <th style="width:55px">Score</th>
-                </tr>
-            </thead>
+            <thead><tr>
+                <th style="width:70px">Ticker</th>
+                <th style="width:90px">Strike</th>
+                <th style="width:60px">Type</th>
+                <th style="width:90px">Expiry</th>
+                <th style="width:90px">Stock @</th>
+                <th style="width:90px">Premium</th>
+                <th style="width:55px">Score</th>
+            </tr></thead>
             <tbody id="inst-tbody"></tbody>
         </table>
-        <div class="table-empty" id="inst-empty" style="display:none">No signals match this filter</div>
+        <div class="empty-msg" id="inst-empty" style="display:none">No signals match this filter</div>
     </div>
 
-    <!-- Performance + Expiring Today — side by side -->
-    <div class="card">
-        <div class="card-title">📈 Scanner Performance</div>
-        {% if performance %}
-            {% for p in performance %}
-            <div class="perf-row">
-                <span class="perf-tier tier-{{ p.signal_tier|lower }}">
-                    {{ p.signal_tier }}
-                </span>
-                <div class="win-rate-bar">
-                    <div class="win-rate-fill" style="width: {{
-                        ((p.wins / p.total) * 100)|round|int if p.total > 0 else 0
-                    }}%"></div>
-                </div>
-                <span class="win-rate-label" style="color:#22c55e">
-                    {{ ((p.wins / p.total) * 100)|round(1) if p.total > 0 else 0 }}%
-                </span>
-                <span style="color:#475569; font-size:10px; margin-left:8px">
-                    {{ p.wins }}W / {{ p.losses }}L / {{ p.flats }}F
-                </span>
-            </div>
-            {% endfor %}
-        {% else %}
-        <div class="no-data">No outcomes recorded yet</div>
-        {% endif %}
-    </div>
-
-    <div class="card">
+    <!-- Expiring Today -->
+    <div class="card full-width" style="margin-top:16px">
         <div class="card-title">
             ⏰ Expiring Today
             <span class="count">{{ expiring_today|length }}</span>
         </div>
         {% if expiring_today %}
         <table class="signal-table">
-            <thead>
-                <tr>
-                    <th>Ticker</th>
-                    <th>Strike</th>
-                    <th>Type</th>
-                    <th>Expiry</th>
-                    <th>Premium</th>
-                    <th>Outcome</th>
-                </tr>
-            </thead>
+            <thead><tr>
+                <th>Ticker</th><th>Strike</th><th>Type</th><th>Expiry</th><th>Premium</th><th>Outcome</th>
+            </tr></thead>
             <tbody>
-                {% for s in expiring_today %}
-                <tr id="row-{{ loop.index }}">
-                    <td style="color:#f1f5f9; font-weight:700; font-size:12px;">
-                        {{ s.decoded.ticker }}
-                    </td>
-                    <td style="color:#cbd5e1; font-size:12px; font-weight:600;">
-                        {{ s.decoded.strike_display }}
-                    </td>
-                    <td>
-                        <span class="{{ 'type-call' if s.contract_type == 'CALL' else 'type-put' }}">
-                            {{ s.decoded.contract_type }}
-                        </span>
-                    </td>
-                    <td style="color:#64748b; font-size:11px;">
-                        {{ s.decoded.expiry_display }}
-                        <span class="dte-badge {% if s.decoded.days_out == 0 %}dte-urgent{% elif s.decoded.days_out <= 2 %}dte-soon{% else %}dte-normal{% endif %}"
-                              style="margin-left:4px;">
-                            {{ s.decoded.dte_display }}
-                        </span>
-                    </td>
-                    <td class="premium-cell">{{ s.premium_display }}</td>
-                    <td>
-                        {% if s.outcome %}
-                        <span class="outcome-recorded outcome-{{ s.outcome }}">
-                            {{ s.outcome }}
-                        </span>
-                        {% else %}
-                        <button class="outcome-btn btn-win"
-                            onclick="recordOutcome('{{ s.contract }}', 'WIN', {{ loop.index }})">W</button>
-                        <button class="outcome-btn btn-loss"
-                            onclick="recordOutcome('{{ s.contract }}', 'LOSS', {{ loop.index }})">L</button>
-                        <button class="outcome-btn btn-flat"
-                            onclick="recordOutcome('{{ s.contract }}', 'FLAT', {{ loop.index }})">F</button>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
+            {% for s in expiring_today %}
+            <tr id="exprow-{{ loop.index }}">
+                <td style="color:#f1f5f9;font-weight:700;font-size:12px">{{ s.decoded.ticker }}</td>
+                <td style="color:#cbd5e1;font-size:12px;font-weight:600">{{ s.decoded.strike_display }}</td>
+                <td><span class="{{ 'type-call' if s.contract_type == 'CALL' else 'type-put' }}">{{ s.decoded.contract_type }}</span></td>
+                <td style="color:#64748b;font-size:11px">
+                    {{ s.decoded.expiry_display }}
+                    <span class="dte-badge dte-urgent" style="margin-left:4px">{{ s.decoded.dte_display }}</span>
+                </td>
+                <td style="color:#f1f5f9;font-weight:600">{{ s.premium_display }}</td>
+                <td>
+                    {% if s.outcome %}
+                    <span class="outcome-recorded outcome-{{ s.outcome }}">{{ s.outcome }}</span>
+                    {% else %}
+                    <button class="outcome-btn btn-win"  onclick="recordOutcome('{{ s.contract }}','WIN',{{ loop.index }})">W</button>
+                    <button class="outcome-btn btn-loss" onclick="recordOutcome('{{ s.contract }}','LOSS',{{ loop.index }})">L</button>
+                    <button class="outcome-btn btn-flat" onclick="recordOutcome('{{ s.contract }}','FLAT',{{ loop.index }})">F</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
             </tbody>
         </table>
         {% else %}
-        <div class="no-data">No signals expiring today</div>
+        <div class="empty-msg">No HIGH/INST signals expiring today</div>
         {% endif %}
     </div>
 
+</div><!-- /tab-signals -->
+
+
+<!-- ══════════════════════════════════════════════ TAB: ANALYTICS ═══ -->
+<div id="tab-analytics" class="tab-content">
+    <div id="analytics-loading" class="loading-msg">Loading analytics...</div>
+    <div id="analytics-content" style="display:none"></div>
 </div>
 
+
+<!-- ═══════════════════════════════════════════════════════ SCRIPTS ═══ -->
 <script>
 {% raw %}
-
-// ─────────────────────────────────────────────
-// DATA (injected server-side, parsed once)
-// ─────────────────────────────────────────────
+// ─── SERVER DATA ────────────────────────────────────────────────────
 {% endraw %}
-const SIGNAL_HISTORY = {{ signal_history_json | safe }};
-const HIGH_SIGNALS   = {{ high_signals_json | safe }};
-const INST_SIGNALS   = {{ inst_signals_json | safe }};
+const SIGNAL_HISTORY  = {{ signal_history_json | safe }};
+const HIGH_SIGNALS    = {{ high_signals_json   | safe }};
+const INST_SIGNALS    = {{ inst_signals_json   | safe }};
 {% raw %}
 
-// ─────────────────────────────────────────────
-// SIGNAL HISTORY CHART
-// ─────────────────────────────────────────────
+// ─── TAB SWITCHING ──────────────────────────────────────────────────
+const loadedTabs = new Set(['portfolio', 'signals']);
+
+function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    const content = document.getElementById('tab-' + name);
+    if (content) content.classList.add('active');
+    const btn = document.querySelector(`.tab-btn[data-tab="${name}"]`);
+    if (btn) btn.classList.add('active');
+    history.replaceState(null, '', '#' + name);
+
+    if (!loadedTabs.has(name)) {
+        loadedTabs.add(name);
+        if (name === 'positions') loadPositions();
+        if (name === 'analytics') loadAnalytics();
+    }
+}
+
+function getInitialTab() {
+    const hash = window.location.hash.slice(1);
+    return ['portfolio', 'positions', 'signals', 'analytics'].includes(hash) ? hash : 'portfolio';
+}
+
+// ─── POSITIONS TAB ──────────────────────────────────────────────────
+async function loadPositions() {
+    try {
+        const res = await fetch('/api/positions');
+        const data = await res.json();
+        renderPositions(data);
+    } catch (e) {
+        document.getElementById('positions-loading').textContent = 'Failed to load positions.';
+    }
+}
+
+function renderPositions(data) {
+    const { positions, summary, timestamp } = data;
+
+    const pnlColor = v => v >= 0 ? '#22c55e' : '#ef4444';
+    const fmtStop = p => {
+        if (p.status === 'STOP_TRIGGERED') return '<span class="badge badge-stop">STOPPED</span>';
+        if (p.dynamic_stop != null) return `<span class="badge badge-trail">$${p.dynamic_stop.toFixed(2)}</span>`;
+        return '<span style="color:#475569;font-size:10px">— at hurdle</span>';
+    };
+    const dteBadge = dte => {
+        if (dte === null || dte === undefined) return '—';
+        const cls = dte === 0 ? 'dte-urgent' : dte <= 2 ? 'dte-soon' : 'dte-normal';
+        return `<span class="dte-badge ${cls}">${dte}d</span>`;
+    };
+
+    const unrealizedColor = pnlColor(summary.total_unrealized);
+    const profitableColor = summary.profitable_count > summary.losing_count ? '#22c55e' : '#ef4444';
+
+    let html = `
+    <div class="pos-summary">
+        <div>
+            <div class="pos-stat-label">Open</div>
+            <div class="pos-stat-val" style="color:#22c55e">${summary.open_count}</div>
+        </div>
+        <div class="pos-divider"></div>
+        <div>
+            <div class="pos-stat-label">Tracking (stopped)</div>
+            <div class="pos-stat-val" style="color:#f97316">${summary.stopped_count}</div>
+        </div>
+        <div class="pos-divider"></div>
+        <div>
+            <div class="pos-stat-label">Profitable</div>
+            <div class="pos-stat-val" style="color:${profitableColor}">${summary.profitable_count} / ${positions.length}</div>
+        </div>
+        <div class="pos-divider"></div>
+        <div>
+            <div class="pos-stat-label">Total Unrealized</div>
+            <div class="pos-stat-val" style="color:${unrealizedColor}">${summary.total_unrealized_display}</div>
+        </div>
+        <button class="pos-refresh-btn" onclick="reloadPositions()">↻ Refresh</button>
+    </div>`;
+
+    if (positions.length === 0) {
+        html += '<div class="empty-msg">No open positions</div>';
+    } else {
+        html += `
+        <div class="card">
+            <table class="data-table">
+                <thead><tr>
+                    <th>Ticker</th><th>Strike</th><th>Type</th><th>Expiry</th>
+                    <th>DTE</th><th style="text-align:right">Entry $</th>
+                    <th style="text-align:right">Last $</th>
+                    <th style="text-align:right">Unrealized</th>
+                    <th style="text-align:right">%</th>
+                    <th>Trail Stop</th>
+                    <th>Status</th>
+                </tr></thead>
+                <tbody>
+        `;
+        positions.forEach(p => {
+            const pc = pnlColor(p.last_pnl);
+            const statusBadge = p.status === 'OPEN'
+                ? '<span class="badge badge-open">OPEN</span>'
+                : '<span class="badge badge-tracking">TRACKING</span>';
+            html += `
+            <tr>
+                <td style="color:#f1f5f9;font-weight:700">${p.ticker}</td>
+                <td style="color:#cbd5e1;font-weight:600">${p.strike_display}</td>
+                <td><span class="${p.contract_type === 'Call' ? 'type-call' : 'type-put'}">${p.contract_type}</span></td>
+                <td style="color:#64748b;font-size:11px">${p.expiry_display}</td>
+                <td>${dteBadge(p.current_dte)}</td>
+                <td style="text-align:right;color:#94a3b8">$${p.entry_price.toFixed(2)}</td>
+                <td style="text-align:right;color:#e2e8f0">$${(p.last_price || 0).toFixed(2)}</td>
+                <td style="text-align:right;font-weight:600;color:${pc}">${p.last_pnl_display}</td>
+                <td style="text-align:right;color:${pc}">${p.last_pnl_pct_display}</td>
+                <td>${fmtStop(p)}</td>
+                <td>${statusBadge}</td>
+            </tr>`;
+        });
+        html += '</tbody></table></div>';
+    }
+
+    html += `<div style="color:#475569;font-size:10px;margin-top:8px;text-align:right">Snapshot: ${timestamp}</div>`;
+
+    document.getElementById('positions-content').innerHTML = html;
+    document.getElementById('positions-loading').style.display = 'none';
+    document.getElementById('positions-content').style.display = 'block';
+}
+
+async function reloadPositions() {
+    document.getElementById('positions-loading').style.display = 'block';
+    document.getElementById('positions-content').style.display = 'none';
+    await loadPositions();
+}
+
+// ─── ANALYTICS TAB ──────────────────────────────────────────────────
+async function loadAnalytics() {
+    try {
+        const res = await fetch('/api/analytics');
+        const data = await res.json();
+        renderAnalytics(data);
+    } catch (e) {
+        document.getElementById('analytics-loading').textContent = 'Failed to load analytics.';
+    }
+}
+
+function renderAnalytics(data) {
+    const { score_buckets, dte_buckets, premium_tiers, thresholds } = data;
+
+    const pnlColor = v => (v || 0) >= 0 ? '#22c55e' : '#ef4444';
+    const barHtml  = pct => `<div style="flex:1;margin:0 8px;height:4px;background:#334155;border-radius:2px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:#22c55e;border-radius:2px"></div></div>`;
+
+    // Score bucket table (highlight 6.0-6.9 as the sweet spot)
+    let bestWinRate = 0;
+    score_buckets.forEach(r => { if (r.win_rate > bestWinRate) bestWinRate = r.win_rate; });
+
+    let scoreRows = score_buckets.map(r => {
+        const isBest = r.win_rate === bestWinRate;
+        const rowClass = isBest ? 'score-highlight' : (r.win_rate < 50 ? 'score-dim' : '');
+        const pc = pnlColor(r.total_pnl);
+        return `<tr class="${rowClass}">
+            <td style="color:#f1f5f9;font-weight:${isBest?'700':'400'}">${r.score_bucket}${isBest ? ' ★' : ''}</td>
+            <td style="color:#64748b">${r.total}</td>
+            <td style="font-size:11px"><span style="color:#22c55e">${r.wins}W</span><span style="color:#475569">/</span><span style="color:#ef4444">${r.total - r.wins}L</span></td>
+            <td>
+                <div style="display:flex;align-items:center;min-width:140px">
+                    <span style="color:#22c55e;font-weight:700;min-width:40px">${r.win_rate}%</span>
+                    ${barHtml(r.win_rate)}
+                </div>
+            </td>
+            <td style="text-align:right;color:${pc};font-weight:600">${r.total_pnl_display}</td>
+            <td style="text-align:right;color:#64748b;font-size:11px">${r.avg_pnl_display}</td>
+        </tr>`;
+    }).join('');
+
+    // DTE bucket table
+    let dteRows = dte_buckets.map(r => {
+        const pc = pnlColor(r.total_pnl);
+        return `<tr>
+            <td style="color:#f1f5f9">${r.dte_bucket}</td>
+            <td style="color:#64748b">${r.total}</td>
+            <td style="font-size:11px"><span style="color:#22c55e">${r.wins}W</span><span style="color:#475569">/</span><span style="color:#ef4444">${r.total - r.wins}L</span></td>
+            <td style="color:#22c55e;font-weight:700">${r.win_rate}%</td>
+            <td style="text-align:right;color:${pc};font-weight:600">${r.total_pnl_display}</td>
+        </tr>`;
+    }).join('');
+
+    // Premium tier table
+    let premRows = premium_tiers.map(r => {
+        const pc = pnlColor(r.total_pnl);
+        return `<tr>
+            <td style="color:#f1f5f9">${r.premium_tier}</td>
+            <td style="color:#64748b">${r.total}</td>
+            <td style="color:#22c55e;font-weight:700">${r.win_rate}%</td>
+            <td style="text-align:right;color:${pc};font-weight:600">${r.total_pnl_display}</td>
+        </tr>`;
+    }).join('');
+
+    // Threshold simulation table
+    let threshRows = thresholds.map(r => {
+        const pc = pnlColor(r.total_pnl);
+        const isCurrent = r.threshold === 6.0;
+        return `<tr style="${isCurrent ? 'background:#3b82f611' : ''}">
+            <td style="color:${isCurrent ? '#3b82f6' : '#f1f5f9'};font-weight:${isCurrent?'700':'400'}">
+                ≥ ${r.threshold}${isCurrent ? ' ← current' : ''}</td>
+            <td style="color:#64748b">${r.total}</td>
+            <td style="color:#22c55e;font-weight:700">${r.win_rate}%</td>
+            <td style="text-align:right;color:${pc};font-weight:600">${r.total_pnl_display}</td>
+        </tr>`;
+    }).join('');
+
+    const html = `
+    <!-- Score Buckets — full width -->
+    <div class="card full-width" style="margin-bottom:16px">
+        <div class="card-title">Win Rate by Score Bucket</div>
+        <table class="data-table">
+            <thead><tr>
+                <th>Score</th><th>Trades</th><th>W/L</th>
+                <th style="min-width:180px">Win Rate</th>
+                <th style="text-align:right">Total P&L</th>
+                <th style="text-align:right">Avg P&L</th>
+            </tr></thead>
+            <tbody>${scoreRows}</tbody>
+        </table>
+    </div>
+
+    <div class="grid-2">
+        <!-- DTE Buckets -->
+        <div class="card">
+            <div class="card-title">Win Rate by DTE at Entry</div>
+            <table class="data-table">
+                <thead><tr>
+                    <th>DTE</th><th>Trades</th><th>W/L</th><th>Win%</th><th style="text-align:right">Total P&L</th>
+                </tr></thead>
+                <tbody>${dteRows}</tbody>
+            </table>
+        </div>
+
+        <!-- Premium Tiers -->
+        <div class="card">
+            <div class="card-title">Win Rate by Premium Tier</div>
+            <table class="data-table">
+                <thead><tr>
+                    <th>Premium</th><th>Trades</th><th>Win%</th><th style="text-align:right">Total P&L</th>
+                </tr></thead>
+                <tbody>${premRows}</tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Score Threshold Simulation -->
+    <div class="card full-width">
+        <div class="card-title">Score Threshold Simulation
+            <span style="color:#475569;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">
+                — if we had only entered signals above each threshold</span>
+        </div>
+        <table class="data-table">
+            <thead><tr>
+                <th>Min Score</th><th>Eligible Trades</th><th>Win%</th><th style="text-align:right">Total P&L</th>
+            </tr></thead>
+            <tbody>${threshRows}</tbody>
+        </table>
+    </div>`;
+
+    document.getElementById('analytics-content').innerHTML = html;
+    document.getElementById('analytics-loading').style.display = 'none';
+    document.getElementById('analytics-content').style.display = 'block';
+}
+
+// ─── SIGNAL HISTORY CHART ───────────────────────────────────────────
 (function renderHistoryChart() {
     const canvas = document.getElementById('historyChart');
     if (!canvas) return;
-
     if (!SIGNAL_HISTORY || SIGNAL_HISTORY.length === 0) {
         document.getElementById('chartContainer').innerHTML =
-            '<div class="chart-empty">No historical data yet — signals will appear here after the scanner runs on multiple days</div>';
+            '<div class="empty-msg" style="height:160px;display:flex;align-items:center;justify-content:center">No historical data yet</div>';
         return;
     }
-
-    // ── Layout constants ──
     const PADDING = { top: 12, right: 60, bottom: 32, left: 36 };
-    const BAR_GAP = 0.25; // fraction of slot width used as gap between groups
-
-    // ── Colour palette ──
-    const COLORS = {
-        high:    '#f97316',
-        inst:    '#a855f7',
-        watch:   '#3b82f6',
-        premium: '#e2e8f0',
-    };
-
-    // ── Sizing: fill container width, fixed height ──
+    const BAR_GAP = 0.25;
+    const COLORS  = { high: '#f97316', inst: '#a855f7', watch: '#3b82f6', premium: '#e2e8f0' };
     const container = canvas.parentElement;
-    const W = container.clientWidth || 800;
-    const H = 160;
-    canvas.width  = W;
-    canvas.height = H;
-
+    const W = container.clientWidth || 800, H = 160;
+    canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d');
     const innerW = W - PADDING.left - PADDING.right;
     const innerH = H - PADDING.top  - PADDING.bottom;
-
-    // ── Data ranges ──
-    const days      = SIGNAL_HISTORY;
-    const n         = days.length;
-    const maxCount  = Math.max(1, ...days.map(d => (d.high_count || 0) + (d.inst_count || 0) + (d.watch_count || 0)));
-    const maxPrem   = Math.max(1, ...days.map(d => d.total_premium || 0));
-
-    // ── Helpers ──
-    const xSlot  = i  => PADDING.left + (i / n) * innerW;
-    const slotW  = () => innerW / n;
-    const yCount = v  => PADDING.top + innerH - (v / maxCount) * innerH;
-    const yPrem  = v  => PADDING.top + innerH - (v / maxPrem)  * innerH;
-
-    // ── Grid lines (count axis) ──
-    const gridLines = 4;
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth   = 1;
-    for (let i = 0; i <= gridLines; i++) {
-        const y = PADDING.top + (innerH / gridLines) * i;
-        ctx.beginPath();
-        ctx.moveTo(PADDING.left, y);
-        ctx.lineTo(W - PADDING.right, y);
-        ctx.stroke();
+    const days     = SIGNAL_HISTORY;
+    const n        = days.length;
+    const maxCount = Math.max(1, ...days.map(d => (d.high_count||0)+(d.inst_count||0)+(d.watch_count||0)));
+    const maxPrem  = Math.max(1, ...days.map(d => d.total_premium||0));
+    const xSlot = i => PADDING.left + (i / n) * innerW;
+    const slotW = () => innerW / n;
+    const yCount = v => PADDING.top + innerH - (v / maxCount) * innerH;
+    const yPrem  = v => PADDING.top + innerH - (v / maxPrem)  * innerH;
+    // grid
+    ctx.strokeStyle = '#334155'; ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+        const y = PADDING.top + (innerH / 4) * i;
+        ctx.beginPath(); ctx.moveTo(PADDING.left, y); ctx.lineTo(W - PADDING.right, y); ctx.stroke();
     }
-
-    // ── Stacked bars ──
-    const bw = slotW() * (1 - BAR_GAP);  // bar group width
-    const bx = i => xSlot(i) + slotW() * BAR_GAP / 2;  // group left edge
-
+    // bars
+    const bw = slotW() * (1 - BAR_GAP);
+    const bx = i => xSlot(i) + slotW() * BAR_GAP / 2;
     days.forEach((d, i) => {
         let base = PADDING.top + innerH;
-        const tiers = [
-            { key: 'watch_count', color: COLORS.watch },
-            { key: 'inst_count',  color: COLORS.inst  },
-            { key: 'high_count',  color: COLORS.high  },
-        ];
-
-        tiers.forEach(({ key, color }) => {
-            const count = d[key] || 0;
-            if (count === 0) return;
+        [{ key: 'watch_count', color: COLORS.watch },
+         { key: 'inst_count',  color: COLORS.inst  },
+         { key: 'high_count',  color: COLORS.high  }].forEach(({ key, color }) => {
+            const count = d[key] || 0; if (!count) return;
             const h = (count / maxCount) * innerH;
-            ctx.fillStyle = color;
-            ctx.fillRect(bx(i), base - h, bw, h);
-            base -= h;
+            ctx.fillStyle = color; ctx.fillRect(bx(i), base - h, bw, h); base -= h;
         });
     });
-
-    // ── Premium line (right-axis) ──
-    ctx.beginPath();
-    ctx.strokeStyle = COLORS.premium;
-    ctx.lineWidth   = 1.5;
-    ctx.setLineDash([3, 3]);
-
+    // premium line
+    ctx.beginPath(); ctx.strokeStyle = COLORS.premium; ctx.lineWidth = 1.5; ctx.setLineDash([3, 3]);
     days.forEach((d, i) => {
-        const x = bx(i) + bw / 2;
-        const y = yPrem(d.total_premium || 0);
+        const x = bx(i) + bw / 2, y = yPrem(d.total_premium||0);
         i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
     });
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    // ── Premium dots ──
+    ctx.stroke(); ctx.setLineDash([]);
     days.forEach((d, i) => {
-        const x = bx(i) + bw / 2;
-        const y = yPrem(d.total_premium || 0);
-        ctx.beginPath();
-        ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = COLORS.premium;
-        ctx.fill();
+        const x = bx(i) + bw / 2, y = yPrem(d.total_premium||0);
+        ctx.beginPath(); ctx.arc(x, y, 2.5, 0, Math.PI*2);
+        ctx.fillStyle = COLORS.premium; ctx.fill();
     });
-
-    // ── X-axis date labels (show every ~5 days to avoid crowding) ──
-    ctx.fillStyle  = '#475569';
-    ctx.font       = '9px SF Mono, Consolas, monospace';
-    ctx.textAlign  = 'center';
-    const labelStep = Math.max(1, Math.ceil(n / 6));
-
+    // labels
+    ctx.fillStyle = '#475569'; ctx.font = '9px SF Mono, Consolas, monospace'; ctx.textAlign = 'center';
+    const step = Math.max(1, Math.ceil(n / 6));
     days.forEach((d, i) => {
-        if (i % labelStep !== 0 && i !== n - 1) return;
-        const x = bx(i) + bw / 2;
-        const label = d.scan_date ? d.scan_date.slice(5) : '';  // MM-DD
-        ctx.fillText(label, x, H - 6);
+        if (i % step !== 0 && i !== n-1) return;
+        ctx.fillText(d.scan_date ? d.scan_date.slice(5) : '', bx(i) + bw/2, H - 6);
     });
-
-    // ── Left Y-axis labels (count) ──
-    ctx.textAlign = 'right';
-    ctx.fillStyle = '#475569';
-    for (let i = 0; i <= gridLines; i++) {
-        const v = Math.round((maxCount / gridLines) * (gridLines - i));
-        const y = PADDING.top + (innerH / gridLines) * i;
-        ctx.fillText(v, PADDING.left - 4, y + 3);
+    ctx.textAlign = 'right'; ctx.fillStyle = '#475569';
+    for (let i = 0; i <= 4; i++) {
+        const v = Math.round((maxCount / 4) * (4 - i));
+        ctx.fillText(v, PADDING.left - 4, PADDING.top + (innerH / 4) * i + 3);
     }
-
-    // ── Right Y-axis labels (premium) ──
-    ctx.textAlign = 'left';
-    ctx.fillStyle = '#64748b';
-    const premSteps = [0, 0.5, 1];
-    premSteps.forEach(frac => {
+    ctx.textAlign = 'left'; ctx.fillStyle = '#64748b';
+    [0, 0.5, 1].forEach(frac => {
         const v = maxPrem * frac;
         const y = yPrem(v);
-        let label;
-        if (v >= 1_000_000) label = '$' + (v / 1_000_000).toFixed(1) + 'M';
-        else if (v >= 1_000) label = '$' + Math.round(v / 1_000) + 'K';
-        else label = '$' + Math.round(v);
+        const label = v >= 1e6 ? '$'+(v/1e6).toFixed(1)+'M' : v >= 1e3 ? '$'+Math.round(v/1e3)+'K' : '$'+Math.round(v);
         ctx.fillText(label, W - PADDING.right + 4, y + 3);
     });
-
-    // ── Tooltip on hover ──
-    canvas.addEventListener('mousemove', (e) => {
-        const rect  = canvas.getBoundingClientRect();
-        const mx    = e.clientX - rect.left;
-        const myRel = e.clientY - rect.top;
-
+    canvas.addEventListener('mousemove', e => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
         const idx = Math.floor(((mx - PADDING.left) / innerW) * n);
-        if (idx < 0 || idx >= n) {
-            canvas.title = '';
-            return;
-        }
+        if (idx < 0 || idx >= n) { canvas.title = ''; return; }
         const d = days[idx];
-        const total = (d.high_count || 0) + (d.inst_count || 0) + (d.watch_count || 0);
-        canvas.title =
-            `${d.scan_date}\n` +
-            `Signals: ${total} (H:${d.high_count || 0} I:${d.inst_count || 0} W:${d.watch_count || 0})\n` +
-            `Premium: ${d.premium_display || '$0'}`;
+        const total = (d.high_count||0)+(d.inst_count||0)+(d.watch_count||0);
+        canvas.title = `${d.scan_date}\nSignals: ${total} (H:${d.high_count||0} I:${d.inst_count||0} W:${d.watch_count||0})\nPremium: ${d.premium_display||'$0'}`;
     });
 })();
 
+// ─── DTE FILTER (signals tab) ────────────────────────────────────────
+let activeDteHigh = 'all', activeDteInst = 'all';
 
-// ─────────────────────────────────────────────
-// DTE FILTER TABS
-// ─────────────────────────────────────────────
-
-// Active DTE bucket — shared across both tables
-let activeDte = 'all';
-
-// Classify a signal's days_out into a bucket
 function dteBucket(daysOut) {
     if (daysOut === 0)               return '0dte';
     if (daysOut >= 1 && daysOut <= 2) return '1-2d';
@@ -1484,187 +1674,120 @@ function dteBucket(daysOut) {
     if (daysOut > 7)                 return '30d+';
     return 'other';
 }
-
-// Returns true if signal passes the current filter
-function passesFilter(signal) {
-    if (activeDte === 'all') return true;
-    return dteBucket(signal.days_out) === activeDte;
-}
-
-// DTE badge class helper
 function dteBadgeClass(daysOut) {
-    if (daysOut === 0)      return 'dte-urgent';
-    if (daysOut <= 2)       return 'dte-soon';
+    if (daysOut === 0)  return 'dte-urgent';
+    if (daysOut <= 2)   return 'dte-soon';
     return 'dte-normal';
 }
 
-// Render HIGH table
+function setDteFilter(bucket, table) {
+    if (table === 'high') activeDteHigh = bucket;
+    else                  activeDteInst = bucket;
+
+    // update tab button styles for the right set
+    const tableEl = document.getElementById(table + '-table');
+    if (tableEl) {
+        tableEl.closest('.card').querySelectorAll('.dte-tab').forEach(btn => {
+            const b = btn.getAttribute('onclick').match(/'([^']+)'/)[1];
+            btn.classList.toggle('active', b === bucket);
+        });
+    }
+    if (table === 'high') renderHighTable();
+    else renderInstTable();
+}
+
 function renderHighTable() {
-    const tbody  = document.getElementById('high-tbody');
-    const empty  = document.getElementById('high-empty');
-    const count  = document.getElementById('high-count');
-    const filtered = HIGH_SIGNALS.filter(passesFilter);
-
+    const filtered = HIGH_SIGNALS.filter(s => activeDteHigh === 'all' || dteBucket(s.days_out) === activeDteHigh);
+    const tbody = document.getElementById('high-tbody');
+    const empty = document.getElementById('high-empty');
+    const count = document.getElementById('high-count');
     count.textContent = filtered.length;
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-    }
+    if (!filtered.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
-
     tbody.innerHTML = filtered.map(s => `
         <tr>
-            <td style="color:#f1f5f9; font-weight:700; font-size:12px;">${s.ticker}</td>
-            <td style="color:#cbd5e1; font-size:12px; font-weight:600;">${s.strike_display}</td>
-            <td>
-                <span class="${s.contract_type === 'CALL' ? 'type-call' : 'type-put'}">
-                    ${s.contract_type_display}
-                </span>
-            </td>
-            <td style="color:#64748b; font-size:11px; white-space:nowrap;">
+            <td style="color:#f1f5f9;font-weight:700;font-size:12px">${s.ticker}</td>
+            <td style="color:#cbd5e1;font-size:12px;font-weight:600">${s.strike_display}</td>
+            <td><span class="${s.contract_type === 'CALL' ? 'type-call' : 'type-put'}">${s.contract_type_display}</span></td>
+            <td style="color:#64748b;font-size:11px;white-space:nowrap">
                 ${s.expiry_display}
-                <span class="dte-badge ${dteBadgeClass(s.days_out)}" style="margin-left:4px;">
-                    ${s.dte_display}
-                </span>
+                <span class="dte-badge ${dteBadgeClass(s.days_out)}" style="margin-left:4px">${s.dte_display}</span>
             </td>
-            <td class="stock-price-cell">
-                ${s.share_price ? s.share_price : '<span style="color:#334155;">—</span>'}
-            </td>
-            <td class="premium-cell">${s.premium_display}</td>
-            <td>
-                ${s.has_greeks ? `
-                    <span style="font-size:12px; font-weight:600; color:#e2e8f0;">${s.delta}</span>
-                    <span style="font-size:10px; margin-left:4px; color:${s.moneyness_color};">${s.moneyness}</span>
-                ` : '<span style="color:#475569;">—</span>'}
-            </td>
-            <td>
-                ${s.has_greeks
-                    ? `<span style="font-size:12px; color:#94a3b8;">${s.iv}</span>`
-                    : '<span style="color:#475569;">—</span>'}
-            </td>
-            <td class="score-cell">${s.composite_score}</td>
-        </tr>
-    `).join('');
+            <td style="color:#64748b;font-size:11px">${s.share_price || '<span style="color:#334155">—</span>'}</td>
+            <td style="color:#f1f5f9;font-weight:600">${s.premium_display}</td>
+            <td>${s.has_greeks
+                ? `<span style="font-size:12px;font-weight:600;color:#e2e8f0">${s.delta}</span>
+                   <span style="font-size:10px;margin-left:4px;color:${s.moneyness_color}">${s.moneyness}</span>`
+                : '<span style="color:#475569">—</span>'}</td>
+            <td>${s.has_greeks
+                ? `<span style="font-size:12px;color:#94a3b8">${s.iv}</span>`
+                : '<span style="color:#475569">—</span>'}</td>
+            <td style="color:#94a3b8">${s.composite_score}</td>
+        </tr>`).join('');
 }
 
-// Render INST table
 function renderInstTable() {
-    const tbody  = document.getElementById('inst-tbody');
-    const empty  = document.getElementById('inst-empty');
-    const count  = document.getElementById('inst-count');
-    const filtered = INST_SIGNALS.filter(passesFilter);
-
+    const filtered = INST_SIGNALS.filter(s => activeDteInst === 'all' || dteBucket(s.days_out) === activeDteInst);
+    const tbody = document.getElementById('inst-tbody');
+    const empty = document.getElementById('inst-empty');
+    const count = document.getElementById('inst-count');
     count.textContent = filtered.length;
-
-    if (filtered.length === 0) {
-        tbody.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-    }
+    if (!filtered.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
     empty.style.display = 'none';
-
     tbody.innerHTML = filtered.map(s => `
         <tr>
-            <td style="color:#f1f5f9; font-weight:700; font-size:12px;">${s.ticker}</td>
-            <td style="color:#cbd5e1; font-size:12px; font-weight:600;">${s.strike_display}</td>
-            <td>
-                <span class="${s.contract_type === 'CALL' ? 'type-call' : 'type-put'}">
-                    ${s.contract_type_display}
-                </span>
-            </td>
-            <td style="color:#64748b; font-size:11px; white-space:nowrap;">
+            <td style="color:#f1f5f9;font-weight:700;font-size:12px">${s.ticker}</td>
+            <td style="color:#cbd5e1;font-size:12px;font-weight:600">${s.strike_display}</td>
+            <td><span class="${s.contract_type === 'CALL' ? 'type-call' : 'type-put'}">${s.contract_type_display}</span></td>
+            <td style="color:#64748b;font-size:11px;white-space:nowrap">
                 ${s.expiry_display}
-                <span class="dte-badge ${dteBadgeClass(s.days_out)}" style="margin-left:4px;">
-                    ${s.dte_display}
-                </span>
+                <span class="dte-badge ${dteBadgeClass(s.days_out)}" style="margin-left:4px">${s.dte_display}</span>
             </td>
-            <td class="stock-price-cell">
-                ${s.share_price ? s.share_price : '<span style="color:#334155;">—</span>'}
-            </td>
-            <td class="premium-cell">${s.premium_display}</td>
-            <td class="score-cell">${s.composite_score}</td>
-        </tr>
-    `).join('');
+            <td style="color:#64748b;font-size:11px">${s.share_price || '<span style="color:#334155">—</span>'}</td>
+            <td style="color:#f1f5f9;font-weight:600">${s.premium_display}</td>
+            <td style="color:#94a3b8">${s.composite_score}</td>
+        </tr>`).join('');
 }
 
-// Tab click handler — updates both tables and all tab buttons simultaneously
-function setDteFilter(bucket) {
-    activeDte = bucket;
-
-    // Update all tab buttons (two sets — one per card)
-    document.querySelectorAll('.dte-tab').forEach(btn => {
-        const btnBucket = btn.getAttribute('onclick').match(/'(.+?)'/)[1];
-        btn.classList.toggle('active', btnBucket === bucket);
-    });
-
-    renderHighTable();
-    renderInstTable();
-}
-
-// Initial render
-renderHighTable();
-renderInstTable();
-
-
-// ─────────────────────────────────────────────
-// OUTCOME RECORDING
-// ─────────────────────────────────────────────
+// ─── OUTCOME RECORDING ───────────────────────────────────────────────
 async function recordOutcome(contract, outcome, rowIndex) {
     try {
-        const response = await fetch('/api/record-outcome', {
+        const res = await fetch('/api/record-outcome', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contract, outcome, notes: '' })
         });
-        
-        const data = await response.json();
-        
+        const data = await res.json();
         if (data.success) {
-            const td = document.querySelector(`#row-${rowIndex} td:last-child`);
-            td.innerHTML = `
-                <span class="outcome-recorded outcome-${outcome}">
-                    ${outcome}
-                </span>`;
-        } else {
-            alert('Failed to record outcome');
+            const td = document.querySelector(`#exprow-${rowIndex} td:last-child`);
+            if (td) td.innerHTML = `<span class="outcome-recorded outcome-${outcome}">${outcome}</span>`;
         }
-    } catch (err) {
-        console.error('Error:', err);
-    }
+    } catch (e) { console.error('Outcome error:', e); }
 }
 
-
-// ─────────────────────────────────────────────
-// AUTO-REFRESH POLLING (scan-based)
-// ─────────────────────────────────────────────
+// ─── AUTO-REFRESH (scan-based) ───────────────────────────────────────
 let lastKnownScan = null;
-
 async function checkForNewScan() {
     try {
-        const response = await fetch('/api/last-scan');
-        const data = await response.json();
-        
-        if (lastKnownScan === null) {
-            lastKnownScan = data.last_scan;
-        } else if (data.last_scan !== lastKnownScan) {
-            location.reload();
-        }
-    } catch (err) {
-        console.log('Refresh check failed:', err);
-    }
+        const res = await fetch('/api/last-scan');
+        const data = await res.json();
+        if (lastKnownScan === null) lastKnownScan = data.last_scan;
+        else if (data.last_scan !== lastKnownScan) location.reload();
+    } catch (e) {}
 }
-
-setInterval(checkForNewScan, 60 * 1000);
+setInterval(checkForNewScan, 60000);
 checkForNewScan();
+
+// ─── INIT ─────────────────────────────────────────────────────────────
+renderHighTable();
+renderInstTable();
+switchTab(getInitialTab());
 
 {% endraw %}
 </script>
-
 </body>
-</html>
-"""
+</html>"""
+
 
 # =============================================================================
 # ENTRY POINT
@@ -1676,7 +1799,6 @@ if __name__ == "__main__":
     print("  Open your browser to: http://localhost:5000")
     print("  Press Ctrl+C to stop")
     print("="*50 + "\n")
-    
     import logging
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.ERROR)
