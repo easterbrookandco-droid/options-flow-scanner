@@ -284,7 +284,6 @@ def mark_stop_triggered(trade_id, triggered_price, dynamic_stop):
     """, (
         exit_date, exit_time,
         triggered_price,
-        'STOP',
         pnl, pnl_pct,
         exit_date,
         triggered_price, dynamic_stop, now_str,
