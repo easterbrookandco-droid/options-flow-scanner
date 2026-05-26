@@ -551,31 +551,41 @@ def get_trailing_stop_state(trade_id, total_cost):
     Returns:
         tuple: (hurdle_crossed, running_max_pnl, should_trigger)
     """
-    HURDLE_PCT       = 0.01   # 1% gain required to activate
-    TRAILING_STOP_PCT = 0.20  # 20% drop from post-hurdle peak
-
-    hurdle_pnl = total_cost * HURDLE_PCT
+    TRAILING_STOP_PCT = 0.20  # 20% drop from post-hurdle peak — fixed for all DTE
 
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT pnl FROM position_snapshots
+        SELECT pnl, current_dte FROM position_snapshots
         WHERE trade_id = ?
         AND pnl IS NOT NULL
         ORDER BY id ASC
     """, (trade_id,))
-    snap_pnls = [row[0] for row in cursor.fetchall()]
+    snaps = [(row[0], row[1]) for row in cursor.fetchall()]
     conn.close()
 
-    if not snap_pnls:
+    if not snaps:
         return False, 0, False
 
-    hurdle_crossed        = False
+    hurdle_crossed           = False
     running_max_after_hurdle = 0
 
-    for pnl in snap_pnls:
+    for pnl, snap_dte in snaps:
+        # DTE-aware hurdle — larger gain required before trailing
+        # stop activates on longer-dated positions
+        if snap_dte is None or snap_dte <= 2:
+            hurdle_pct = 0.01   # 1%  — expires soon, protect any gain
+        elif snap_dte <= 5:
+            hurdle_pct = 0.10   # 10% — moderate move required
+        elif snap_dte <= 14:
+            hurdle_pct = 0.30   # 30% — significant move required
+        else:
+            hurdle_pct = 0.50   # 50% — long dated, conviction only
+
+        hurdle_pnl = total_cost * hurdle_pct
+
         if not hurdle_crossed and pnl >= hurdle_pnl:
-            hurdle_crossed = True
+            hurdle_crossed           = True
             running_max_after_hurdle = pnl
         if hurdle_crossed and pnl > running_max_after_hurdle:
             running_max_after_hurdle = pnl
