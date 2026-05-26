@@ -201,13 +201,15 @@ def get_closed_summary():
 def get_today_activity():
     conn = get_db_connection()
     c = conn.cursor()
-    today = datetime.now().strftime("%Y-%m-%d")
+    import pytz
+    eastern = pytz.timezone("US/Eastern")
+    today = datetime.now(eastern).strftime("%Y-%m-%d")
     c.execute("""
         SELECT pt.id, pt.signal_contract, pt.entry_price, pt.contracts,
                pt.status, pt.dte_at_entry, s.ticker, s.contract_type
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
-        WHERE DATE(pt.entry_time) = ?
+        WHERE pt.entry_date = ?
         ORDER BY pt.entry_time DESC
     """, (today,))
     entered = [dict(r) for r in c.fetchall()]
@@ -217,7 +219,7 @@ def get_today_activity():
                s.ticker, s.contract_type
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
-        WHERE DATE(pt.exit_time) = ? AND pt.status = 'CLOSED'
+        WHERE pt.exit_date = ? AND pt.status = 'CLOSED'
         ORDER BY pt.exit_time DESC
     """, (today,))
     closed_today = [dict(r) for r in c.fetchall()]
