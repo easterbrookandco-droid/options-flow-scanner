@@ -195,20 +195,31 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. 1. Review AMD positions Thursday at expiration - validate DTE-aware hurdle
-2. 2. Run pnl_report and entry_analyzer for week 3 data
-3. 3. OI confirmation filter - build and backtest
+1. 1. Review AMD positions Thursday — validate DTE-aware trail in practice
+2. 2. Run entry_analyzer for week 3 data
+3. 3. OI confirmation filter — build and backtest
 4. 4. Fix dashboard: Today's Entries/Exits timezone bug
 5. 5. Fix Expiring Today outcome buttons on Signals tab
 6. 6. Position summary by DTE/Ticker/Status on Positions tab
 7. 7. Mobile responsive dashboard
 8. 8. Auto git pull cron on VM
 9. 9. DB backup to S3
+10. 10. MIN_COMPOSITE_SCORE=6.0 decision — week 3 data review
 
 ---
 
 
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-26 | claude.ai | 17:39 EDT
+- Fixed binding error and deployed Model C with DTE-aware trailing stops
+- Built recovery analysis and optimization tools for parameter tuning
+- Used flat 1% hurdle with tightening trail widths by DTE
+- Combined model generated +$59,642 vs current approach in backtesting
+- Trailing stops may fire too early on highly profitable positions
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-26 | claude.ai | 16:06 EDT
 - Fixed VM deployment error and deployed tiered DTE backstop system
@@ -258,24 +269,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - How to prioritize mobile responsiveness improvements in next sessions?
 - Need to monitor CDN performance and reliability over time
 - Consider whether current tab structure serves all user workflows effectively
-
----
-
-### 2026-05-24 | claude.ai | Morning
-**Focus:** Knowledge infrastructure, GitHub Action, Claude Code planning
-
-**What changed:**
-- GitHub Action created (.github/workflows/update-raw-urls.yml)
-- Auto-generates GitHub_file_URLs.txt with raw URLs on every push
-- PROJECT_STATE.md created (this file)
-- session_log.py designed (not yet built)
-- Cross-tool knowledge strategy defined
-
-**Key decisions:**
-- PROJECT_STATE.md as single source of truth across all tools
-- session_log.py uses Claude API to auto-summarize — no manual writing required
-- Claude Code .claude/ config reads PROJECT_STATE.md at session start
-- Defer neural net / vector DB approach — markdown is 80% of benefit at 20% cost
 
 ---
 

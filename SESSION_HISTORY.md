@@ -11,6 +11,36 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-26 | claude.ai | 17:39 EDT | 2 hours
+**What changed:**
+- Fixed mark_stop_triggered binding error by removing extra STOP parameter
+- Deployed Model C with DTE-aware trailing stops (10/15/20/25% by tranche) and flat 1% hurdle
+- Built analyze_recovery_matrix.py and analyze_recovery_depth.py for empirical recovery analysis
+- Built optimize_trailing_parameters_v2.py for grid search optimization of trailing parameters
+- Built simulate_lifecycle.py for full lifecycle simulation across all three models
+- Implemented snapshot-level DTE tracking so parameters shift as contracts age
+- Changed git default editor from vim to nano on VM
+- Created export_analysis_dataset.py for data export functionality
+
+**Key decisions:**
+- Used flat 1% hurdle across all DTE tranches instead of tiered hurdles, letting trail width handle noise filtering
+- Implemented DTE-aware trailing stops that tighten as expiration approaches (10% for 30+ DTE down to 25% for <7 DTE)
+- Confirmed tiered DTE backstop (60/70/80%) kills zero winners while providing downside protection
+- Maintained snapshot-level lifecycle tracking to ensure parameters update as contracts age
+
+**What we learned:**
+- Combined model generated +$59,642 vs current approach in backtesting
+- AMD positions stopped at $2,600 continued to $4,300 after exit, indicating trailing stops firing too early on profitable trades
+- Scheduler successfully woke up at 9:30 ET for first full live market day on VM
+- Recovery analysis revealed specific patterns by DTE/drawdown combinations for parameter tuning
+
+**Open questions:**
+- Whether 10/15/20/25% trailing stops are still too aggressive for highly profitable positions
+- How Model C will perform in live trading with real-time DTE parameter shifts
+- Optimal balance between capturing profits and allowing winners to run longer
+
+---
+
 ### 2026-05-26 | claude.ai | 16:06 EDT | 1 hour
 **What changed:**
 - Fixed mark_stop_triggered binding error on VM deployment
