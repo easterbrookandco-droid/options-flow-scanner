@@ -14,6 +14,7 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/a
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_cliff_dive_speed.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_missed_exits.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_peak_sequence.py
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_recovery_depth.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_significance_hurdle.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_slippage.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/api_test.py
@@ -50,5 +51,6 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/r
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/run_scheduler.bat
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/scheduler.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/session_log.py
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/simulate_combined_model.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/status.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/thesis_generator.py
