@@ -8,6 +8,7 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/G
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/Historical_Log_Cleanup.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/PROJECT_STATE.md
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/README.md
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/SESSION_HISTORY.md
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/agent.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analytics.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/analyze_cliff_dive_speed.py
