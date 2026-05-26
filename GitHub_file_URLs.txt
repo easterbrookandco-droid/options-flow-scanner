@@ -21,6 +21,7 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/a
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/backfill_stop_exits.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/backup_db.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/check_bad_exits.py
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/check_today_stops.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/check_trailing_stop_timing.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/close_stuck_positions.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/daily_summary.py
