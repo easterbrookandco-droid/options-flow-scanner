@@ -195,21 +195,30 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. 1. Review AMD positions Thursday — validate DTE-aware trail in practice
+1. 1. Thursday — review AMD positions at expiration, validate DTE-aware trail
 2. 2. Run entry_analyzer for week 3 data
 3. 3. OI confirmation filter — build and backtest
-4. 4. Fix dashboard: Today's Entries/Exits timezone bug
-5. 5. Fix Expiring Today outcome buttons on Signals tab
-6. 6. Position summary by DTE/Ticker/Status on Positions tab
-7. 7. Mobile responsive dashboard
-8. 8. Auto git pull cron on VM
-9. 9. DB backup to S3
-10. 10. MIN_COMPOSITE_SCORE=6.0 decision — week 3 data review
+4. 4. Build agent_live.py architecture
+5. 5. Fix Expiring Today outcome buttons (Claude Code)
+6. 6. Position summary by DTE/Ticker/Status on dashboard (Claude Code)
+7. 7. Mobile responsive dashboard (Claude Code)
+8. 8. DB backup to S3
+9. 9. MIN_COMPOSITE_SCORE=6.0 decision — week 3 data review
 
 ---
 
 
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-26 | claude.ai | 18:56 EDT
+- Implemented Model C trailing stop with DTE-aware percentages (10/15/20/25%)
+- Created separate live trading system with dedicated database and tracking
+- Deployed tiered DTE backstop system killing zero-winner positions at thresholds
+- Fixed AMD early-stop flaw and timezone bugs in dashboard
+- Established live trading filters: score 6.0-7.9, specific DTE ranges, premium limits
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-26 | claude.ai | 17:39 EDT
 - Fixed binding error and deployed Model C with DTE-aware trailing stops
@@ -238,37 +247,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Market context module now displays actual percentage change data
 - Need to validate real-world performance under live conditions
 *→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-24 | claude.ai + Claude Code | 15:15 EDT
-**What changed:**
-- Set up knowledge infrastructure with PROJECT_STATE.md, session_log.py, and CLAUDE.md
-- Implemented GitHub Action for auto raw URL generation, switched to jsDelivr CDN
-- Rebuilt dashboard with 4-tab layout: Portfolio, Positions, Signals, Analytics
-- Added flask-httpauth basic authentication for secure access
-- Opened port 5000 on AWS for public access from any device
-- Added Key Insights section to Analytics tab
-- Fixed signal history chart blur issue with canvas DPI adjustments
-- Updated requirements.txt with new dependencies
-
-**Key decisions:**
-- Chose jsDelivr CDN over direct GitHub raw URLs for better reliability
-- Implemented basic auth instead of more complex authentication for simplicity
-- Opened public port 5000 to enable multi-device access during development
-- Structured dashboard with clear tab separation for better UX organization
-
-**What we learned / what didn't work:**
-- Claude Code integration works effectively for this project structure
-- Canvas DPI fixes resolved chart rendering blur issues
-- Basic authentication provides sufficient security for development phase
-- Mobile responsiveness needs attention but wasn't prioritized this session
-
-**Open questions:**
-- Should implement more robust authentication before production deployment?
-- How to prioritize mobile responsiveness improvements in next sessions?
-- Need to monitor CDN performance and reliability over time
-- Consider whether current tab structure serves all user workflows effectively
 
 ---
 

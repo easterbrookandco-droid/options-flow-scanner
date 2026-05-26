@@ -11,6 +11,34 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-26 | claude.ai | 18:56 EDT | 1 hour
+**What changed:**
+- Modified export_analysis_dataset.py to include additional fields for analysis dataset export
+- Created live/ subfolder with 0_record_trade.py for real capital tracking separate from backtest data
+- Implemented live_trades.db schema with order ID, fill price, capital at risk fields
+- Set up auto git pull cron job on VM running at midnight UTC daily
+- Fixed mark_stop_triggered variable binding error in position monitoring
+- Deployed tiered DTE backstop system (60/70/80% thresholds) that kills zero-winner positions
+
+**Key decisions:**
+- Implemented Model C trailing stop: DTE-aware percentages (10/15/20/25%) with flat 1% hurdle rate
+- Defined live trading entry filters: score 6.0-7.9, DTE 1-2 or 6-14, premium $100K-$5M range
+- Established budget model: 80% reinvestable capital, 20% income carveout for live trading
+- Separated live trading architecture: agent_live.py, monitor_live.py with dedicated database
+
+**What we learned:**
+- AMD positions stopped too early in live data, exposing flaw in flat trailing stop approach
+- Built analyze_recovery_matrix, analyze_recovery_depth, optimize_trailing_parameters_v2 functions
+- Snapshot-level lifecycle DTE tracking confirmed working in position_monitor system
+- Fixed Today's Entries/Exits timezone bug affecting dashboard accuracy
+
+**Open questions:**
+- Monitor Model C performance against flat trailing stops in live market conditions
+- Validate DTE-aware trailing stop effectiveness across different volatility regimes
+- Assess optimal capital allocation between different DTE buckets in live trading
+
+---
+
 ### 2026-05-26 | claude.ai | 17:39 EDT | 2 hours
 **What changed:**
 - Fixed mark_stop_triggered binding error by removing extra STOP parameter
