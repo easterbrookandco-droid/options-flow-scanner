@@ -1,6 +1,6 @@
 # OPTIONS FLOW SCANNER — PROJECT STATE
 *Auto-updated after every session. Source of truth for all tools.*
-*Last updated: 2026-05-24*
+*Last updated: 2026-05-26*
 
 ---
 
@@ -195,17 +195,28 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. 1. Tuesday morning - verify scheduler woke up at 9:30 ET
-2. 2. Review first trailing stop fires in live data
-3. 3. Run entry_analyzer for week 3 data
-4. 4. OI confirmation filter - build and backtest
-5. 5. Auto git pull cron on VM
-6. 6. DB backup to S3
-7. 7. Mobile responsive dashboard (low priority)
+1. 1. OI confirmation filter - build and backtest
+2. 2. Fix Expiring Today outcome buttons on Signals tab
+3. 3. Mobile responsive dashboard
+4. 4. Auto git pull cron on VM
+5. 5. DB backup to S3
+6. 6. Run entry_analyzer for week 3 data
+7. 7. Review trailing stop performance after first full week
 
 ---
 
+
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-26 | claude.ai | 10:47 EDT
+- Fixed binding error and deployed tiered DTE backstop system
+- Combined model showed $59,642 performance gain in simulation testing
+- Moved to live production after successful scheduler validation
+- Market context module now displays actual percentage change data
+- Need to validate real-world performance under live conditions
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-24 | claude.ai + Claude Code | 15:15 EDT
 **What changed:**
@@ -282,26 +293,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 **Open questions:**
 - Will scheduler wake up cleanly Tuesday at 9:30?
 - How will trailing stop perform on live data vs backtest?
-
----
-
-### 2026-05-15 | claude.ai | ~6 hours
-**Focus:** Week 1 analytics, auto take-profit, accounting cleanup
-
-**What changed:**
-- close_stuck_positions.py — closed 22 expired STOP_TRIGGERED positions
-- DB indexes added to position_snapshots, paper_trades, signals
-- Auto take-profit logic added to monitor (superseded by trailing stop May 23)
-- Previous close fix designed (market_closes table)
-- pnl_report.py built — on-demand P&L reporter
-- entry_analyzer.py built — signal quality analysis
-- Week 1 analysis run: score 6.0-6.9 = 90.9% win rate best bucket
-
-**Key findings:**
-- Score ≥ 6.0 produces 74% win rate, highest of any threshold
-- Score 8.0+ = worst performer at 50%
-- Calls vs puts market bias all NEUTRAL (API bug confirmed)
-- 1-2 DTE + Score 7+ = 88.9% win rate best cross-section
 
 ---
 
