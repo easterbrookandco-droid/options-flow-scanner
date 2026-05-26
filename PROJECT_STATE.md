@@ -195,18 +195,30 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. 1. OI confirmation filter - build and backtest
-2. 2. Fix Expiring Today outcome buttons on Signals tab
-3. 3. Mobile responsive dashboard
-4. 4. Auto git pull cron on VM
-5. 5. DB backup to S3
-6. 6. Run entry_analyzer for week 3 data
-7. 7. Review trailing stop performance after first full week
+1. 1. Review AMD positions Thursday at expiration - validate DTE-aware hurdle
+2. 2. Run pnl_report and entry_analyzer for week 3 data
+3. 3. OI confirmation filter - build and backtest
+4. 4. Fix dashboard: Today's Entries/Exits timezone bug
+5. 5. Fix Expiring Today outcome buttons on Signals tab
+6. 6. Position summary by DTE/Ticker/Status on Positions tab
+7. 7. Mobile responsive dashboard
+8. 8. Auto git pull cron on VM
+9. 9. DB backup to S3
 
 ---
 
 
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-26 | claude.ai | 16:06 EDT
+- Fixed VM deployment error and deployed tiered DTE backstop system
+- Implemented DTE-aware hurdle thresholds (1/10/30/50%) with fixed 20% trailing stop
+- Adopted combined model showing $59,642 performance improvement over current system
+- Confirmed tiered backstop kills zero profitable winners while protecting positions
+- Changed git editor to nano and validated scheduler activation
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-26 | claude.ai | 10:47 EDT
 - Fixed binding error and deployed tiered DTE backstop system
@@ -264,35 +276,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - session_log.py uses Claude API to auto-summarize — no manual writing required
 - Claude Code .claude/ config reads PROJECT_STATE.md at session start
 - Defer neural net / vector DB approach — markdown is 80% of benefit at 20% cost
-
----
-
-### 2026-05-23 | claude.ai | ~8 hours (major session)
-**Focus:** Accounting fixes, VM migration, trailing stop implementation
-
-**What changed:**
-- Backfilled 134 STOP_TRIGGERED positions with real exit prices
-- Added DB indexes — queries now fast
-- Scheduler double-sleep bug fixed (global _close_saved_date)
-- AWS EC2 VM fully configured — 4 systemd services running 24/7
-- Database migrated to VM with full history
-- Previous close prices saving at 4pm daily
-- Two-stage trailing stop implemented (1% hurdle + 20% trail)
-- ITM safety exit at 3:45pm on DTE=0 profitable positions
-- Monitor polling reduced to 2 minutes
-- Delta/IV now storing correctly on new agent entries
-- export_db.py, pnl_report.py, entry_analyzer.py operational
-- fix_bad_exits.py — corrected 57 positions incorrectly closed at $0.01
-
-**Key decisions:**
-- Trailing stop replaces both TARGET and DTE-based stop (backtested +172% improvement)
-- 1% hurdle chosen empirically to filter noise peaks
-- VM is now production system — local Windows machine is dev/backup
-- GitHub Action setup for auto URL generation
-
-**Open questions:**
-- Will scheduler wake up cleanly Tuesday at 9:30?
-- How will trailing stop perform on live data vs backtest?
 
 ---
 
