@@ -52,5 +52,6 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/r
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/scheduler.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/session_log.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/simulate_combined_model.py
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/simulate_dte_aware_trailing.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/status.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/thesis_generator.py
