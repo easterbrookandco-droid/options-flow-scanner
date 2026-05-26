@@ -740,6 +740,41 @@ def evaluate_positions(positions, prices, market_context, eastern):
                 closed_ids.append(trade_id)
                 continue
 
+        # ── TIERED DTE BACKSTOP ────────────────────────────────────────
+        # Last-resort floor — catches positions bleeding to zero that
+        # never crossed the trailing stop hurdle.
+        # Empirically validated: kills zero eventual winners.
+        if status == "OPEN":
+            if current_dte is not None and current_dte <= 2:
+                backstop_pct = 0.60
+            elif current_dte is not None and current_dte <= 14:
+                backstop_pct = 0.70
+            else:
+                backstop_pct = 0.80
+
+            backstop_loss = -(total_cost * backstop_pct)
+
+            if pnl <= backstop_loss:
+                print(f"\n  {'='*65}")
+                print(f"  🚨 BACKSTOP — #{trade_id} {contract}")
+                print(f"      Down {pnl_pct:.1f}% — exceeds "
+                      f"{backstop_pct*100:.0f}% DTE backstop")
+                print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
+                print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
+                print(f"  {'='*65}")
+
+                log_price_snapshot(
+                    trade_id=trade_id, current_price=mid,
+                    bid=bid, ask=ask, pnl=pnl, pnl_pct=pnl_pct,
+                    dynamic_stop=dynamic_stop, current_dte=current_dte,
+                    market_context=market_context,
+                    stop_triggered=1, target_triggered=0,
+                )
+
+                mark_stop_triggered(trade_id, mid, dynamic_stop)
+                closed_ids.append(trade_id)
+                continue
+
         # ── ITM SAFETY EXIT ────────────────────────────────────────────
         # DTE=0, profitable, after 3:45pm — prevent auto-exercise
         if status == "OPEN" and current_dte == 0 and pnl > 0:
