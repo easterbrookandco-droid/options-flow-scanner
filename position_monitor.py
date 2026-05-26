@@ -551,8 +551,6 @@ def get_trailing_stop_state(trade_id, total_cost):
     Returns:
         tuple: (hurdle_crossed, running_max_pnl, should_trigger)
     """
-    TRAILING_STOP_PCT = 0.20  # 20% drop from post-hurdle peak — fixed for all DTE
-
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     cursor.execute("""
@@ -569,18 +567,26 @@ def get_trailing_stop_state(trade_id, total_cost):
 
     hurdle_crossed           = False
     running_max_after_hurdle = 0
+    trailing_stop_pct        = 0.20  # updated per snapshot below
 
     for pnl, snap_dte in snaps:
-        # DTE-aware hurdle — larger gain required before trailing
-        # stop activates on longer-dated positions
-        if snap_dte is None or snap_dte <= 2:
-            hurdle_pct = 0.01   # 1%  — expires soon, protect any gain
+        # Model C: DTE-aware hurdle AND trailing stop
+        # Both parameters shift as contract ages through tranches
+        if snap_dte is None or snap_dte <= 0:
+            hurdle_pct        = 0.01
+            trailing_stop_pct = 0.10
+        elif snap_dte <= 2:
+            hurdle_pct        = 0.01
+            trailing_stop_pct = 0.15
         elif snap_dte <= 5:
-            hurdle_pct = 0.10   # 10% — moderate move required
+            hurdle_pct        = 0.01
+            trailing_stop_pct = 0.20
         elif snap_dte <= 14:
-            hurdle_pct = 0.30   # 30% — significant move required
+            hurdle_pct        = 0.01
+            trailing_stop_pct = 0.25
         else:
-            hurdle_pct = 0.50   # 50% — long dated, conviction only
+            hurdle_pct        = 0.01
+            trailing_stop_pct = 0.25
 
         hurdle_pnl = total_cost * hurdle_pct
 
@@ -590,7 +596,7 @@ def get_trailing_stop_state(trade_id, total_cost):
         if hurdle_crossed and pnl > running_max_after_hurdle:
             running_max_after_hurdle = pnl
 
-    return hurdle_crossed, running_max_after_hurdle, False
+    return hurdle_crossed, running_max_after_hurdle, trailing_stop_pct
 
 
 def evaluate_positions(positions, prices, market_context, eastern):
@@ -723,13 +729,13 @@ def evaluate_positions(positions, prices, market_context, eastern):
         # Stage 1: position must reach 1% gain hurdle
         # Stage 2: exit if drops 20% from post-hurdle peak
         # Replaces static TARGET and DTE-based STOP with one unified rule
-        hurdle_crossed, running_max, _ = get_trailing_stop_state(
+        hurdle_crossed, running_max, trailing_pct = get_trailing_stop_state(
             trade_id, total_cost
         )
 
         if hurdle_crossed and running_max > 0:
             drawdown = (running_max - pnl) / running_max
-            if drawdown > 0.20:
+            if drawdown > trailing_pct:
                 print(f"\n  {'='*65}")
                 print(f"  📉 TRAILING STOP — #{trade_id} {contract}")
                 print(f"      Peak P&L: {fmt_pnl(running_max)}  "
