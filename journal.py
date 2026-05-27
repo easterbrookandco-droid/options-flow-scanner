@@ -215,6 +215,14 @@ def init_paper_trades_table():
         )
     """)
 
+    # Add mode column if it doesn't exist yet (safe to run repeatedly)
+    try:
+        cursor.execute("ALTER TABLE paper_trades ADD COLUMN mode TEXT DEFAULT 'CONTROL'")
+        conn.commit()
+        print("  ✓ mode column added to paper_trades table")
+    except sqlite3.OperationalError:
+        pass  # Column already exists — no action needed
+
     conn.commit()
     conn.close()
     print(f"  ✓ Paper trades table ready")
@@ -226,7 +234,7 @@ def insert_paper_trade(
     verdict_at_entry=None, score_at_entry=None,
     dte_at_entry=None, iv_at_entry=None, delta_at_entry=None,
     market_bias_at_entry=None, ticker_bias_at_entry=None,
-    market_snapshot=None, signal_id=None
+    market_snapshot=None, signal_id=None, mode='CONTROL'
 ):
     """
     Record a new paper trade entry.
@@ -294,10 +302,10 @@ def insert_paper_trade(
             spy_chg_pct_at_entry, qqq_chg_pct_at_entry,
             iwm_chg_pct_at_entry, tlt_chg_pct_at_entry,
             gld_chg_pct_at_entry, uso_chg_pct_at_entry,
-            status
+            mode, status
         ) VALUES (
             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN'
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN'
         )
     """, (
         signal_contract, signal_id,
@@ -311,6 +319,7 @@ def insert_paper_trade(
         chg("SPY"), chg("QQQ"),
         chg("IWM"), chg("TLT"),
         chg("GLD"), chg("USO"),
+        mode,
     ))
 
     trade_id = cursor.lastrowid
