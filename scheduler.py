@@ -313,6 +313,7 @@ def main():
 
                 print(f"\n  Market is currently closed.")
                 print(f"  Next open: {next_open} ({hours}h {minutes_remaining}m from now)")
+                print(f"  💓 Heartbeat — scheduler alive, sleeping {sleep_chunk//60} min")
                 print(f"  Sleeping until market open...")
 
                 sleep_chunk = min(secs, 3600)
