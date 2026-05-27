@@ -261,10 +261,11 @@ def main():
                     hours = secs // 3600
                     minutes = (secs % 3600) // 60
                     next_open = (now + timedelta(seconds=secs)).strftime('%Y-%m-%d %H:%M %Z')
-                    
+
                     print(f"\n  Next market open: {next_open} ({hours}h {minutes}m)")
                     print(f"  Sleeping until then...")
-                    time.sleep(secs)
+                    sleep_chunk = min(secs, 3600)
+                    time.sleep(sleep_chunk)
                     continue  # Loop back to top — recheck is_market_open() fresh
                 
                 else:
