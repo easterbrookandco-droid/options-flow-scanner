@@ -1,6 +1,6 @@
 # OPTIONS FLOW SCANNER — PROJECT STATE
 *Auto-updated after every session. Source of truth for all tools.*
-*Last updated: 2026-05-26*
+*Last updated: 2026-05-27*
 
 ---
 
@@ -195,20 +195,49 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. 1. Thursday — review AMD positions at expiration, validate DTE-aware trail
-2. 2. Run entry_analyzer for week 3 data
-3. 3. OI confirmation filter — build and backtest
-4. 4. Build agent_live.py architecture
-5. 5. Fix Expiring Today outcome buttons (Claude Code)
-6. 6. Position summary by DTE/Ticker/Status on dashboard (Claude Code)
-7. 7. Mobile responsive dashboard (Claude Code)
-8. 8. DB backup to S3
-9. 9. MIN_COMPOSITE_SCORE=6.0 decision — week 3 data review
+1. 1. IMMEDIATE - Bifurcate reporting by mode (CONTROL vs OPTIMIZING):
+2. a. position_monitor.py session summary - show CONTROL and OPTIMIZING P&L/win rate separately
+3. b. pnl_report.py - add --mode flag to filter by CONTROL or OPTIMIZING or ALL
+4. c. entry_analyzer.py - add mode filter
+5. d. dashboard.py - Portfolio tab shows both modes, add mode toggle or separate sections
+6. 2. Run pnl_report.py with mode breakdown to see optimizing agent baseline (it won't have data until tomorrow but set up the reporting)
+7. 3. Thursday - review if score 6.0-6.9 pattern holds with fuller week 3 data
+8. 4. OI confirmation filter - build and backtest (been on backlog for weeks)
+9. 5. agent_live.py architecture - build the real capital agent:
+10. - place_real_order() via Public.com API
+11. - Same filters as optimizing_agent
+12. - Budget management: 10% max deployment, 80% reinvestable profits
+13. - Confirmation prompt before every entry
+14. - Writes to live_trades.db
+15. 6. live_monitor.py - position monitor for real capital positions
+16. - Reads from live_trades.db
+17. - Same exit logic as position_monitor initially
+18. - Plan to tune separately as data accumulates
+19. 7. Dashboard live trading section:
+20. - Either duplicate tabs with Live prefix
+21. - Or toggle between Paper and Live modes
+22. 8. DB backup to S3 - still pending, important before going live
+23. 9. Auto git pull cron - verify it ran at midnight and pulled correctly
+24. 10. Mobile responsive dashboard (Claude Code - low priority)
+25. 11. Fix Expiring Today outcome buttons on Signals tab (Claude Code)
+26. 12. Position summary by DTE/Ticker/Status on Positions tab (Claude Code)
+27. 13. Consider optimizing_position_monitor.py once optimizing_agent has enough data to compare exit parameter tuning
+28. 14. MIN_COMPOSITE_SCORE decision deferred - optimizing_agent IS the test for score filtering, agent.py remains unconstrained
 
 ---
 
 
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-27 | claude.ai + Claude Code | 16:48 EDT
+- Fixed Python buffering on systemd services, resolving silent agent operation
+- Built optimizing_agent.py with score 6.0-7.9, premium $100K-$2M, DTE 1-2d/6-14d filters
+- Added mode column to paper_trades, deployed scanner-optimizing-agent systemd service
+- Established three-tier architecture: CONTROL data collection, OPTIMIZING refined criteria, LIVE capital
+- Set live trading model: 10% max deployment, 80% reinvestable profits
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-26 | claude.ai | 18:56 EDT
 - Implemented Model C trailing stop with DTE-aware percentages (10/15/20/25%)
@@ -236,16 +265,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Adopted combined model showing $59,642 performance improvement over current system
 - Confirmed tiered backstop kills zero profitable winners while protecting positions
 - Changed git editor to nano and validated scheduler activation
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-26 | claude.ai | 10:47 EDT
-- Fixed binding error and deployed tiered DTE backstop system
-- Combined model showed $59,642 performance gain in simulation testing
-- Moved to live production after successful scheduler validation
-- Market context module now displays actual percentage change data
-- Need to validate real-world performance under live conditions
 *→ Full details in SESSION_HISTORY.md*
 
 ---

@@ -11,6 +11,39 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-27 | claude.ai + Claude Code | 16:48 EDT | 5 hours
+**What changed:**
+- Fixed Python output buffering on all 4 systemd services by adding -u flag, resolving silent agent operation
+- Fixed scheduler morning wake-up bug by applying min(secs, 3600) chunked sleep consistently to both sleep paths
+- Added heartbeat logging to scheduler overnight sleep for monitoring
+- Built optimizing_agent.py with MODE=OPTIMIZING, score 6.0-7.9, premium $100K-$2M, DTE 1-2d or 6-14d filters
+- Added mode column to paper_trades table in both local and VM signals.db, backfilled 505 records as CONTROL
+- Updated journal.py insert_paper_trade() to accept mode parameter defaulting to CONTROL
+- Created and deployed scanner-optimizing-agent systemd service with confirmed logging
+- Set up tmux 2-window monitor layout with scanner-monitor.sh alias
+- Created live/ subfolder with 0_record_trade.py and designed live_trades.db schema for real capital tracking
+
+**Key decisions:**
+- Defined three-tier agent architecture: agent.py (CONTROL data collection), optimizing_agent.py (refined criteria), agent_live.py (real capital)
+- Established live trading capital model: 10% max deployment, 80% profits reinvestable, 20% income carveout
+- Set optimizing agent filters based on week 3 analysis confirming score 6.0-6.9 sweet spot and premium ranges
+- Chose to bifurcate all reporting by mode (CONTROL vs OPTIMIZING) across position_monitor, pnl_report, entry_analyzer, dashboard
+
+**What we learned:**
+- Score 6.0 threshold achieves 62.4% win rate, highest of any threshold tested
+- Premium sweet spots are $100K-$500K and $1M-$2M ranges, while $5M+ and $2M-$5M underperform at 46.6%
+- Calls significantly outperforming puts in current NEUTRAL/BULLISH market bias
+- DTE-aware trailing stop working effectively with AMD positions #315/#289/#292 still tracking profitably
+- Python buffering was masking agent operation issues in production
+
+**Open questions:**
+- How will OPTIMIZING mode performance compare to CONTROL mode baseline over next 2-3 weeks
+- Should premium filters be adjusted based on market volatility or remain static
+- When to transition from paper trading optimizing_agent to live capital deployment
+- Whether call/put performance differential requires separate optimization strategies
+
+---
+
 ### 2026-05-26 | claude.ai | 18:56 EDT | 1 hour
 **What changed:**
 - Modified export_analysis_dataset.py to include additional fields for analysis dataset export
