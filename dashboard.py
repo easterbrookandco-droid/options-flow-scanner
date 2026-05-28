@@ -205,10 +205,21 @@ def get_today_activity():
     eastern = pytz.timezone("US/Eastern")
     today = datetime.now(eastern).strftime("%Y-%m-%d")
     c.execute("""
+        WITH last_snaps AS (
+            SELECT trade_id, MAX(id) AS max_id
+            FROM position_snapshots
+            GROUP BY trade_id
+        )
         SELECT pt.id, pt.signal_contract, pt.entry_price, pt.contracts,
-               pt.status, pt.dte_at_entry, s.ticker, s.contract_type
+               pt.status, pt.dte_at_entry, pt.exit_price,
+               pt.pnl AS realized_pnl,
+               s.ticker, s.contract_type,
+               ps.current_price AS last_price,
+               ps.pnl AS unrealized_pnl
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
+        LEFT JOIN last_snaps ls ON ls.trade_id = pt.id
+        LEFT JOIN position_snapshots ps ON ps.id = ls.max_id
         WHERE pt.entry_date = ?
         ORDER BY pt.entry_time DESC
     """, (today,))
@@ -679,6 +690,16 @@ def dashboard():
 
     for t in today_entered:
         t['decoded'] = decode_contract(t['signal_contract'])
+        lp = t.get('last_price')
+        ep = t.get('exit_price')
+        rp = t.get('realized_pnl')
+        up = t.get('unrealized_pnl')
+        t['last_price_display']  = f"${lp:.2f}" if lp is not None else 'n/a'
+        t['exit_price_display']  = f"${ep:.2f}" if ep is not None else 'n/a'
+        t['realized_display']    = fmt_pnl(rp) if rp is not None else 'n/a'
+        t['realized_positive']   = rp >= 0 if rp is not None else None
+        t['unrealized_display']  = fmt_pnl(up) if up is not None else 'n/a'
+        t['unrealized_positive'] = up >= 0 if up is not None else None
     for t in today_closed:
         t['decoded'] = decode_contract(t['signal_contract'])
         t['pnl_display'] = fmt_pnl(t.get('pnl'))
@@ -1143,66 +1164,80 @@ body {
         </div>
     </div>
 
-    <!-- Today's activity -->
-    <div class="grid-2">
-        <div class="card">
-            <div class="card-title">Today's Entries
-                <span class="count">{{ today_entered|length }}</span>
-            </div>
-            {% if today_entered %}
-            <table class="data-table">
-                <thead><tr>
-                    <th>Ticker</th><th>Type</th><th>Entry $</th><th>Contracts</th><th>DTE</th><th>Status</th>
-                </tr></thead>
-                <tbody>
-                {% for t in today_entered %}
-                <tr>
-                    <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
-                    <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
-                        {{ t.decoded.contract_type }}</span></td>
-                    <td style="color:#e2e8f0">${{ "%.2f"|format(t.entry_price) }}</td>
-                    <td style="color:#94a3b8">{{ t.contracts }}</td>
-                    <td><span class="dte-badge {{ 'dte-urgent' if t.dte_at_entry == 0 else 'dte-soon' if t.dte_at_entry <= 2 else 'dte-normal' }}">
-                        {{ t.dte_at_entry }}d</span></td>
-                    <td><span class="badge {{ 'badge-open' if t.status == 'OPEN' else 'badge-tracking' }}">
-                        {{ t.status }}</span></td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-msg">No entries today</div>
-            {% endif %}
+    <!-- Today's Entries — full width -->
+    <div class="card full-width">
+        <div class="card-title">Today's Entries
+            <span class="count">{{ today_entered|length }}</span>
         </div>
+        {% if today_entered %}
+        <table class="data-table">
+            <thead><tr>
+                <th>Ticker</th>
+                <th>Type</th>
+                <th>Expiry</th>
+                <th>DTE</th>
+                <th style="text-align:right">Entry $</th>
+                <th style="text-align:right">Last $</th>
+                <th style="text-align:right">Exit $</th>
+                <th style="text-align:right">Realized</th>
+                <th style="text-align:right">Unrealized</th>
+                <th>Status</th>
+            </tr></thead>
+            <tbody>
+            {% for t in today_entered %}
+            <tr>
+                <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
+                <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
+                    {{ t.decoded.contract_type }}</span></td>
+                <td style="color:#64748b;font-size:11px">{{ t.decoded.expiry_display }}</td>
+                <td><span class="dte-badge {{ 'dte-urgent' if t.dte_at_entry == 0 else 'dte-soon' if t.dte_at_entry <= 2 else 'dte-normal' }}">
+                    {{ t.dte_at_entry }}d</span></td>
+                <td style="text-align:right;color:#94a3b8">${{ "%.2f"|format(t.entry_price) }}</td>
+                <td style="text-align:right;color:#e2e8f0">{{ t.last_price_display }}</td>
+                <td style="text-align:right;color:#94a3b8">{{ t.exit_price_display }}</td>
+                <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.realized_positive == true else '#ef4444' if t.realized_positive == false else '#475569' }}">
+                    {{ t.realized_display }}</td>
+                <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.unrealized_positive == true else '#ef4444' if t.unrealized_positive == false else '#475569' }}">
+                    {{ t.unrealized_display }}</td>
+                <td><span class="badge {{ 'badge-open' if t.status == 'OPEN' else 'badge-stop' if t.status == 'STOP_TRIGGERED' else 'badge-win' if t.realized_positive == true else 'badge-loss' if t.realized_positive == false else 'badge-open' }}">
+                    {{ 'OPEN' if t.status == 'OPEN' else 'STOPPED' if t.status == 'STOP_TRIGGERED' else 'CLOSED' }}</span></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-msg">No entries today</div>
+        {% endif %}
+    </div>
 
-        <div class="card">
-            <div class="card-title">Today's Exits
-                <span class="count">{{ today_closed|length }}</span>
-            </div>
-            {% if today_closed %}
-            <table class="data-table">
-                <thead><tr>
-                    <th>Ticker</th><th>Type</th><th>P&L</th><th>%</th><th>Reason</th>
-                </tr></thead>
-                <tbody>
-                {% for t in today_closed %}
-                <tr>
-                    <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
-                    <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
-                        {{ t.decoded.contract_type }}</span></td>
-                    <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }};font-weight:600">
-                        {{ t.pnl_display }}</td>
-                    <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }}">
-                        {{ t.pnl_pct_display }}</td>
-                    <td style="color:#64748b;font-size:11px">{{ t.exit_reason or '—' }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <div class="empty-msg">No exits today</div>
-            {% endif %}
+    <!-- Today's Exits — full width -->
+    <div class="card full-width">
+        <div class="card-title">Today's Exits
+            <span class="count">{{ today_closed|length }}</span>
         </div>
+        {% if today_closed %}
+        <table class="data-table">
+            <thead><tr>
+                <th>Ticker</th><th>Type</th><th>P&L</th><th>%</th><th>Reason</th>
+            </tr></thead>
+            <tbody>
+            {% for t in today_closed %}
+            <tr>
+                <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
+                <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
+                    {{ t.decoded.contract_type }}</span></td>
+                <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }};font-weight:600">
+                    {{ t.pnl_display }}</td>
+                <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }}">
+                    {{ t.pnl_pct_display }}</td>
+                <td style="color:#64748b;font-size:11px">{{ t.exit_reason or '—' }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-msg">No exits today</div>
+        {% endif %}
     </div>
 
     <!-- Exit reason + Ticker breakdown -->
