@@ -212,8 +212,8 @@ def get_today_activity():
         )
         SELECT pt.id, pt.signal_contract, pt.entry_price, pt.contracts,
                pt.status, pt.dte_at_entry, pt.exit_price,
-               pt.pnl AS realized_pnl,
-               s.ticker, s.contract_type,
+               pt.pnl AS realized_pnl, pt.score_at_entry,
+               s.ticker, s.contract_type, s.premium,
                ps.current_price AS last_price,
                ps.pnl AS unrealized_pnl
         FROM paper_trades pt
@@ -301,6 +301,14 @@ def get_open_positions():
             pt.total_cost,
             pt.status,
             pt.dte_at_entry,
+            pt.score_at_entry,
+            pt.entry_date,
+            pt.exit_date,
+            pt.exit_price,
+            pt.pnl          AS realized_pnl,
+            pt.pnl_pct      AS realized_pnl_pct,
+            pt.hold_days,
+            s.premium,
             ps.current_price as last_price,
             ps.pnl           as last_pnl,
             ps.pnl_pct       as last_pnl_pct,
@@ -308,6 +316,7 @@ def get_open_positions():
             ps.dynamic_stop,
             ps.current_dte
         FROM paper_trades pt
+        LEFT JOIN signals s ON pt.signal_contract = s.contract
         JOIN last_snapshots ls ON ls.trade_id = pt.id
         JOIN position_snapshots ps ON ps.id = ls.max_id
         WHERE pt.status IN ('OPEN', 'STOP_TRIGGERED')
@@ -316,6 +325,34 @@ def get_open_positions():
     rows = [dict(r) for r in c.fetchall()]
     conn.close()
     return rows
+
+
+def get_closed_positions_summary():
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("""
+        WITH last_snaps AS (
+            SELECT trade_id, MAX(id) AS max_id
+            FROM position_snapshots
+            GROUP BY trade_id
+        )
+        SELECT
+            COUNT(*)                                             AS count,
+            SUM(CASE WHEN pt.pnl > 0 THEN 1 ELSE 0 END)        AS wins,
+            ROUND(SUM(pt.pnl), 2)                               AS total_realized,
+            ROUND(SUM(
+                CASE WHEN ps.current_price IS NOT NULL AND pt.exit_price IS NOT NULL
+                     THEN (ps.current_price - pt.exit_price) * 100 * pt.contracts
+                     ELSE 0 END
+            ), 2)                                               AS total_post_exit
+        FROM paper_trades pt
+        LEFT JOIN last_snaps ls ON ls.trade_id = pt.id
+        LEFT JOIN position_snapshots ps ON ps.id = ls.max_id
+        WHERE pt.status = 'CLOSED'
+    """)
+    result = dict(c.fetchone())
+    conn.close()
+    return result
 
 
 # =============================================================================
@@ -690,6 +727,8 @@ def dashboard():
 
     for t in today_entered:
         t['decoded'] = decode_contract(t['signal_contract'])
+        t['score_display']   = f"{t['score_at_entry']:.1f}" if t.get('score_at_entry') is not None else '—'
+        t['premium_display'] = fmt_premium(t.get('premium'))
         lp = t.get('last_price')
         ep = t.get('exit_price')
         rp = t.get('realized_pnl')
@@ -783,43 +822,168 @@ def dashboard():
 def api_positions():
     eastern = pytz.timezone(MARKET_TIMEZONE)
     now = datetime.now(eastern)
-    positions = get_open_positions()
+    positions    = get_open_positions()
+    closed_stats = get_closed_positions_summary()
     result = []
     for p in positions:
-        decoded = decode_contract(p['signal_contract'])
-        last_pnl = p['last_pnl'] or 0
+        decoded   = decode_contract(p['signal_contract'])
+        status    = p['status']
+        lp        = p['last_price']
+        ep        = p.get('exit_price')
+        rp        = p.get('realized_pnl')
+        up        = p['last_pnl'] or 0
+        contracts = p['contracts'] or 1
+
+        # Unrealized — OPEN only
+        if status == 'OPEN':
+            unrealized_disp = fmt_pnl(up)
+            unrealized_pos  = up >= 0
+        else:
+            unrealized_disp = 'n/a'
+            unrealized_pos  = None
+
+        # Realized — STOP_TRIGGERED only
+        if status == 'STOP_TRIGGERED' and rp is not None:
+            realized_disp = fmt_pnl(rp)
+            realized_pos  = rp >= 0
+        else:
+            realized_disp = 'n/a'
+            realized_pos  = None
+
+        # % — unrealized % for OPEN, realized % for STOP_TRIGGERED
+        if status == 'OPEN':
+            pct_val  = p['last_pnl_pct']
+            pct_disp = fmt_pct(pct_val) if pct_val is not None else 'n/a'
+            pct_pos  = (pct_val or 0) >= 0
+        elif status == 'STOP_TRIGGERED' and p.get('realized_pnl_pct') is not None:
+            pct_val  = p['realized_pnl_pct']
+            pct_disp = fmt_pct(pct_val)
+            pct_pos  = pct_val >= 0
+        else:
+            pct_disp = 'n/a'
+            pct_pos  = None
+
+        # Post-Exit — requires both last_price and exit_price
+        if lp is not None and ep is not None:
+            pe_val  = (lp - ep) * 100 * contracts
+            pe_disp = fmt_pnl(pe_val)
+            pe_pos  = pe_val >= 0
+        else:
+            pe_val  = None
+            pe_disp = 'n/a'
+            pe_pos  = None
+
+        # Exit $ display
+        ep_disp = f"${ep:.2f}" if ep is not None else 'n/a'
+
+        # Date helpers
+        def fmt_date(d):
+            if not d: return 'n/a'
+            try:    return datetime.strptime(d, '%Y-%m-%d').strftime('%b %d')
+            except: return d
+
+        entry_date_disp = fmt_date(p.get('entry_date'))
+        exit_date_disp  = fmt_date(p.get('exit_date')) if status != 'OPEN' else 'n/a'
+
+        # Days held
+        hd = p.get('hold_days')
+        days_held_disp = f"{round(hd, 1)}d" if hd is not None else 'n/a'
+
         result.append({
-            'id': p['id'],
-            'contract': p['signal_contract'],
-            'ticker': decoded['ticker'],
-            'strike_display': decoded['strike_display'],
-            'contract_type': decoded['contract_type'],
-            'expiry_display': decoded['expiry_display'],
-            'entry_price': p['entry_price'],
-            'contracts': p['contracts'],
-            'last_price': p['last_price'],
-            'last_pnl': last_pnl,
-            'last_pnl_pct': p['last_pnl_pct'],
-            'last_pnl_display': fmt_pnl(last_pnl),
-            'last_pnl_pct_display': fmt_pct(p['last_pnl_pct']),
-            'status': p['status'],
-            'current_dte': p['current_dte'],
-            'dynamic_stop': p['dynamic_stop'],
-            'snapshot_time': p['snapshot_time'],
+            'id':                p['id'],
+            'contract':          p['signal_contract'],
+            'ticker':            decoded['ticker'],
+            'contract_type':     decoded['contract_type'],
+            'expiry_display':    decoded['expiry_display'],
+            'score_at_entry':    p.get('score_at_entry'),
+            'score_display':     f"{p['score_at_entry']:.1f}" if p.get('score_at_entry') is not None else '—',
+            'premium_display':   fmt_premium(p.get('premium')),
+            'dte_at_entry':      p['dte_at_entry'],
+            'entry_date_display': entry_date_disp,
+            'entry_price':       p['entry_price'],
+            'contracts':         contracts,
+            'last_price':        lp,
+            'last_pnl':          up,
+            'unrealized_display': unrealized_disp,
+            'unrealized_pos':    unrealized_pos,
+            'realized_display':  realized_disp,
+            'realized_pos':      realized_pos,
+            'pct_display':       pct_disp,
+            'pct_pos':           pct_pos,
+            'exit_price_display': ep_disp,
+            'post_exit_display': pe_disp,
+            'post_exit_pos':     pe_pos,
+            'post_exit_val':     pe_val,
+            'realized_pnl':      rp,
+            'exit_date_display': exit_date_disp,
+            'days_held_display': days_held_disp,
+            'status':            status,
+            'current_dte':       p['current_dte'],
+            'dynamic_stop':      p['dynamic_stop'],
+            'snapshot_time':     p['snapshot_time'],
         })
-    profitable = [p for p in result if p['last_pnl'] > 0]
-    total_unrealized = sum(p['last_pnl'] for p in result)
-    open_count    = sum(1 for p in result if p['status'] == 'OPEN')
-    stopped_count = sum(1 for p in result if p['status'] == 'STOP_TRIGGERED')
+
+    open_pos    = [p for p in result if p['status'] == 'OPEN']
+    stopped_pos = [p for p in result if p['status'] == 'STOP_TRIGGERED']
+
+    open_unreal   = sum(p['last_pnl'] for p in open_pos)
+    stop_realized = sum(p['realized_pnl'] for p in stopped_pos if p['realized_pnl'] is not None)
+    stop_pe       = sum(p['post_exit_val'] for p in stopped_pos if p['post_exit_val'] is not None)
+    stop_wins     = sum(1 for p in stopped_pos if (p['realized_pnl'] or 0) > 0)
+
+    cl_count    = closed_stats.get('count') or 0
+    cl_wins     = closed_stats.get('wins') or 0
+    cl_realized = closed_stats.get('total_realized') or 0
+    cl_pe       = closed_stats.get('total_post_exit') or 0
+
+    tot_unreal  = open_unreal
+    tot_real    = stop_realized + cl_realized
+    tot_pe      = stop_pe + cl_pe
+    tot_wins    = stop_wins + cl_wins
+    tot_losses  = (len(stopped_pos) - stop_wins) + (cl_count - cl_wins)
+
+    def s_block(unreal, real, pe):
+        pot = (unreal or 0) + (real or 0)
+        return {
+            'unrealized':      unreal,
+            'unrealized_disp': fmt_pnl(unreal) if unreal is not None else 'n/a',
+            'unrealized_pos':  (unreal >= 0) if unreal is not None else None,
+            'realized':        real,
+            'realized_disp':   fmt_pnl(real) if real is not None else 'n/a',
+            'realized_pos':    (real >= 0) if real is not None else None,
+            'potential':       pot,
+            'potential_disp':  fmt_pnl(pot),
+            'potential_pos':   pot >= 0,
+            'post_exit':       pe,
+            'post_exit_disp':  fmt_pnl(pe) if pe is not None else 'n/a',
+            'post_exit_pos':   (pe >= 0) if pe is not None else None,
+        }
+
     return jsonify({
         'positions': result,
         'summary': {
-            'open_count': open_count,
-            'stopped_count': stopped_count,
-            'profitable_count': len(profitable),
-            'losing_count': len(result) - len(profitable),
-            'total_unrealized': total_unrealized,
-            'total_unrealized_display': fmt_pnl(total_unrealized),
+            'open': {
+                **s_block(open_unreal, None, None),
+                'count': len(open_pos),
+            },
+            'stopped': {
+                **s_block(None, stop_realized, stop_pe),
+                'count': len(stopped_pos),
+                'wins':  stop_wins,
+                'losses': len(stopped_pos) - stop_wins,
+            },
+            'closed': {
+                **s_block(None, cl_realized, cl_pe),
+                'count':  cl_count,
+                'wins':   cl_wins,
+                'losses': cl_count - cl_wins,
+            },
+            'totals': {
+                **s_block(tot_unreal, tot_real, tot_pe),
+                'count':  len(result) + cl_count,
+                'wins':   tot_wins,
+                'losses': tot_losses,
+            },
         },
         'timestamp': now.strftime('%Y-%m-%d %H:%M:%S %Z'),
     })
@@ -1199,33 +1363,37 @@ body {
 
     <!-- Today's Entries — full width -->
     <div class="card full-width">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
-            <div style="display:flex;align-items:center;gap:8px;">
-                <span style="font-size:11px;font-weight:600;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;">Today's Entries</span>
-                <span class="count">{{ today_entered|length }}</span>
-            </div>
-            {% if today_entered %}
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
-                <div style="display:flex;gap:40px;">
-                    <span style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;min-width:72px;text-align:right;">Unrealized</span>
-                    <span style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;min-width:72px;text-align:right;">Realized</span>
-                    <span style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;min-width:72px;text-align:right;">Post-Exit</span>
-                </div>
-                <div style="display:flex;gap:40px;">
-                    <span style="font-size:12px;font-weight:700;min-width:72px;text-align:right;color:{{ '#22c55e' if today_sums.unrealized_pos else '#ef4444' }};">{{ today_sums.unrealized }}</span>
-                    <span style="font-size:12px;font-weight:700;min-width:72px;text-align:right;color:{{ '#22c55e' if today_sums.realized_pos else '#ef4444' }};">{{ today_sums.realized }}</span>
-                    <span style="font-size:12px;font-weight:700;min-width:72px;text-align:right;color:{{ '#22c55e' if today_sums.post_exit_pos else '#ef4444' }};">{{ today_sums.post_exit }}</span>
-                </div>
-            </div>
-            {% endif %}
+        <div class="card-title">Today's Entries
+            <span class="count">{{ today_entered|length }}</span>
         </div>
         {% if today_entered %}
         <table class="data-table">
-            <thead><tr>
+            <thead>
+            <!-- Column sum row — aligned to Unrealized/Realized/Post-Exit columns -->
+            <tr style="border-bottom:none">
+                <td colspan="9" style="padding:0 0 4px 0;border-bottom:none"></td>
+                <td style="text-align:right;padding:0 8px 4px 0;border-bottom:none">
+                    <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Unrealized</div>
+                    <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.unrealized_pos else '#ef4444' }}">{{ today_sums.unrealized }}</div>
+                </td>
+                <td style="text-align:right;padding:0 8px 4px 0;border-bottom:none">
+                    <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Realized</div>
+                    <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.realized_pos else '#ef4444' }}">{{ today_sums.realized }}</div>
+                </td>
+                <td style="text-align:right;padding:0 0 4px 0;border-bottom:none">
+                    <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Post-Exit</div>
+                    <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.post_exit_pos else '#ef4444' }}">{{ today_sums.post_exit }}</div>
+                </td>
+                <td style="border-bottom:none;padding:0"></td>
+            </tr>
+            <!-- Column headers -->
+            <tr>
                 <th>Ticker</th>
                 <th>Type</th>
                 <th>Expiry</th>
                 <th>DTE</th>
+                <th style="text-align:right">Score</th>
+                <th style="text-align:right">Premium</th>
                 <th style="text-align:right">Entry $</th>
                 <th style="text-align:right">Last $</th>
                 <th style="text-align:right">Exit $</th>
@@ -1233,7 +1401,8 @@ body {
                 <th style="text-align:right">Realized</th>
                 <th style="text-align:right">Post-Exit</th>
                 <th>Status</th>
-            </tr></thead>
+            </tr>
+            </thead>
             <tbody>
             {% for t in today_entered %}
             <tr>
@@ -1243,6 +1412,8 @@ body {
                 <td style="color:#64748b;font-size:11px">{{ t.decoded.expiry_display }}</td>
                 <td><span class="dte-badge {{ 'dte-urgent' if t.dte_at_entry == 0 else 'dte-soon' if t.dte_at_entry <= 2 else 'dte-normal' }}">
                     {{ t.dte_at_entry }}d</span></td>
+                <td style="text-align:right;color:#94a3b8">{{ t.score_display }}</td>
+                <td style="text-align:right;color:#94a3b8">{{ t.premium_display }}</td>
                 <td style="text-align:right;color:#94a3b8">${{ "%.2f"|format(t.entry_price) }}</td>
                 <td style="text-align:right;color:#e2e8f0">{{ t.last_price_display }}</td>
                 <td style="text-align:right;color:#94a3b8">{{ t.exit_price_display }}</td>
@@ -1543,84 +1714,155 @@ async function loadPositions() {
 }
 
 function renderPositions(data) {
-    const { positions, summary, timestamp } = data;
+    const { positions, summary: s, timestamp } = data;
 
-    const pnlColor = v => v >= 0 ? '#22c55e' : '#ef4444';
-    const fmtStop = p => {
-        if (p.status === 'STOP_TRIGGERED') return '<span class="badge badge-stop">STOPPED</span>';
-        if (p.dynamic_stop != null) return `<span class="badge badge-trail">$${p.dynamic_stop.toFixed(2)}</span>`;
-        return '<span style="color:#475569;font-size:10px">— at hurdle</span>';
-    };
+    const pc       = v => (v == null ? '#475569' : v >= 0 ? '#22c55e' : '#ef4444');
+    const pnlCell  = (disp, pos, extra) => `<td style="text-align:right;font-weight:600;color:${pc(pos ? 0 : (pos === false ? -1 : null))};${extra||''}">${disp}</td>`;
+    const colorVal = (disp, pos) => pos == null
+        ? `<span style="color:#475569">${disp}</span>`
+        : `<span style="font-weight:600;color:${pos ? '#22c55e' : '#ef4444'}">${disp}</span>`;
     const dteBadge = dte => {
-        if (dte === null || dte === undefined) return '—';
+        if (dte == null) return '—';
         const cls = dte === 0 ? 'dte-urgent' : dte <= 2 ? 'dte-soon' : 'dte-normal';
         return `<span class="dte-badge ${cls}">${dte}d</span>`;
     };
+    const na = () => `<td style="color:#475569;text-align:right">n/a</td>`;
+    const thRight = t => `<th style="text-align:right">${t}</th>`;
 
-    const unrealizedColor = pnlColor(summary.total_unrealized);
-    const profitableColor = summary.profitable_count > summary.losing_count ? '#22c55e' : '#ef4444';
+    // ── Summary header block (4-row table) ──────────────────────────────
+    const cols = ['Category','Count','Wins','Unrealized','Realized','Potential','Post-Exit'];
+    const thRow = cols.map(c => `<th style="font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:0.06em;padding:0 8px 6px 0;text-align:${c==='Category'?'left':'right'}">${c}</th>`).join('');
+
+    const sumRow = (label, labelColor, count, winsHtml, unr, real, pot, pe, isFoot) => {
+        const rs = isFoot ? 'border-top:1px solid #475569;' : '';
+        return `<tr style="${rs}">
+            <td style="color:${labelColor};font-weight:600;font-size:11px;padding:6px 8px 6px 0">${label}</td>
+            <td style="color:#e2e8f0;text-align:right;font-size:13px;font-weight:${isFoot?'700':'600'};padding:6px 8px 6px 0">${count}</td>
+            <td style="text-align:right;font-size:11px;padding:6px 8px 6px 0">${winsHtml}</td>
+            <td style="text-align:right;padding:6px 8px 6px 0">${unr}</td>
+            <td style="text-align:right;padding:6px 8px 6px 0">${real}</td>
+            <td style="text-align:right;font-weight:700;padding:6px 8px 6px 0">${pot}</td>
+            <td style="text-align:right;padding:6px 0 6px 0">${pe}</td>
+        </tr>`;
+    };
+
+    const wl = (w, l) => `<span style="color:#22c55e">${w}W</span><span style="color:#475569">/</span><span style="color:#ef4444">${l}L</span>`;
 
     let html = `
-    <div class="pos-summary">
-        <div>
-            <div class="pos-stat-label">Open</div>
-            <div class="pos-stat-val" style="color:#22c55e">${summary.open_count}</div>
+    <div class="card" style="margin-bottom:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <span style="font-size:11px;font-weight:600;color:#64748b;letter-spacing:0.1em;text-transform:uppercase">Position Summary</span>
+            <button class="pos-refresh-btn" onclick="reloadPositions()">↻ Refresh</button>
         </div>
-        <div class="pos-divider"></div>
-        <div>
-            <div class="pos-stat-label">Tracking (stopped)</div>
-            <div class="pos-stat-val" style="color:#f97316">${summary.stopped_count}</div>
-        </div>
-        <div class="pos-divider"></div>
-        <div>
-            <div class="pos-stat-label">Profitable</div>
-            <div class="pos-stat-val" style="color:${profitableColor}">${summary.profitable_count} / ${positions.length}</div>
-        </div>
-        <div class="pos-divider"></div>
-        <div>
-            <div class="pos-stat-label">Total Unrealized</div>
-            <div class="pos-stat-val" style="color:${unrealizedColor}">${summary.total_unrealized_display}</div>
-        </div>
-        <button class="pos-refresh-btn" onclick="reloadPositions()">↻ Refresh</button>
+        <table style="width:100%;border-collapse:collapse">
+            <thead><tr>${thRow}</tr></thead>
+            <tbody>
+                ${sumRow('● Open', '#22c55e', s.open.count,
+                    '<span style="color:#475569">n/a</span>',
+                    colorVal(s.open.unrealized_disp, s.open.unrealized_pos),
+                    '<span style="color:#475569">n/a</span>',
+                    colorVal(s.open.potential_disp, s.open.potential_pos),
+                    '<span style="color:#475569">n/a</span>', false)}
+                ${sumRow('⏸ Stopped', '#f97316', s.stopped.count,
+                    wl(s.stopped.wins, s.stopped.losses),
+                    '<span style="color:#475569">n/a</span>',
+                    colorVal(s.stopped.realized_disp, s.stopped.realized_pos),
+                    colorVal(s.stopped.potential_disp, s.stopped.potential_pos),
+                    colorVal(s.stopped.post_exit_disp, s.stopped.post_exit_pos), false)}
+                ${sumRow('✓ Closed', '#64748b', s.closed.count,
+                    wl(s.closed.wins, s.closed.losses),
+                    '<span style="color:#475569">n/a</span>',
+                    colorVal(s.closed.realized_disp, s.closed.realized_pos),
+                    colorVal(s.closed.potential_disp, s.closed.potential_pos),
+                    colorVal(s.closed.post_exit_disp, s.closed.post_exit_pos), false)}
+            </tbody>
+            <tfoot>
+                ${sumRow('Totals', '#e2e8f0', s.totals.count,
+                    wl(s.totals.wins, s.totals.losses),
+                    colorVal(s.totals.unrealized_disp, s.totals.unrealized_pos),
+                    colorVal(s.totals.realized_disp, s.totals.realized_pos),
+                    colorVal(s.totals.potential_disp, s.totals.potential_pos),
+                    colorVal(s.totals.post_exit_disp, s.totals.post_exit_pos), true)}
+            </tfoot>
+        </table>
     </div>`;
 
     if (positions.length === 0) {
-        html += '<div class="empty-msg">No open positions</div>';
+        html += '<div class="empty-msg">No open or tracked positions</div>';
     } else {
+        // In-table totals for thead summary row (cols 12-15 of 18)
+        const tUnreal = colorVal(s.open.unrealized_disp, s.open.unrealized_pos);
+        const tReal   = colorVal(s.stopped.realized_disp, s.stopped.realized_pos);
+        const tPE     = colorVal(s.stopped.post_exit_disp, s.stopped.post_exit_pos);
+        const sumTd   = (content) => `<td style="text-align:right;padding:4px 8px 4px 0;border-bottom:none">${content}</td>`;
+        const sumLabel = t => `<div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">${t}</div>`;
+
         html += `
         <div class="card">
             <table class="data-table">
-                <thead><tr>
-                    <th>Ticker</th><th>Strike</th><th>Type</th><th>Expiry</th>
-                    <th>DTE</th><th style="text-align:right">Entry $</th>
-                    <th style="text-align:right">Last $</th>
-                    <th style="text-align:right">Unrealized</th>
-                    <th style="text-align:right">%</th>
-                    <th>Trail Stop</th>
+                <thead>
+                <tr style="border-bottom:none">
+                    <td colspan="11" style="padding:0;border-bottom:none"></td>
+                    ${sumTd(sumLabel('Unrealized') + `<div style="font-size:11px;font-weight:700">${tUnreal}</div>`)}
+                    ${sumTd(sumLabel('Realized')   + `<div style="font-size:11px;font-weight:700">${tReal}</div>`)}
+                    <td style="border-bottom:none;padding:0"></td>
+                    ${sumTd(sumLabel('Post-Exit')  + `<div style="font-size:11px;font-weight:700">${tPE}</div>`)}
+                    <td colspan="3" style="border-bottom:none;padding:0"></td>
+                </tr>
+                <tr>
+                    <th>Ticker</th>
+                    <th>Type</th>
+                    ${thRight('Score')}
+                    ${thRight('Premium')}
+                    <th>DTE (Entry)</th>
+                    <th>Entry Date</th>
+                    <th>Expiry</th>
+                    <th>DTE</th>
+                    ${thRight('Entry $')}
+                    ${thRight('Last $')}
+                    ${thRight('Exit $')}
+                    ${thRight('Unrealized')}
+                    ${thRight('Realized')}
+                    ${thRight('%')}
+                    ${thRight('Post-Exit')}
                     <th>Status</th>
-                </tr></thead>
-                <tbody>
-        `;
+                    <th>Exit Date</th>
+                    ${thRight('Days Held')}
+                </tr>
+                </thead>
+                <tbody>`;
+
         positions.forEach(p => {
-            const pc = pnlColor(p.last_pnl);
-            const statusBadge = p.status === 'OPEN'
+            const isOpen    = p.status === 'OPEN';
+            const isStopped = p.status === 'STOP_TRIGGERED';
+            const statusBadge = isOpen
                 ? '<span class="badge badge-open">OPEN</span>'
                 : '<span class="badge badge-tracking">TRACKING</span>';
+            const lpDisp = p.last_price != null ? `$${p.last_price.toFixed(2)}` : '—';
+
             html += `
             <tr>
                 <td style="color:#f1f5f9;font-weight:700">${p.ticker}</td>
-                <td style="color:#cbd5e1;font-weight:600">${p.strike_display}</td>
                 <td><span class="${p.contract_type === 'Call' ? 'type-call' : 'type-put'}">${p.contract_type}</span></td>
+                <td style="text-align:right;color:#94a3b8">${p.score_display}</td>
+                <td style="text-align:right;color:#94a3b8">${p.premium_display}</td>
+                <td style="color:#64748b">${p.dte_at_entry != null ? p.dte_at_entry + 'd' : '—'}</td>
+                <td style="color:#64748b;font-size:11px">${p.entry_date_display}</td>
                 <td style="color:#64748b;font-size:11px">${p.expiry_display}</td>
                 <td>${dteBadge(p.current_dte)}</td>
                 <td style="text-align:right;color:#94a3b8">$${p.entry_price.toFixed(2)}</td>
-                <td style="text-align:right;color:#e2e8f0">$${(p.last_price || 0).toFixed(2)}</td>
-                <td style="text-align:right;font-weight:600;color:${pc}">${p.last_pnl_display}</td>
-                <td style="text-align:right;color:${pc}">${p.last_pnl_pct_display}</td>
-                <td>${fmtStop(p)}</td>
+                <td style="text-align:right;color:#e2e8f0">${lpDisp}</td>
+                <td style="text-align:right;color:#94a3b8">${p.exit_price_display}</td>
+                <td style="text-align:right;font-weight:600;color:${pc(p.unrealized_pos)}">${p.unrealized_display}</td>
+                <td style="text-align:right;font-weight:600;color:${pc(p.realized_pos)}">${p.realized_display}</td>
+                <td style="text-align:right;color:${pc(p.pct_pos)}">${p.pct_display}</td>
+                <td style="text-align:right;font-weight:600;color:${pc(p.post_exit_pos)}">${p.post_exit_display}</td>
                 <td>${statusBadge}</td>
+                <td style="color:#64748b;font-size:11px">${p.exit_date_display}</td>
+                <td style="text-align:right;color:#64748b;font-size:11px">${p.days_held_display}</td>
             </tr>`;
         });
+
         html += '</tbody></table></div>';
     }
 
