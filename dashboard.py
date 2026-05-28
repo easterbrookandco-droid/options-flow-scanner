@@ -214,8 +214,7 @@ def get_today_activity():
                pt.status, pt.dte_at_entry, pt.exit_price,
                pt.pnl AS realized_pnl,
                s.ticker, s.contract_type,
-               ps.current_price AS last_price,
-               ps.pnl AS unrealized_pnl
+               ps.current_price AS last_price
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
         LEFT JOIN last_snaps ls ON ls.trade_id = pt.id
@@ -693,13 +692,17 @@ def dashboard():
         lp = t.get('last_price')
         ep = t.get('exit_price')
         rp = t.get('realized_pnl')
-        up = t.get('unrealized_pnl')
         t['last_price_display']  = f"${lp:.2f}" if lp is not None else 'n/a'
         t['exit_price_display']  = f"${ep:.2f}" if ep is not None else 'n/a'
         t['realized_display']    = fmt_pnl(rp) if rp is not None else 'n/a'
         t['realized_positive']   = rp >= 0 if rp is not None else None
-        t['unrealized_display']  = fmt_pnl(up) if up is not None else 'n/a'
-        t['unrealized_positive'] = up >= 0 if up is not None else None
+        if lp is not None and ep is not None:
+            post_exit = (lp - ep) * 100 * (t.get('contracts') or 1)
+            t['post_exit_display']  = fmt_pnl(post_exit)
+            t['post_exit_positive'] = post_exit >= 0
+        else:
+            t['post_exit_display']  = 'n/a'
+            t['post_exit_positive'] = None
     for t in today_closed:
         t['decoded'] = decode_contract(t['signal_contract'])
         t['pnl_display'] = fmt_pnl(t.get('pnl'))
@@ -1180,7 +1183,7 @@ body {
                 <th style="text-align:right">Last $</th>
                 <th style="text-align:right">Exit $</th>
                 <th style="text-align:right">Realized</th>
-                <th style="text-align:right">Unrealized</th>
+                <th style="text-align:right">Post-Exit</th>
                 <th>Status</th>
             </tr></thead>
             <tbody>
@@ -1197,8 +1200,8 @@ body {
                 <td style="text-align:right;color:#94a3b8">{{ t.exit_price_display }}</td>
                 <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.realized_positive == true else '#ef4444' if t.realized_positive == false else '#475569' }}">
                     {{ t.realized_display }}</td>
-                <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.unrealized_positive == true else '#ef4444' if t.unrealized_positive == false else '#475569' }}">
-                    {{ t.unrealized_display }}</td>
+                <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.post_exit_positive == true else '#ef4444' if t.post_exit_positive == false else '#475569' }}">
+                    {{ t.post_exit_display }}</td>
                 <td><span class="badge {{ 'badge-open' if t.status == 'OPEN' else 'badge-stop' if t.status == 'STOP_TRIGGERED' else 'badge-win' if t.realized_positive == true else 'badge-loss' if t.realized_positive == false else 'badge-open' }}">
                     {{ 'OPEN' if t.status == 'OPEN' else 'STOPPED' if t.status == 'STOP_TRIGGERED' else 'CLOSED' }}</span></td>
             </tr>
