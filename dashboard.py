@@ -340,6 +340,7 @@ def get_closed_positions_summary():
             COUNT(*)                                             AS count,
             SUM(CASE WHEN pt.pnl > 0 THEN 1 ELSE 0 END)        AS wins,
             ROUND(SUM(pt.pnl), 2)                               AS total_realized,
+            ROUND(SUM(pt.total_cost), 2)                        AS total_cost,
             ROUND(SUM(
                 CASE WHEN ps.current_price IS NOT NULL AND pt.exit_price IS NOT NULL
                      THEN (ps.current_price - pt.exit_price) * 100 * pt.contracts
@@ -746,7 +747,7 @@ def dashboard():
         if lp is not None and ep is not None:
             post_exit = (lp - ep) * 100 * (t.get('contracts') or 1)
             t['post_exit_display']  = fmt_pnl(post_exit)
-            t['post_exit_positive'] = post_exit >= 0
+            t['post_exit_positive'] = post_exit > 0  # True → red (left money), False/None → green
         else:
             t['post_exit_display']  = 'n/a'
             t['post_exit_positive'] = None
@@ -769,7 +770,7 @@ def dashboard():
         'realized':      fmt_pnl(sum_realized),
         'realized_pos':  sum_realized >= 0,
         'post_exit':     fmt_pnl(sum_post_exit),
-        'post_exit_pos': sum_post_exit >= 0,
+        'post_exit_pos': sum_post_exit > 0,  # strictly positive → red
     }
     for t in today_closed:
         t['decoded'] = decode_contract(t['signal_contract'])
@@ -867,7 +868,7 @@ def api_positions():
         if lp is not None and ep is not None:
             pe_val  = (lp - ep) * 100 * contracts
             pe_disp = fmt_pnl(pe_val)
-            pe_pos  = pe_val >= 0
+            pe_pos  = pe_val > 0  # strictly positive → red (left money on table)
         else:
             pe_val  = None
             pe_disp = 'n/a'
@@ -914,6 +915,7 @@ def api_positions():
             'post_exit_display': pe_disp,
             'post_exit_pos':     pe_pos,
             'post_exit_val':     pe_val,
+            'total_cost':        p.get('total_cost') or 0,
             'realized_pnl':      rp,
             'exit_date_display': exit_date_disp,
             'days_held_display': days_held_disp,
@@ -935,6 +937,7 @@ def api_positions():
     cl_wins     = closed_stats.get('wins') or 0
     cl_realized = closed_stats.get('total_realized') or 0
     cl_pe       = closed_stats.get('total_post_exit') or 0
+    cl_cost     = closed_stats.get('total_cost') or 0
 
     tot_unreal  = open_unreal
     tot_real    = stop_realized + cl_realized
@@ -942,8 +945,18 @@ def api_positions():
     tot_wins    = stop_wins + cl_wins
     tot_losses  = (len(stopped_pos) - stop_wins) + (cl_count - cl_wins)
 
-    def s_block(unreal, real, pe):
+    open_cost    = sum(p['total_cost'] for p in open_pos)
+    stopped_cost = sum(p['total_cost'] for p in stopped_pos)
+    tot_cost     = open_cost + stopped_cost + cl_cost
+
+    def roi_fmt(potential, cost):
+        if not cost: return 'n/a', None
+        v = round(potential / cost * 100, 1)
+        return (f"+{v:.1f}%" if v >= 0 else f"{v:.1f}%"), v >= 0
+
+    def s_block(unreal, real, pe, cost, roi_potential):
         pot = (unreal or 0) + (real or 0)
+        roi_disp, roi_pos = roi_fmt(roi_potential if roi_potential is not None else pot, cost)
         return {
             'unrealized':      unreal,
             'unrealized_disp': fmt_pnl(unreal) if unreal is not None else 'n/a',
@@ -956,30 +969,33 @@ def api_positions():
             'potential_pos':   pot >= 0,
             'post_exit':       pe,
             'post_exit_disp':  fmt_pnl(pe) if pe is not None else 'n/a',
-            'post_exit_pos':   (pe >= 0) if pe is not None else None,
+            'post_exit_pos':   (pe > 0) if pe is not None else None,
+            'cost_disp':       fmt_premium(cost) if cost else '$0',
+            'roi_disp':        roi_disp,
+            'roi_pos':         roi_pos,
         }
 
     return jsonify({
         'positions': result,
         'summary': {
             'open': {
-                **s_block(open_unreal, None, None),
+                **s_block(open_unreal, None, None, open_cost, open_unreal),
                 'count': len(open_pos),
             },
             'stopped': {
-                **s_block(None, stop_realized, stop_pe),
-                'count': len(stopped_pos),
-                'wins':  stop_wins,
+                **s_block(None, stop_realized, stop_pe, stopped_cost, stop_realized),
+                'count':  len(stopped_pos),
+                'wins':   stop_wins,
                 'losses': len(stopped_pos) - stop_wins,
             },
             'closed': {
-                **s_block(None, cl_realized, cl_pe),
+                **s_block(None, cl_realized, cl_pe, cl_cost, cl_realized),
                 'count':  cl_count,
                 'wins':   cl_wins,
                 'losses': cl_count - cl_wins,
             },
             'totals': {
-                **s_block(tot_unreal, tot_real, tot_pe),
+                **s_block(tot_unreal, tot_real, tot_pe, tot_cost, tot_unreal + tot_real),
                 'count':  len(result) + cl_count,
                 'wins':   tot_wins,
                 'losses': tot_losses,
@@ -1382,7 +1398,7 @@ body {
                 </td>
                 <td style="text-align:right;padding:0 0 4px 0;border-bottom:none">
                     <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Post-Exit</div>
-                    <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.post_exit_pos else '#ef4444' }}">{{ today_sums.post_exit }}</div>
+                    <div style="font-size:11px;font-weight:700;color:{{ '#ef4444' if today_sums.post_exit_pos else '#22c55e' }}">{{ today_sums.post_exit }}</div>
                 </td>
                 <td style="border-bottom:none;padding:0"></td>
             </tr>
@@ -1421,7 +1437,7 @@ body {
                     {{ t.unrealized_display }}</td>
                 <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.realized_positive == true else '#ef4444' if t.realized_positive == false else '#475569' }}">
                     {{ t.realized_display }}</td>
-                <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.post_exit_positive == true else '#ef4444' if t.post_exit_positive == false else '#475569' }}">
+                <td style="text-align:right;font-weight:600;color:{{ '#ef4444' if t.post_exit_positive == true else '#22c55e' if t.post_exit_positive == false else '#475569' }}">
                     {{ t.post_exit_display }}</td>
                 <td><span class="badge {{ 'badge-open' if t.status == 'OPEN' else 'badge-stop' if t.status == 'STOP_TRIGGERED' else 'badge-win' if t.realized_positive == true else 'badge-loss' if t.realized_positive == false else 'badge-open' }}">
                     {{ 'OPEN' if t.status == 'OPEN' else 'STOPPED' if t.status == 'STOP_TRIGGERED' else 'CLOSED' }}</span></td>
@@ -1716,37 +1732,49 @@ async function loadPositions() {
 function renderPositions(data) {
     const { positions, summary: s, timestamp } = data;
 
-    const pc       = v => (v == null ? '#475569' : v >= 0 ? '#22c55e' : '#ef4444');
-    const pnlCell  = (disp, pos, extra) => `<td style="text-align:right;font-weight:600;color:${pc(pos ? 0 : (pos === false ? -1 : null))};${extra||''}">${disp}</td>`;
-    const colorVal = (disp, pos) => pos == null
+    // pc: boolean/null → green/red/gray  |  pcR: reversed (true→red for post-exit)
+    const pc       = v => v == null ? '#475569' : v ? '#22c55e' : '#ef4444';
+    const pcR      = v => v == null ? '#475569' : v ? '#ef4444' : '#22c55e';
+    const colorVal  = (disp, pos) => pos == null
         ? `<span style="color:#475569">${disp}</span>`
         : `<span style="font-weight:600;color:${pos ? '#22c55e' : '#ef4444'}">${disp}</span>`;
+    const colorValR = (disp, pos) => pos == null
+        ? `<span style="color:#475569">${disp}</span>`
+        : `<span style="font-weight:600;color:${pos ? '#ef4444' : '#22c55e'}">${disp}</span>`;
     const dteBadge = dte => {
         if (dte == null) return '—';
         const cls = dte === 0 ? 'dte-urgent' : dte <= 2 ? 'dte-soon' : 'dte-normal';
         return `<span class="dte-badge ${cls}">${dte}d</span>`;
     };
-    const na = () => `<td style="color:#475569;text-align:right">n/a</td>`;
+    const wrHtml = (w, l) => {
+        if (w == null) return '<span style="color:#475569">n/a</span>';
+        const total = (w || 0) + (l || 0);
+        if (!total) return '<span style="color:#475569">—</span>';
+        const wr = Math.round((w || 0) / total * 100);
+        const wrc = wr >= 50 ? '#22c55e' : '#ef4444';
+        return `<span style="color:#22c55e">${w}W</span><span style="color:#475569">/</span><span style="color:#ef4444">${l}L</span> <span style="color:${wrc};font-size:10px">(${wr}%)</span>`;
+    };
     const thRight = t => `<th style="text-align:right">${t}</th>`;
 
     // ── Summary header block (4-row table) ──────────────────────────────
-    const cols = ['Category','Count','Wins','Unrealized','Realized','Potential','Post-Exit'];
+    const cols = ['Category','Count','Wins','Cost','Unrealized','Realized','Potential','ROI','Post-Exit'];
     const thRow = cols.map(c => `<th style="font-size:10px;color:#475569;text-transform:uppercase;letter-spacing:0.06em;padding:0 8px 6px 0;text-align:${c==='Category'?'left':'right'}">${c}</th>`).join('');
 
-    const sumRow = (label, labelColor, count, winsHtml, unr, real, pot, pe, isFoot) => {
+    const sumRow = (label, labelColor, count, winsHtml, cost, unr, real, pot, roi, pe, isFoot) => {
         const rs = isFoot ? 'border-top:1px solid #475569;' : '';
         return `<tr style="${rs}">
             <td style="color:${labelColor};font-weight:600;font-size:11px;padding:6px 8px 6px 0">${label}</td>
             <td style="color:#e2e8f0;text-align:right;font-size:13px;font-weight:${isFoot?'700':'600'};padding:6px 8px 6px 0">${count}</td>
             <td style="text-align:right;font-size:11px;padding:6px 8px 6px 0">${winsHtml}</td>
+            <td style="color:#e2e8f0;text-align:right;font-size:12px;padding:6px 8px 6px 0">${cost}</td>
             <td style="text-align:right;padding:6px 8px 6px 0">${unr}</td>
             <td style="text-align:right;padding:6px 8px 6px 0">${real}</td>
             <td style="text-align:right;font-weight:700;padding:6px 8px 6px 0">${pot}</td>
+            <td style="text-align:right;padding:6px 8px 6px 0">${roi}</td>
             <td style="text-align:right;padding:6px 0 6px 0">${pe}</td>
         </tr>`;
     };
-
-    const wl = (w, l) => `<span style="color:#22c55e">${w}W</span><span style="color:#475569">/</span><span style="color:#ef4444">${l}L</span>`;
+    const na = () => '<span style="color:#475569">n/a</span>';
 
     let html = `
     <div class="card" style="margin-bottom:16px">
@@ -1758,31 +1786,39 @@ function renderPositions(data) {
             <thead><tr>${thRow}</tr></thead>
             <tbody>
                 ${sumRow('● Open', '#22c55e', s.open.count,
-                    '<span style="color:#475569">n/a</span>',
+                    na(),
+                    s.open.cost_disp,
                     colorVal(s.open.unrealized_disp, s.open.unrealized_pos),
-                    '<span style="color:#475569">n/a</span>',
+                    na(),
                     colorVal(s.open.potential_disp, s.open.potential_pos),
-                    '<span style="color:#475569">n/a</span>', false)}
+                    colorVal(s.open.roi_disp, s.open.roi_pos),
+                    na(), false)}
                 ${sumRow('⏸ Stopped', '#f97316', s.stopped.count,
-                    wl(s.stopped.wins, s.stopped.losses),
-                    '<span style="color:#475569">n/a</span>',
+                    wrHtml(s.stopped.wins, s.stopped.losses),
+                    s.stopped.cost_disp,
+                    na(),
                     colorVal(s.stopped.realized_disp, s.stopped.realized_pos),
                     colorVal(s.stopped.potential_disp, s.stopped.potential_pos),
-                    colorVal(s.stopped.post_exit_disp, s.stopped.post_exit_pos), false)}
+                    colorVal(s.stopped.roi_disp, s.stopped.roi_pos),
+                    colorValR(s.stopped.post_exit_disp, s.stopped.post_exit_pos), false)}
                 ${sumRow('✓ Closed', '#64748b', s.closed.count,
-                    wl(s.closed.wins, s.closed.losses),
-                    '<span style="color:#475569">n/a</span>',
+                    wrHtml(s.closed.wins, s.closed.losses),
+                    s.closed.cost_disp,
+                    na(),
                     colorVal(s.closed.realized_disp, s.closed.realized_pos),
                     colorVal(s.closed.potential_disp, s.closed.potential_pos),
-                    colorVal(s.closed.post_exit_disp, s.closed.post_exit_pos), false)}
+                    colorVal(s.closed.roi_disp, s.closed.roi_pos),
+                    colorValR(s.closed.post_exit_disp, s.closed.post_exit_pos), false)}
             </tbody>
             <tfoot>
                 ${sumRow('Totals', '#e2e8f0', s.totals.count,
-                    wl(s.totals.wins, s.totals.losses),
+                    wrHtml(s.totals.wins, s.totals.losses),
+                    s.totals.cost_disp,
                     colorVal(s.totals.unrealized_disp, s.totals.unrealized_pos),
                     colorVal(s.totals.realized_disp, s.totals.realized_pos),
                     colorVal(s.totals.potential_disp, s.totals.potential_pos),
-                    colorVal(s.totals.post_exit_disp, s.totals.post_exit_pos), true)}
+                    colorVal(s.totals.roi_disp, s.totals.roi_pos),
+                    colorValR(s.totals.post_exit_disp, s.totals.post_exit_pos), true)}
             </tfoot>
         </table>
     </div>`;
@@ -1793,7 +1829,7 @@ function renderPositions(data) {
         // In-table totals for thead summary row (cols 12-15 of 18)
         const tUnreal = colorVal(s.open.unrealized_disp, s.open.unrealized_pos);
         const tReal   = colorVal(s.stopped.realized_disp, s.stopped.realized_pos);
-        const tPE     = colorVal(s.stopped.post_exit_disp, s.stopped.post_exit_pos);
+        const tPE     = colorValR(s.stopped.post_exit_disp, s.stopped.post_exit_pos);
         const sumTd   = (content) => `<td style="text-align:right;padding:4px 8px 4px 0;border-bottom:none">${content}</td>`;
         const sumLabel = t => `<div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">${t}</div>`;
 
@@ -1856,7 +1892,7 @@ function renderPositions(data) {
                 <td style="text-align:right;font-weight:600;color:${pc(p.unrealized_pos)}">${p.unrealized_display}</td>
                 <td style="text-align:right;font-weight:600;color:${pc(p.realized_pos)}">${p.realized_display}</td>
                 <td style="text-align:right;color:${pc(p.pct_pos)}">${p.pct_display}</td>
-                <td style="text-align:right;font-weight:600;color:${pc(p.post_exit_pos)}">${p.post_exit_display}</td>
+                <td style="text-align:right;font-weight:600;color:${pcR(p.post_exit_pos)}">${p.post_exit_display}</td>
                 <td>${statusBadge}</td>
                 <td style="color:#64748b;font-size:11px">${p.exit_date_display}</td>
                 <td style="text-align:right;color:#64748b;font-size:11px">${p.days_held_display}</td>
