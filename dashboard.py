@@ -191,7 +191,7 @@ def get_closed_summary():
             MAX(pnl) as best_trade,
             MIN(pnl) as worst_trade
         FROM paper_trades
-        WHERE status = 'CLOSED'
+        WHERE status IN ('CLOSED', 'STOP_TRIGGERED')
     """)
     result = dict(c.fetchone())
     conn.close()
@@ -214,7 +214,8 @@ def get_today_activity():
                pt.status, pt.dte_at_entry, pt.exit_price,
                pt.pnl AS realized_pnl,
                s.ticker, s.contract_type,
-               ps.current_price AS last_price
+               ps.current_price AS last_price,
+               ps.pnl AS unrealized_pnl
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
         LEFT JOIN last_snaps ls ON ls.trade_id = pt.id
@@ -248,7 +249,7 @@ def get_exit_reason_breakdown():
             ROUND(SUM(pnl), 2) as total_pnl,
             ROUND(AVG(pnl_pct), 1) as avg_pct
         FROM paper_trades
-        WHERE status = 'CLOSED'
+        WHERE status IN ('CLOSED', 'STOP_TRIGGERED')
         GROUP BY exit_reason
         ORDER BY total_pnl DESC
     """)
@@ -270,7 +271,7 @@ def get_ticker_breakdown():
             ROUND(AVG(pt.pnl_pct), 1) as avg_pct
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
-        WHERE pt.status = 'CLOSED'
+        WHERE pt.status IN ('CLOSED', 'STOP_TRIGGERED')
         GROUP BY s.ticker
         ORDER BY total_pnl DESC
     """)
@@ -340,7 +341,7 @@ def get_score_bucket_stats():
             ROUND(AVG(pnl_pct), 1) as avg_pct,
             ROUND(SUM(pnl), 2) as total_pnl
         FROM paper_trades
-        WHERE status = 'CLOSED' AND pnl IS NOT NULL AND score_at_entry IS NOT NULL
+        WHERE status IN ('CLOSED', 'STOP_TRIGGERED') AND pnl IS NOT NULL AND score_at_entry IS NOT NULL
         GROUP BY score_bucket
         ORDER BY MIN(score_at_entry) DESC
     """)
@@ -368,7 +369,7 @@ def get_dte_bucket_stats():
             ROUND(AVG(pnl_pct), 1) as avg_pct,
             ROUND(SUM(pnl), 2) as total_pnl
         FROM paper_trades
-        WHERE status = 'CLOSED' AND pnl IS NOT NULL
+        WHERE status IN ('CLOSED', 'STOP_TRIGGERED') AND pnl IS NOT NULL
         GROUP BY dte_bucket
         ORDER BY MIN(dte_at_entry)
     """)
@@ -397,7 +398,7 @@ def get_premium_tier_stats():
             ROUND(SUM(pt.pnl), 2) as total_pnl
         FROM paper_trades pt
         JOIN signals s ON pt.signal_contract = s.contract
-        WHERE pt.status = 'CLOSED' AND pt.pnl IS NOT NULL
+        WHERE pt.status IN ('CLOSED', 'STOP_TRIGGERED') AND pt.pnl IS NOT NULL
         GROUP BY premium_tier
         ORDER BY MIN(s.premium) DESC
     """)
@@ -429,7 +430,7 @@ def get_key_insights():
                    SUM(CASE WHEN pnl > 0 THEN 1 ELSE 0 END) as wins,
                    ROUND(SUM(pnl), 2) as total_pnl
             FROM paper_trades
-            WHERE status = 'CLOSED' AND pnl IS NOT NULL AND score_at_entry >= ?
+            WHERE status IN ('CLOSED', 'STOP_TRIGGERED') AND pnl IS NOT NULL AND score_at_entry >= ?
         """, (thresh,))
         row = dict(c.fetchone())
         row['threshold'] = thresh
@@ -506,7 +507,7 @@ def get_threshold_stats():
                    ROUND(SUM(pnl), 2) as total_pnl,
                    ROUND(AVG(pnl_pct), 1) as avg_pct
             FROM paper_trades
-            WHERE status = 'CLOSED' AND pnl IS NOT NULL AND score_at_entry >= ?
+            WHERE status IN ('CLOSED', 'STOP_TRIGGERED') AND pnl IS NOT NULL AND score_at_entry >= ?
         """, (thresh,))
         row = dict(c.fetchone())
         row['threshold'] = thresh
@@ -692,10 +693,17 @@ def dashboard():
         lp = t.get('last_price')
         ep = t.get('exit_price')
         rp = t.get('realized_pnl')
+        up = t.get('unrealized_pnl')
         t['last_price_display']  = f"${lp:.2f}" if lp is not None else 'n/a'
         t['exit_price_display']  = f"${ep:.2f}" if ep is not None else 'n/a'
         t['realized_display']    = fmt_pnl(rp) if rp is not None else 'n/a'
         t['realized_positive']   = rp >= 0 if rp is not None else None
+        if t.get('status') == 'OPEN' and up is not None:
+            t['unrealized_display']  = fmt_pnl(up)
+            t['unrealized_positive'] = up >= 0
+        else:
+            t['unrealized_display']  = 'n/a'
+            t['unrealized_positive'] = None
         if lp is not None and ep is not None:
             post_exit = (lp - ep) * 100 * (t.get('contracts') or 1)
             t['post_exit_display']  = fmt_pnl(post_exit)
@@ -703,6 +711,27 @@ def dashboard():
         else:
             t['post_exit_display']  = 'n/a'
             t['post_exit_positive'] = None
+    sum_unrealized = sum(
+        t['unrealized_pnl'] for t in today_entered
+        if t.get('status') == 'OPEN' and t.get('unrealized_pnl') is not None
+    )
+    sum_realized = sum(
+        t['realized_pnl'] for t in today_entered
+        if t.get('realized_pnl') is not None
+    )
+    sum_post_exit = sum(
+        (t['last_price'] - t['exit_price']) * 100 * (t.get('contracts') or 1)
+        for t in today_entered
+        if t.get('last_price') is not None and t.get('exit_price') is not None
+    )
+    today_sums = {
+        'unrealized':    fmt_pnl(sum_unrealized),
+        'unrealized_pos': sum_unrealized >= 0,
+        'realized':      fmt_pnl(sum_realized),
+        'realized_pos':  sum_realized >= 0,
+        'post_exit':     fmt_pnl(sum_post_exit),
+        'post_exit_pos': sum_post_exit >= 0,
+    }
     for t in today_closed:
         t['decoded'] = decode_contract(t['signal_contract'])
         t['pnl_display'] = fmt_pnl(t.get('pnl'))
@@ -744,6 +773,7 @@ def dashboard():
         # portfolio
         portfolio=portfolio,
         today_entered=today_entered, today_closed=today_closed,
+        today_sums=today_sums,
         exit_reasons=exit_reasons, tickers=tickers,
     )
 
@@ -1151,7 +1181,7 @@ body {
             <div class="stat-sub">{{ portfolio.wins }}W / {{ portfolio.losses }}L</div>
         </div>
         <div class="stat-card">
-            <div class="stat-label">Closed Trades</div>
+            <div class="stat-label">Completed Trades</div>
             <div class="stat-value">{{ portfolio.total_trades }}</div>
             <div class="stat-sub">avg {{ portfolio.avg_hold_days }}d hold</div>
         </div>
@@ -1169,8 +1199,25 @@ body {
 
     <!-- Today's Entries — full width -->
     <div class="card full-width">
-        <div class="card-title">Today's Entries
-            <span class="count">{{ today_entered|length }}</span>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-size:11px;font-weight:600;color:#64748b;letter-spacing:0.1em;text-transform:uppercase;">Today's Entries</span>
+                <span class="count">{{ today_entered|length }}</span>
+            </div>
+            {% if today_entered %}
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;">
+                <div style="display:flex;gap:40px;">
+                    <span style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;min-width:72px;text-align:right;">Unrealized</span>
+                    <span style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;min-width:72px;text-align:right;">Realized</span>
+                    <span style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;min-width:72px;text-align:right;">Post-Exit</span>
+                </div>
+                <div style="display:flex;gap:40px;">
+                    <span style="font-size:12px;font-weight:700;min-width:72px;text-align:right;color:{{ '#22c55e' if today_sums.unrealized_pos else '#ef4444' }};">{{ today_sums.unrealized }}</span>
+                    <span style="font-size:12px;font-weight:700;min-width:72px;text-align:right;color:{{ '#22c55e' if today_sums.realized_pos else '#ef4444' }};">{{ today_sums.realized }}</span>
+                    <span style="font-size:12px;font-weight:700;min-width:72px;text-align:right;color:{{ '#22c55e' if today_sums.post_exit_pos else '#ef4444' }};">{{ today_sums.post_exit }}</span>
+                </div>
+            </div>
+            {% endif %}
         </div>
         {% if today_entered %}
         <table class="data-table">
@@ -1182,6 +1229,7 @@ body {
                 <th style="text-align:right">Entry $</th>
                 <th style="text-align:right">Last $</th>
                 <th style="text-align:right">Exit $</th>
+                <th style="text-align:right">Unrealized</th>
                 <th style="text-align:right">Realized</th>
                 <th style="text-align:right">Post-Exit</th>
                 <th>Status</th>
@@ -1198,6 +1246,8 @@ body {
                 <td style="text-align:right;color:#94a3b8">${{ "%.2f"|format(t.entry_price) }}</td>
                 <td style="text-align:right;color:#e2e8f0">{{ t.last_price_display }}</td>
                 <td style="text-align:right;color:#94a3b8">{{ t.exit_price_display }}</td>
+                <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.unrealized_positive == true else '#ef4444' if t.unrealized_positive == false else '#475569' }}">
+                    {{ t.unrealized_display }}</td>
                 <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.realized_positive == true else '#ef4444' if t.realized_positive == false else '#475569' }}">
                     {{ t.realized_display }}</td>
                 <td style="text-align:right;font-weight:600;color:{{ '#22c55e' if t.post_exit_positive == true else '#ef4444' if t.post_exit_positive == false else '#475569' }}">
