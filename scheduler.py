@@ -84,15 +84,24 @@ def seconds_until_market_open():
         microsecond=0
     )
     
-    # If we're already past today's open, move to tomorrow
-    if now >= next_open:
+    # If we're at or past today's open, move to tomorrow.
+    # Use market_close as the cutoff: if it's still a trading day and the
+    # market hasn't closed yet, the "next open" is irrelevant — the main
+    # loop handles open-market state. This branch only runs when closed.
+    market_close = now.replace(
+        hour=MARKET_CLOSE_HOUR,
+        minute=MARKET_CLOSE_MINUTE,
+        second=0,
+        microsecond=0
+    )
+    if now >= market_close or now >= next_open:
         next_open = next_open + timedelta(days=1)
     
     # Skip Saturday and Sunday
     while next_open.weekday() > 4:
         next_open = next_open + timedelta(days=1)
     
-    return max(0, int((next_open - now).total_seconds()))
+    return max(60, int((next_open - now).total_seconds()))
 
 
 # =============================================================================
@@ -311,12 +320,13 @@ def main():
                 minutes_remaining = (secs % 3600) // 60
                 next_open = (now + timedelta(seconds=secs)).strftime('%Y-%m-%d %H:%M %Z')
 
+                sleep_chunk = min(secs, 3600)
+
                 print(f"\n  Market is currently closed.")
                 print(f"  Next open: {next_open} ({hours}h {minutes_remaining}m from now)")
                 print(f"  💓 Heartbeat — scheduler alive, sleeping {sleep_chunk//60} min")
                 print(f"  Sleeping until market open...")
 
-                sleep_chunk = min(secs, 3600)
                 time.sleep(sleep_chunk)
                 continue  # Loop back to top — recheck is_market_open() fresh
     
