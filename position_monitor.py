@@ -63,6 +63,21 @@ def get_open_positions():
     return trades
 
 
+def get_last_snapshot_price(trade_id):
+    """Most recent snapshot mid price for a trade, or None if no snapshots.
+    Used as a fallback exit price when an expired contract no longer quotes."""
+    conn = sqlite3.connect(get_db_path())
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT current_price FROM position_snapshots
+        WHERE trade_id = ? AND current_price IS NOT NULL
+        ORDER BY id DESC LIMIT 1
+    """, (trade_id,))
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else None
+
+
 def log_price_snapshot(
     trade_id, current_price, bid, ask, pnl, pnl_pct,
     dynamic_stop=None, current_dte=None,
@@ -676,6 +691,34 @@ def evaluate_positions(positions, prices, market_context, eastern):
         # ── Get current price ──────────────────────────────────────────
         price_data = prices.get(contract)
 
+        # ── Expiration close (before the missing-price skip) ───────────
+        # DTE is whole calendar days (date − date), so the expiry day is
+        # exactly 0 all day and < 0 means the contract has already expired.
+        # Book OPEN positions as EXPIRED at close of business on the expiry
+        # day, and sweep any that slipped past (monitor was down near close,
+        # or the quote vanished) on a later session. Handled before the
+        # price-skip below because expired contracts often no longer quote.
+        if status == "OPEN" and current_dte is not None:
+            now_et   = datetime.now(eastern)
+            at_close = now_et.hour > 15 or (now_et.hour == 15 and now_et.minute >= 55)
+            if current_dte < 0 or (current_dte == 0 and at_close):
+                if price_data:
+                    ex_mid = price_data["mid"]
+                    ex_bid = price_data["bid"]
+                    ex_ask = price_data["ask"]
+                else:
+                    ex_mid = get_last_snapshot_price(trade_id) or 0.0
+                    ex_bid = ex_ask = ex_mid
+                print(f"\n  {'='*65}")
+                print(f"  ⏰ EXPIRED — #{trade_id} {contract}  (DTE {current_dte})")
+                print(f"      Booking as EXPIRED at ${ex_mid:.2f}")
+                print(f"  {'='*65}")
+                result = auto_close_position(trade_id, ex_mid, "EXPIRED", ex_bid, ex_ask)
+                if result:
+                    print(f"  ✅ Closed as EXPIRED")
+                    closed_ids.append(trade_id)
+                continue
+
         if not price_data:
             print(f"\n  ⚠️  #{trade_id} {contract}")
             print(f"      Price unavailable — skipping this cycle")
@@ -857,15 +900,8 @@ def evaluate_positions(positions, prices, market_context, eastern):
         # ── Expiration warning ─────────────────────────────────────────
         if current_dte is not None and current_dte <= 1:
             print(f"  ⏰ EXPIRING SOON — {current_dte} day(s) remaining")
-
-
-        # ── Expiration auto-close at market close ──────────────────────
-        if current_dte == 0 and not is_market_open():
-            print(f"\n  ⏰ CONTRACT EXPIRING TODAY — auto-closing")
-            result = auto_close_position(trade_id, mid, "EXPIRED", bid, ask)
-            if result:
-                print(f"  ✅ Closed as EXPIRED  P&L: {fmt_pnl(pnl)}")
-                closed_ids.append(trade_id)
+        # Note: expiration close is handled near the top of the loop, before
+        # the missing-price skip (see "Expiration close" block above).
 
     return closed_ids
 
