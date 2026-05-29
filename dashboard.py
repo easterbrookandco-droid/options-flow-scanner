@@ -217,7 +217,7 @@ def get_today_activity():
                ps.current_price AS last_price,
                ps.pnl AS unrealized_pnl
         FROM paper_trades pt
-        JOIN signals s ON pt.signal_contract = s.contract
+        JOIN signals s ON pt.signal_id = s.id
         LEFT JOIN last_snaps ls ON ls.trade_id = pt.id
         LEFT JOIN position_snapshots ps ON ps.id = ls.max_id
         WHERE pt.entry_date = ?
@@ -229,7 +229,7 @@ def get_today_activity():
                pt.pnl, pt.pnl_pct, pt.exit_reason, pt.hold_days,
                s.ticker, s.contract_type
         FROM paper_trades pt
-        JOIN signals s ON pt.signal_contract = s.contract
+        JOIN signals s ON pt.signal_id = s.id
         WHERE pt.exit_date = ? AND pt.status = 'CLOSED'
         ORDER BY pt.exit_time DESC
     """, (today,))
@@ -270,7 +270,7 @@ def get_ticker_breakdown():
             ROUND(SUM(pt.pnl), 2) as total_pnl,
             ROUND(AVG(pt.pnl_pct), 1) as avg_pct
         FROM paper_trades pt
-        JOIN signals s ON pt.signal_contract = s.contract
+        JOIN signals s ON pt.signal_id = s.id
         WHERE pt.status IN ('CLOSED', 'STOP_TRIGGERED')
         GROUP BY s.ticker
         ORDER BY total_pnl DESC
@@ -316,7 +316,7 @@ def get_open_positions():
             ps.dynamic_stop,
             ps.current_dte
         FROM paper_trades pt
-        LEFT JOIN signals s ON pt.signal_contract = s.contract
+        LEFT JOIN signals s ON pt.signal_id = s.id
         JOIN last_snapshots ls ON ls.trade_id = pt.id
         JOIN position_snapshots ps ON ps.id = ls.max_id
         WHERE pt.status IN ('OPEN', 'STOP_TRIGGERED')
@@ -435,7 +435,7 @@ def get_premium_tier_stats():
             ROUND(AVG(pt.pnl_pct), 1) as avg_pct,
             ROUND(SUM(pt.pnl), 2) as total_pnl
         FROM paper_trades pt
-        JOIN signals s ON pt.signal_contract = s.contract
+        JOIN signals s ON pt.signal_id = s.id
         WHERE pt.status IN ('CLOSED', 'STOP_TRIGGERED') AND pt.pnl IS NOT NULL
         GROUP BY premium_tier
         ORDER BY MIN(s.premium) DESC
