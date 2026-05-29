@@ -3,6 +3,8 @@ import os
 import pytz
 from datetime import datetime
 
+import strategy_config as strat
+
 # Database file lives in the project folder
 # SQLite stores everything in this single file
 DB_PATH = "signals.db"
@@ -223,6 +225,15 @@ def init_paper_trades_table():
     except sqlite3.OperationalError:
         pass  # Column already exists — no action needed
 
+    # Add hurdle_price column — the price the contract must reach to
+    # activate the trailing stop (stamped at entry). Safe to run repeatedly.
+    try:
+        cursor.execute("ALTER TABLE paper_trades ADD COLUMN hurdle_price REAL")
+        conn.commit()
+        print("  ✓ hurdle_price column added to paper_trades table")
+    except sqlite3.OperationalError:
+        pass  # Column already exists — no action needed
+
     conn.commit()
     conn.close()
     print(f"  ✓ Paper trades table ready")
@@ -267,6 +278,7 @@ def insert_paper_trade(
 
     total_cost   = round(entry_price * contracts * 100, 2)
     target_price = round(entry_price * 2, 2)
+    hurdle_price = strat.hurdle_price(entry_price)  # +HURDLE_PCT above entry
 
     # DTE-aware stop loss — give longer-dated positions more room to breathe
     if dte_at_entry is None or dte_at_entry <= 2:
@@ -298,14 +310,14 @@ def insert_paper_trade(
             verdict_at_entry, score_at_entry,
             dte_at_entry, iv_at_entry, delta_at_entry,
             market_bias_at_entry, ticker_bias_at_entry,
-            target_price, stop_price,
+            target_price, stop_price, hurdle_price,
             spy_chg_pct_at_entry, qqq_chg_pct_at_entry,
             iwm_chg_pct_at_entry, tlt_chg_pct_at_entry,
             gld_chg_pct_at_entry, uso_chg_pct_at_entry,
             mode, status
         ) VALUES (
             ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN'
+            ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'OPEN'
         )
     """, (
         signal_contract, signal_id,
@@ -315,7 +327,7 @@ def insert_paper_trade(
         verdict_at_entry, score_at_entry,
         dte_at_entry, iv_at_entry, delta_at_entry,
         market_bias_at_entry, ticker_bias_at_entry,
-        target_price, stop_price,
+        target_price, stop_price, hurdle_price,
         chg("SPY"), chg("QQQ"),
         chg("IWM"), chg("TLT"),
         chg("GLD"), chg("USO"),

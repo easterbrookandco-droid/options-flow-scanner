@@ -7,6 +7,8 @@ import pytz
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
+import strategy_config as strat
+
 load_dotenv()
 
 SECRET_KEY    = os.getenv("PUBLIC_SECRET_KEY")
@@ -65,7 +67,8 @@ def log_price_snapshot(
     trade_id, current_price, bid, ask, pnl, pnl_pct,
     dynamic_stop=None, current_dte=None,
     market_context=None,
-    stop_triggered=0, target_triggered=0
+    stop_triggered=0, target_triggered=0,
+    hurdle_crossed=0, running_max_price=None, running_max_pnl=None
 ):
     """
     Log a price check to position_snapshots table.
@@ -85,6 +88,13 @@ def log_price_snapshot(
                                keyed by ticker with price/chg_pct
         stop_triggered (int): 1 if this snapshot triggered the stop
         target_triggered (int): 1 if this snapshot triggered the target
+        hurdle_crossed (int): 1 once the +HURDLE_PCT hurdle has been met
+                              (at this scan or any prior one), else 0
+        running_max_price (float): Peak contract price since the hurdle was
+                                   crossed — the level the trailing stop
+                                   trails. None before the hurdle is crossed.
+        running_max_pnl (float): P&L equivalent of running_max_price.
+                                 None before the hurdle is crossed.
     """
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
@@ -108,11 +118,13 @@ def log_price_snapshot(
             iwm_price, iwm_chg_pct,
             tlt_price, tlt_chg_pct,
             vix_price,
-            stop_triggered, target_triggered
+            stop_triggered, target_triggered,
+            hurdle_crossed, running_max_price, running_max_pnl
         ) VALUES (
             ?, ?, ?, ?, ?, ?, ?, ?, ?,
             ?, ?, ?, ?, ?, ?, ?, ?, ?,
-            ?, ?
+            ?, ?,
+            ?, ?, ?
         )
     """, (
         trade_id, now,
@@ -123,7 +135,8 @@ def log_price_snapshot(
         ctx("IWM", "price"), ctx("IWM", "chg_pct"),
         ctx("TLT", "price"), ctx("TLT", "chg_pct"),
         ctx("VIX", "price"),
-        stop_triggered, target_triggered
+        stop_triggered, target_triggered,
+        hurdle_crossed, running_max_price, running_max_pnl
     ))
 
     # Update max_value_seen on the trade if this is a new high
@@ -538,65 +551,65 @@ def progress_bar(current, entry, target, stop, width=20):
 # =============================================================================
 
 
-def get_trailing_stop_state(trade_id, total_cost):
+def get_trailing_stop_state(trade_id, hurdle_price,
+                            current_price=None, current_dte=None):
     """
-    Calculate two-stage trailing stop state from snapshot history.
+    Calculate two-stage trailing stop state from snapshot PRICE history.
     Stateless — recalculates from all snapshots on every cycle.
 
-    Stage 1: Position must reach HURDLE_PCT gain before trailing
-             stop activates (filters noise)
-    Stage 2: Once hurdle crossed, track running max and exit if
-             price drops TRAILING_STOP_PCT from that max
+    Stage 1: Contract price must reach hurdle_price (entry + HURDLE_PCT)
+             before the trailing stop activates (filters noise).
+    Stage 2: Once the hurdle is crossed, track the running peak PRICE.
+             The caller exits if price drops trailing_stop_pct below
+             that peak. Drawdown is measured against peak PRICE, not
+             peak gain — a small price pullback is a small percentage.
+
+    The current scan's (current_price, current_dte) can be folded in so
+    the returned state already reflects this scan. This lets the caller
+    compute and persist the state *before* writing the snapshot row,
+    avoiding a read-after-insert.
+
+    Parameters:
+        trade_id (int): Paper trade ID
+        hurdle_price (float): Price that activates the trailing stop
+        current_price (float): This scan's mid price (optional)
+        current_dte (int): This scan's DTE (optional)
 
     Returns:
-        tuple: (hurdle_crossed, running_max_pnl, should_trigger)
+        tuple: (hurdle_crossed, running_max_price, trailing_stop_pct)
+               running_max_price is 0.0 until the hurdle is crossed.
+               trailing_stop_pct reflects the most recent DTE.
     """
     conn = sqlite3.connect(get_db_path())
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT pnl, current_dte FROM position_snapshots
+        SELECT current_price, current_dte FROM position_snapshots
         WHERE trade_id = ?
-        AND pnl IS NOT NULL
+        AND current_price IS NOT NULL
         ORDER BY id ASC
     """, (trade_id,))
-    snaps = [(row[0], row[1]) for row in cursor.fetchall()]
+    points = [(row[0], row[1]) for row in cursor.fetchall()]
     conn.close()
 
-    if not snaps:
-        return False, 0, False
+    # Fold in the current scan (not yet persisted) so the state is current
+    if current_price is not None:
+        points.append((current_price, current_dte))
 
-    hurdle_crossed           = False
-    running_max_after_hurdle = 0
-    trailing_stop_pct        = 0.20  # updated per snapshot below
+    hurdle_crossed    = False
+    running_max_price = 0.0
+    trailing_stop_pct = strat.trailing_stop_pct(current_dte)
 
-    for pnl, snap_dte in snaps:
-        # Model C: DTE-aware hurdle AND trailing stop
-        # Both parameters shift as contract ages through tranches
-        if snap_dte is None or snap_dte <= 0:
-            hurdle_pct        = 0.01
-            trailing_stop_pct = 0.10
-        elif snap_dte <= 2:
-            hurdle_pct        = 0.01
-            trailing_stop_pct = 0.15
-        elif snap_dte <= 5:
-            hurdle_pct        = 0.01
-            trailing_stop_pct = 0.20
-        elif snap_dte <= 14:
-            hurdle_pct        = 0.01
-            trailing_stop_pct = 0.25
-        else:
-            hurdle_pct        = 0.01
-            trailing_stop_pct = 0.25
+    for price, snap_dte in points:
+        trailing_stop_pct = strat.trailing_stop_pct(snap_dte)
+        if price is None:
+            continue
+        if not hurdle_crossed and hurdle_price is not None and price >= hurdle_price:
+            hurdle_crossed    = True
+            running_max_price = price
+        elif hurdle_crossed and price > running_max_price:
+            running_max_price = price
 
-        hurdle_pnl = total_cost * hurdle_pct
-
-        if not hurdle_crossed and pnl >= hurdle_pnl:
-            hurdle_crossed           = True
-            running_max_after_hurdle = pnl
-        if hurdle_crossed and pnl > running_max_after_hurdle:
-            running_max_after_hurdle = pnl
-
-    return hurdle_crossed, running_max_after_hurdle, trailing_stop_pct
+    return hurdle_crossed, running_max_price, trailing_stop_pct
 
 
 def evaluate_positions(positions, prices, market_context, eastern):
@@ -702,6 +715,25 @@ def evaluate_positions(positions, prices, market_context, eastern):
             vix_str = f"VIX {vix.get('price', 0):.1f}" if vix else ""
             print(f"      🌍 {spy_str}  {qqq_str}  {vix_str}")
 
+        # ── Two-stage trailing stop state (price-peak based) ───────────
+        # Computed before logging so the snapshot row can record it.
+        # Stage 1: price must reach hurdle_price (entry + HURDLE_PCT).
+        # Stage 2: trail the running PEAK PRICE; exit on a trailing_pct
+        #          drop from that peak.
+        hurdle_p = trade.get("hurdle_price") or strat.hurdle_price(entry_price)
+        hurdle_crossed, running_max_price, trailing_pct = get_trailing_stop_state(
+            trade_id, hurdle_p, current_price=mid, current_dte=current_dte
+        )
+        running_max_pnl = (
+            round((running_max_price - entry_price) * contracts * 100, 2)
+            if hurdle_crossed else None
+        )
+        trail_fields = dict(
+            hurdle_crossed    = 1 if hurdle_crossed else 0,
+            running_max_price = running_max_price if hurdle_crossed else None,
+            running_max_pnl   = running_max_pnl,
+        )
+
         # ── Log snapshot with full context ─────────────────────────────
         log_price_snapshot(
             trade_id       = trade_id,
@@ -715,6 +747,7 @@ def evaluate_positions(positions, prices, market_context, eastern):
             market_context = market_context,
             stop_triggered = 0,
             target_triggered = 0,
+            **trail_fields,
         )
 
         # ── Skip stop/target checks for already-triggered positions ────
@@ -726,21 +759,16 @@ def evaluate_positions(positions, prices, market_context, eastern):
             continue
 
         # ── TWO-STAGE TRAILING STOP ────────────────────────────────────
-        # Stage 1: position must reach 1% gain hurdle
-        # Stage 2: exit if drops 20% from post-hurdle peak
-        # Replaces static TARGET and DTE-based STOP with one unified rule
-        hurdle_crossed, running_max, trailing_pct = get_trailing_stop_state(
-            trade_id, total_cost
-        )
-
-        if hurdle_crossed and running_max > 0:
-            drawdown = (running_max - pnl) / running_max
+        # Exit if price falls trailing_pct below the running peak PRICE.
+        if hurdle_crossed and running_max_price > 0:
+            drawdown = (running_max_price - mid) / running_max_price
             if drawdown > trailing_pct:
                 print(f"\n  {'='*65}")
                 print(f"  📉 TRAILING STOP — #{trade_id} {contract}")
-                print(f"      Peak P&L: {fmt_pnl(running_max)}  "
-                      f"Current: {fmt_pnl(pnl)}")
-                print(f"      Drawdown from peak: {drawdown*100:.1f}% > 20%")
+                print(f"      Peak price: ${running_max_price:.2f}  "
+                      f"Current: ${mid:.2f}")
+                print(f"      Drawdown from peak: {drawdown*100:.1f}% > "
+                      f"{trailing_pct*100:.0f}%")
                 print(f"      Recording exit, continuing to track for data")
                 print(f"  {'='*65}")
 
@@ -750,6 +778,7 @@ def evaluate_positions(positions, prices, market_context, eastern):
                     dynamic_stop=dynamic_stop, current_dte=current_dte,
                     market_context=market_context,
                     stop_triggered=1, target_triggered=0,
+                    **trail_fields,
                 )
 
                 mark_stop_triggered(trade_id, mid, dynamic_stop)
@@ -761,20 +790,14 @@ def evaluate_positions(positions, prices, market_context, eastern):
         # never crossed the trailing stop hurdle.
         # Empirically validated: kills zero eventual winners.
         if status == "OPEN":
-            if current_dte is not None and current_dte <= 2:
-                backstop_pct = 0.60
-            elif current_dte is not None and current_dte <= 14:
-                backstop_pct = 0.70
-            else:
-                backstop_pct = 0.80
-
-            backstop_loss = -(total_cost * backstop_pct)
+            backstop = strat.backstop_pct(current_dte)
+            backstop_loss = -(total_cost * backstop)
 
             if pnl <= backstop_loss:
                 print(f"\n  {'='*65}")
                 print(f"  🚨 BACKSTOP — #{trade_id} {contract}")
                 print(f"      Down {pnl_pct:.1f}% — exceeds "
-                      f"{backstop_pct*100:.0f}% DTE backstop")
+                      f"{backstop*100:.0f}% DTE backstop")
                 print(f"      Entry: ${entry_price:.2f} → Current: ${mid:.2f}")
                 print(f"      P&L: {fmt_pnl(pnl)} ({fmt_pct(pnl_pct)})")
                 print(f"  {'='*65}")
@@ -785,6 +808,7 @@ def evaluate_positions(positions, prices, market_context, eastern):
                     dynamic_stop=dynamic_stop, current_dte=current_dte,
                     market_context=market_context,
                     stop_triggered=1, target_triggered=0,
+                    **trail_fields,
                 )
 
                 mark_stop_triggered(trade_id, mid, dynamic_stop)
@@ -810,6 +834,7 @@ def evaluate_positions(positions, prices, market_context, eastern):
                     dynamic_stop=dynamic_stop, current_dte=current_dte,
                     market_context=market_context,
                     stop_triggered=0, target_triggered=1,
+                    **trail_fields,
                 )
 
                 mark_stop_triggered(trade_id, mid, dynamic_stop)
