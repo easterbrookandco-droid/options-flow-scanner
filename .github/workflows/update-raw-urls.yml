@@ -1,41 +1,76 @@
 name: Update Raw URLs
-
 on:
   push:
     branches: [ master ]
-
 jobs:
   update-urls:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-    
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Generate raw URLs file
+      - name: Generate .txt mirrors of Python scripts
         run: |
-          echo "GitHub Raw File URLs:" > GitHub_file_URLs.txt
-          echo "Auto-generated on push — do not edit manually" >> GitHub_file_URLs.txt
-          echo "" >> GitHub_file_URLs.txt
-          
-          # Find all .py files and .md files, generate raw URLs
-          find . -type f \( -name "*.py" -o -name "*.md" -o -name "*.txt" -o -name "*.bat" \) \
+          mkdir -p mirror
+          # Wipe and rebuild mirror so deleted .py files don't linger as stale .txt
+          find mirror -type f -name "*.py.txt" -delete
+
+          find . -type f -name "*.py" \
             ! -path "./.github/*" \
             ! -path "./venv/*" \
             ! -path "./__pycache__/*" \
+            ! -path "./mirror/*" \
+            | while read filepath; do
+                clean_path="${filepath#./}"
+                # Flatten path: live/0_record_trade.py -> live__0_record_trade.py.txt
+                flat_name=$(echo "$clean_path" | tr '/' '_')
+                cp "$filepath" "mirror/${flat_name}.txt"
+              done
+
+      - name: Generate raw URLs file
+        run: |
+          SHA="${GITHUB_SHA}"
+          echo "GitHub Raw File URLs:" > GitHub_file_URLs.txt
+          echo "Auto-generated on push — do not edit manually" >> GitHub_file_URLs.txt
+          echo "Commit-pinned to: ${SHA}" >> GitHub_file_URLs.txt
+          echo "Generated at: $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> GitHub_file_URLs.txt
+          echo "" >> GitHub_file_URLs.txt
+          echo "# Source files (commit-pinned, immutable, always fresh)" >> GitHub_file_URLs.txt
+
+          # Source .md, .txt, .bat — served as text directly
+          find . -type f \( -name "*.md" -o -name "*.txt" -o -name "*.bat" \) \
+            ! -path "./.github/*" \
+            ! -path "./venv/*" \
+            ! -path "./__pycache__/*" \
+            ! -path "./mirror/*" \
+            ! -name "GitHub_file_URLs.txt" \
             | sort \
             | while read filepath; do
-                # Strip leading ./
                 clean_path="${filepath#./}"
-                echo "https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/${clean_path}"
+                echo "https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@${SHA}/${clean_path}"
               done >> GitHub_file_URLs.txt
 
-      - name: Commit updated URLs
+          echo "" >> GitHub_file_URLs.txt
+          echo "# Python script mirrors (.py.txt — fetchable as text)" >> GitHub_file_URLs.txt
+
+          find mirror -type f -name "*.py.txt" \
+            | sort \
+            | while read filepath; do
+                clean_path="${filepath#./}"
+                echo "https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@${SHA}/${clean_path}"
+              done >> GitHub_file_URLs.txt
+
+          echo "" >> GitHub_file_URLs.txt
+          echo "# This URL list itself (always @master, never pinned)" >> GitHub_file_URLs.txt
+          echo "https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/GitHub_file_URLs.txt" >> GitHub_file_URLs.txt
+
+      - name: Commit updated mirrors and URLs
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add GitHub_file_URLs.txt
-          git diff --staged --quiet || git commit -m "Auto-update raw file URLs [skip ci]"
+          git add mirror/ GitHub_file_URLs.txt
+          git diff --staged --quiet || git commit -m "Auto-update mirrors and URLs [skip ci]"
           git push
