@@ -751,6 +751,9 @@ def dashboard():
         else:
             t['post_exit_display']  = 'n/a'
             t['post_exit_positive'] = None
+        cost = (t.get('entry_price') or 0) * 100 * (t.get('contracts') or 1)
+        t['cost'] = cost
+        t['cost_display'] = f"${cost:,.2f}"
     sum_unrealized = sum(
         t['unrealized_pnl'] for t in today_entered
         if t.get('status') == 'OPEN' and t.get('unrealized_pnl') is not None
@@ -764,6 +767,7 @@ def dashboard():
         for t in today_entered
         if t.get('last_price') is not None and t.get('exit_price') is not None
     )
+    sum_cost = sum(t['cost'] for t in today_entered)
     today_sums = {
         'unrealized':    fmt_pnl(sum_unrealized),
         'unrealized_pos': sum_unrealized >= 0,
@@ -771,6 +775,7 @@ def dashboard():
         'realized_pos':  sum_realized >= 0,
         'post_exit':     fmt_pnl(sum_post_exit),
         'post_exit_pos': sum_post_exit > 0,  # strictly positive → red
+        'cost':          f"${sum_cost:,.2f}",
     }
     for t in today_closed:
         t['decoded'] = decode_contract(t['signal_contract'])
@@ -1397,9 +1402,13 @@ body {
                     <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Realized</div>
                     <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.realized_pos else '#ef4444' }}">{{ today_sums.realized }}</div>
                 </td>
-                <td style="text-align:right;padding:0 0 4px 0;border-bottom:none">
+                <td style="text-align:right;padding:0 8px 4px 0;border-bottom:none">
                     <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Post-Exit</div>
                     <div style="font-size:11px;font-weight:700;color:{{ '#ef4444' if today_sums.post_exit_pos else '#22c55e' }}">{{ today_sums.post_exit }}</div>
+                </td>
+                <td style="text-align:right;padding:0 0 4px 0;border-bottom:none">
+                    <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Cost</div>
+                    <div style="font-size:11px;font-weight:700;color:#e2e8f0">{{ today_sums.cost }}</div>
                 </td>
                 <td style="border-bottom:none;padding:0"></td>
             </tr>
@@ -1418,6 +1427,7 @@ body {
                 <th style="text-align:right">Unrealized</th>
                 <th style="text-align:right">Realized</th>
                 <th style="text-align:right">Post-Exit</th>
+                <th style="text-align:right">Cost</th>
                 <th>Status</th>
             </tr>
             </thead>
@@ -1442,6 +1452,7 @@ body {
                     {{ t.realized_display }}</td>
                 <td style="text-align:right;font-weight:600;color:{{ '#ef4444' if t.post_exit_positive == true else '#22c55e' if t.post_exit_positive == false else '#475569' }}">
                     {{ t.post_exit_display }}</td>
+                <td style="text-align:right;color:#e2e8f0">{{ t.cost_display }}</td>
                 <td><span class="badge {{ 'badge-open' if t.status == 'OPEN' else 'badge-stop' if t.status == 'STOP_TRIGGERED' else 'badge-win' if t.realized_positive == true else 'badge-loss' if t.realized_positive == false else 'badge-open' }}">
                     {{ 'OPEN' if t.status == 'OPEN' else 'STOPPED' if t.status == 'STOP_TRIGGERED' else 'CLOSED' }}</span></td>
             </tr>
@@ -1450,36 +1461,6 @@ body {
         </table>
         {% else %}
         <div class="empty-msg">No entries today</div>
-        {% endif %}
-    </div>
-
-    <!-- Today's Exits — full width -->
-    <div class="card full-width">
-        <div class="card-title">Today's Exits
-            <span class="count">{{ today_closed|length }}</span>
-        </div>
-        {% if today_closed %}
-        <table class="data-table">
-            <thead><tr>
-                <th>Ticker</th><th>Type</th><th>P&L</th><th>%</th><th>Reason</th>
-            </tr></thead>
-            <tbody>
-            {% for t in today_closed %}
-            <tr>
-                <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
-                <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
-                    {{ t.decoded.contract_type }}</span></td>
-                <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }};font-weight:600">
-                    {{ t.pnl_display }}</td>
-                <td style="color:{{ '#22c55e' if t.pnl_positive else '#ef4444' }}">
-                    {{ t.pnl_pct_display }}</td>
-                <td style="color:#64748b;font-size:11px">{{ t.exit_reason or '—' }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        <div class="empty-msg">No exits today</div>
         {% endif %}
     </div>
 
