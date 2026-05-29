@@ -8,6 +8,8 @@ import json
 import os
 from dotenv import load_dotenv
 
+import strategy_config as strat
+
 load_dotenv()
 SECRET_KEY      = os.getenv("PUBLIC_SECRET_KEY")
 DASHBOARD_USER  = os.getenv("DASHBOARD_USER", "nolan")
@@ -324,13 +326,17 @@ def get_open_positions():
             pt.pnl          AS realized_pnl,
             pt.pnl_pct      AS realized_pnl_pct,
             pt.hold_days,
+            pt.hurdle_price,
             s.premium,
             ps.current_price as last_price,
             ps.pnl           as last_pnl,
             ps.pnl_pct       as last_pnl_pct,
             ps.snapshot_time,
             ps.dynamic_stop,
-            ps.current_dte
+            ps.current_dte,
+            ps.hurdle_crossed,
+            ps.running_max_price,
+            ps.running_max_pnl
         FROM paper_trades pt
         LEFT JOIN signals s ON pt.signal_id = s.id
         JOIN last_snapshots ls ON ls.trade_id = pt.id
@@ -912,6 +918,20 @@ def api_positions():
         hd = p.get('hold_days')
         days_held_disp = f"{round(hd, 1)}d" if hd is not None else 'n/a'
 
+        # ── Trailing-stop mechanics (hurdle / peak / exit line) ──────────
+        hurdle_price   = p.get('hurdle_price')
+        hurdle_crossed = bool(p.get('hurdle_crossed'))
+        run_max_price  = p.get('running_max_price')
+        hurdle_disp = f"${hurdle_price:.2f}" if hurdle_price is not None else 'n/a'
+        if hurdle_crossed and run_max_price:
+            trail_pct  = strat.trailing_stop_pct(p.get('current_dte'))
+            exit_line  = run_max_price * (1 - trail_pct)
+            peak_disp  = f"${run_max_price:.2f}"
+            trail_disp = f"${exit_line:.2f}"
+        else:
+            peak_disp  = '—'
+            trail_disp = '—'
+
         result.append({
             'id':                p['id'],
             'contract':          p['signal_contract'],
@@ -947,6 +967,10 @@ def api_positions():
             'current_dte':       p['current_dte'],
             'dynamic_stop':      p['dynamic_stop'],
             'snapshot_time':     p['snapshot_time'],
+            'hurdle_display':    hurdle_disp,
+            'hurdle_crossed':    hurdle_crossed,
+            'peak_display':      peak_disp,
+            'trail_exit_display': trail_disp,
         })
 
     result.sort(key=position_sort_key)
@@ -1846,7 +1870,7 @@ function renderPositions(data) {
             <table class="data-table">
                 <thead>
                 <tr style="border-bottom:none">
-                    <td colspan="13" style="padding:0;border-bottom:none"></td>
+                    <td colspan="16" style="padding:0;border-bottom:none"></td>
                     ${sumTd(sumLabel('Unrealized') + `<div style="font-size:11px;font-weight:700">${tUnreal}</div>`)}
                     ${sumTd(sumLabel('Realized')   + `<div style="font-size:11px;font-weight:700">${tReal}</div>`)}
                     <td style="border-bottom:none;padding:0"></td>
@@ -1867,6 +1891,9 @@ function renderPositions(data) {
                     ${thRight('Entry $')}
                     ${thRight('Last $')}
                     ${thRight('Exit $')}
+                    ${thRight('Hurdle')}
+                    ${thRight('Peak')}
+                    ${thRight('Trail Exit')}
                     ${thRight('Unrealized')}
                     ${thRight('Realized')}
                     ${thRight('%')}
@@ -1902,6 +1929,9 @@ function renderPositions(data) {
                 <td style="text-align:right;color:#94a3b8">$${p.entry_price.toFixed(2)}</td>
                 <td style="text-align:right;color:#e2e8f0">${lpDisp}</td>
                 <td style="text-align:right;color:#94a3b8">${p.exit_price_display}</td>
+                <td style="text-align:right;color:${p.hurdle_crossed ? '#22c55e' : '#64748b'}">${p.hurdle_display}</td>
+                <td style="text-align:right;color:#e2e8f0">${p.peak_display}</td>
+                <td style="text-align:right;color:#f59e0b">${p.trail_exit_display}</td>
                 <td style="text-align:right;font-weight:600;color:${pc(p.unrealized_pos)}">${p.unrealized_display}</td>
                 <td style="text-align:right;font-weight:600;color:${pc(p.realized_pos)}">${p.realized_display}</td>
                 <td style="text-align:right;color:${pc(p.pct_pos)}">${p.pct_display}</td>
