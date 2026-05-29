@@ -31,6 +31,7 @@ fetch_trades.py       — Core scanner (~1335 lines)
 journal.py            — All SQLite operations
 scheduler.py          — 30-min polling loop
 agent.py              — Autonomous trading agent
+optimizing_agent.py   — Parameter optimization agent (scanner-optimizing-agent service)
 position_monitor.py   — Position tracking and exits (986 lines)
 dashboard.py          — Flask dashboard (needs rebuild — signals only currently)
 pnl_report.py         — On-demand P&L reporter
@@ -83,13 +84,20 @@ ssh -i C:\Users\neast\.ssh\scanner-key.pem ubuntu@3.144.128.166
 ssh -i C:\Users\neast\.ssh\scanner-key.pem -L 5000:localhost:5000 -N ubuntu@3.144.128.166
 
 # Service management (aliases set up on VM)
-scanner-status        # check all 4 services
+scanner-status        # check all 5 services
 scanner-logs          # follow all logs
 scanner-restart       # restart all services
 scanner-scheduler-log # follow scheduler only
 scanner-monitor-log   # follow monitor only
 scanner-agent-log     # follow agent only
 ```
+
+**Services (5 total):**
+- `scanner-scheduler`       → scheduler.py        (30-min polling loop)
+- `scanner-monitor`         → position_monitor.py (position tracking/exits)
+- `scanner-agent`           → agent.py            (autonomous trading agent)
+- `scanner-optimizing-agent`→ optimizing_agent.py (parameter optimization)
+- `scanner-dashboard`       → dashboard.py        (Flask dashboard)
 
 ## PUBLIC API QUIRKS (important)
 
