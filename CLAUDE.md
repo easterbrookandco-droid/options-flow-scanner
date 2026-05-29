@@ -33,7 +33,7 @@ scheduler.py          — 30-min polling loop
 agent.py              — Autonomous trading agent
 optimizing_agent.py   — Parameter optimization agent (scanner-optimizing-agent service)
 position_monitor.py   — Position tracking and exits (986 lines)
-dashboard.py          — Flask dashboard (needs rebuild — signals only currently)
+dashboard.py          — Flask dashboard (Portfolio, Positions, Signals tabs)
 pnl_report.py         — On-demand P&L reporter
 entry_analyzer.py     — Signal quality analysis
 ```
