@@ -80,6 +80,21 @@ def fmt_pct(v):
     if v is None: return '0.0%'
     return f"+{v:.1f}%" if v >= 0 else f"{v:.1f}%"
 
+def position_sort_key(row):
+    """Shared table sort: 1) Optimizing before Control, 2) OPEN before
+    STOP_TRIGGERED (others last), 3) pnl descending (positive first, None last).
+    Uses unrealized pnl for OPEN rows, realized pnl otherwise. Handles both the
+    today_entered rows ('unrealized_pnl') and positions rows ('last_pnl')."""
+    mode_rank   = 0 if (row.get('mode') == 'OPTIMIZING') else 1
+    st          = row.get('status')
+    status_rank = 0 if st == 'OPEN' else 1 if st == 'STOP_TRIGGERED' else 2
+    if st == 'OPEN':
+        pnl = row.get('unrealized_pnl', row.get('last_pnl'))
+    else:
+        pnl = row.get('realized_pnl')
+    pnl = pnl if pnl is not None else float('-inf')
+    return (mode_rank, status_rank, -pnl)
+
 
 # =============================================================================
 # FLASK APP
@@ -212,7 +227,7 @@ def get_today_activity():
         )
         SELECT pt.id, pt.signal_contract, pt.entry_price, pt.contracts,
                pt.status, pt.dte_at_entry, pt.exit_price,
-               pt.pnl AS realized_pnl, pt.score_at_entry,
+               pt.pnl AS realized_pnl, pt.score_at_entry, pt.mode,
                s.ticker, s.contract_type, s.premium,
                ps.current_price AS last_price,
                ps.pnl AS unrealized_pnl
@@ -302,6 +317,7 @@ def get_open_positions():
             pt.status,
             pt.dte_at_entry,
             pt.score_at_entry,
+            pt.mode,
             pt.entry_date,
             pt.exit_date,
             pt.exit_price,
@@ -717,6 +733,7 @@ def dashboard():
     # ── Portfolio tab data ────────────────────────────────────────────────────
     closed = get_closed_summary()
     today_entered, today_closed = get_today_activity()
+    today_entered.sort(key=position_sort_key)
     exit_reasons = get_exit_reason_breakdown()
     tickers = get_ticker_breakdown()
 
@@ -899,6 +916,7 @@ def api_positions():
             'id':                p['id'],
             'contract':          p['signal_contract'],
             'ticker':            decoded['ticker'],
+            'mode':              p.get('mode'),
             'contract_type':     decoded['contract_type'],
             'strike_display':    decoded['strike_display'],
             'expiry_display':    decoded['expiry_display'],
@@ -930,6 +948,8 @@ def api_positions():
             'dynamic_stop':      p['dynamic_stop'],
             'snapshot_time':     p['snapshot_time'],
         })
+
+    result.sort(key=position_sort_key)
 
     open_pos    = [p for p in result if p['status'] == 'OPEN']
     stopped_pos = [p for p in result if p['status'] == 'STOP_TRIGGERED']
@@ -1240,6 +1260,8 @@ body {
 .badge-win      { background: #22c55e22; color: #22c55e; }
 .badge-loss     { background: #ef444422; color: #ef4444; }
 .badge-trail    { background: #f59e0b22; color: #f59e0b; border: 1px solid #f59e0b33; }
+.badge-control    { background: #64748b22; color: #94a3b8; border: 1px solid #64748b33; }
+.badge-optimizing { background: #a855f722; color: #c084fc; border: 1px solid #a855f733; }
 
 .dte-badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; }
 .dte-urgent { background: #ef444422; color: #ef4444; border: 1px solid #ef444433; }
@@ -1393,7 +1415,7 @@ body {
             <thead>
             <!-- Column sum row — aligned to Unrealized/Realized/Post-Exit columns -->
             <tr style="border-bottom:none">
-                <td colspan="10" style="padding:0 0 4px 0;border-bottom:none"></td>
+                <td colspan="11" style="padding:0 0 4px 0;border-bottom:none"></td>
                 <td style="text-align:right;padding:0 8px 4px 0;border-bottom:none">
                     <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Unrealized</div>
                     <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.unrealized_pos else '#ef4444' }}">{{ today_sums.unrealized }}</div>
@@ -1414,6 +1436,7 @@ body {
             </tr>
             <!-- Column headers -->
             <tr>
+                <th>Mode</th>
                 <th>Ticker</th>
                 <th>Expiry</th>
                 <th>Type</th>
@@ -1434,6 +1457,7 @@ body {
             <tbody>
             {% for t in today_entered %}
             <tr>
+                <td><span class="badge {{ 'badge-optimizing' if t.mode == 'OPTIMIZING' else 'badge-control' }}">{{ t.mode or 'CONTROL' }}</span></td>
                 <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
                 <td style="color:#64748b;font-size:11px">{{ t.decoded.expiry_display }}</td>
                 <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
@@ -1822,7 +1846,7 @@ function renderPositions(data) {
             <table class="data-table">
                 <thead>
                 <tr style="border-bottom:none">
-                    <td colspan="12" style="padding:0;border-bottom:none"></td>
+                    <td colspan="13" style="padding:0;border-bottom:none"></td>
                     ${sumTd(sumLabel('Unrealized') + `<div style="font-size:11px;font-weight:700">${tUnreal}</div>`)}
                     ${sumTd(sumLabel('Realized')   + `<div style="font-size:11px;font-weight:700">${tReal}</div>`)}
                     <td style="border-bottom:none;padding:0"></td>
@@ -1830,6 +1854,7 @@ function renderPositions(data) {
                     <td colspan="3" style="border-bottom:none;padding:0"></td>
                 </tr>
                 <tr>
+                    <th>Mode</th>
                     <th>Ticker</th>
                     <th>Expiry</th>
                     <th>Type</th>
@@ -1859,10 +1884,12 @@ function renderPositions(data) {
             const statusBadge = isOpen
                 ? '<span class="badge badge-open">OPEN</span>'
                 : '<span class="badge badge-tracking">TRACKING</span>';
+            const modeBadge = `<span class="badge ${p.mode === 'OPTIMIZING' ? 'badge-optimizing' : 'badge-control'}">${p.mode || 'CONTROL'}</span>`;
             const lpDisp = p.last_price != null ? `$${p.last_price.toFixed(2)}` : '—';
 
             html += `
             <tr>
+                <td>${modeBadge}</td>
                 <td style="color:#f1f5f9;font-weight:700">${p.ticker}</td>
                 <td style="color:#64748b;font-size:11px">${p.expiry_display}</td>
                 <td><span class="${p.contract_type === 'Call' ? 'type-call' : 'type-put'}">${p.contract_type}</span></td>
