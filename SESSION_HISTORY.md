@@ -11,6 +11,37 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-29 | Claude Code | 16:47 EDT | ~3.5 hours
+**What changed:**
+- Added Strike, Cost, and Mode columns to Portfolio tables and reordered columns per specification
+- Fixed duplicate contract rows by joining signals on signal_id instead of contract string, correcting ~2.4x inflation in analytics
+- Removed unused Today's Exits block from dashboard
+- Rewrote trailing stop to trail peak PRICE instead of peak gain percentage
+- Centralized strategy parameters into new strategy_config.py module
+- Added hurdle_price to paper_trades table and hurdle_crossed/running_max_price/running_max_pnl to position_snapshots
+- Migrated and backfilled historical data for new trailing stop fields
+- Surfaced Hurdle/Peak/Trail Exit columns in Positions table for validation
+- Updated CLAUDE.md documentation and deployed all changes to production VM
+
+**Key decisions:**
+- Switch from gain-based to price-based trailing stop to prevent premature stop-outs after 1% hurdle
+- Use signal_id joins instead of contract string matching to eliminate duplicate rows
+- Centralize all strategy parameters in single config file for consistency across services
+- Add database fields to track hurdle crossing and peak prices for proper trailing stop implementation
+
+**Key insights:**
+- Gain-based trailing stops caused near-instant exits due to mathematical interaction with small hurdle thresholds
+- Contract string joins created data inflation when multiple signals referenced same underlying contract
+- Price-based trailing stops provide more intuitive and stable exit behavior
+- Centralized configuration prevents parameter drift between services
+
+**Open questions:**
+- Monitor trailing stop performance with new price-based implementation in live trading
+- Validate that duplicate row fixes maintain data integrity across all analytics
+- Assess whether 1% hurdle threshold optimal with new trailing stop mechanics
+
+---
+
 ### 2026-05-28 | Claude Code | 23:48 EDT | 4 hours
 **What changed:**
 - Expanded Today's Entries table to full width with 10 columns including Strike, Score, Premium, and moved column sums into thead row for alignment

@@ -1,6 +1,6 @@
 # OPTIONS FLOW SCANNER — PROJECT STATE
 *Auto-updated after every session. Source of truth for all tools.*
-*Last updated: 2026-05-28*
+*Last updated: 2026-05-29*
 
 ---
 
@@ -195,15 +195,24 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. Verify the scheduler cold-open fix held at the 9:29 to 9:30 boundary on 5/29 — this is the real test since the 5/28 restart caught the market already open
-2. Permanent GitHub fetch fix so Claude can read .py scripts at session start — build a post-push GitHub Action that mirrors .py files to a readable location, either a Google Drive copy or simpler an in-repo .txt mirror that jsdelivr serves as text; this is critical for project continuity across chat threads
-3. Fix PROJECT_STATE.md top sections SYSTEM STATUS and WHERE WE ARE not auto-updating while the session log section updates correctly
-4. Build CONTROL vs OPTIMIZING reporting bifurcation across pnl_report.py, entry_analyzer.py, position_monitor.py session summary, and dashboard.py with a mode filter or toggle
+1. Decide whether the monitor should read the stored per-trade hurdle_price vs recomputing from live HURDLE_PCT
+2. Review trailing-stop behavior Monday once the monitor resumes and trails live price peaks
+3. Tune trailing_stop_pct / hurdle tiers if needed based on the new validation columns
 
 ---
 
 
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-29 | Claude Code | 16:47 EDT
+- Fixed duplicate contract rows by joining on signal_id instead of contract strings
+- Switched trailing stops from gain-based to price-based to prevent premature exits
+- Added Strike, Cost, Mode columns to Portfolio tables per specification
+- Centralized strategy parameters into new strategy_config.py module for consistency
+- Added database fields for hurdle_price and trailing stop tracking
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-28 | Claude Code | 23:48 EDT
 - Expanded Today's Entries to 10 columns with Strike, Score, Premium
@@ -231,16 +240,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Added mode column to paper_trades, deployed scanner-optimizing-agent systemd service
 - Established three-tier architecture: CONTROL data collection, OPTIMIZING refined criteria, LIVE capital
 - Set live trading model: 10% max deployment, 80% reinvestable profits
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-26 | claude.ai | 18:56 EDT
-- Implemented Model C trailing stop with DTE-aware percentages (10/15/20/25%)
-- Created separate live trading system with dedicated database and tracking
-- Deployed tiered DTE backstop system killing zero-winner positions at thresholds
-- Fixed AMD early-stop flaw and timezone bugs in dashboard
-- Established live trading filters: score 6.0-7.9, specific DTE ranges, premium limits
 *→ Full details in SESSION_HISTORY.md*
 
 ---
