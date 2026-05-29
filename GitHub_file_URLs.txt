@@ -40,6 +40,7 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/f
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/journal.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/live/0_record_trade.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/logger_setup.py
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/migrate_and_backfill_trailing.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/optimize_full_dataset.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/optimize_trailing_parameters_v2.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/optimize_trailing_stop.py
@@ -60,4 +61,5 @@ https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/s
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/simulate_dte_aware_trailing.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/simulate_lifecycle.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/status.py
+https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/strategy_config.py
 https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/thesis_generator.py
