@@ -204,6 +204,16 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📝 SESSION LOG (Last 3 Sessions)
 
+### 2026-05-29 | Claude Code | 18:47 EDT
+- Fixed expiration auto-close bug preventing OPEN positions from closing
+- Added 15:55 ET cutoff logic to force-expire positions on expiry
+- Implemented price fallback system for expired contracts losing pricing data
+- Manually cleared 10 stuck positions from expiration backlog
+- Changed expiration handling to work during market hours only
+*→ Full details in SESSION_HISTORY.md*
+
+---
+
 ### 2026-05-29 | Claude Code | 16:47 EDT
 - Fixed duplicate contract rows by joining on signal_id instead of contract strings
 - Switched trailing stops from gain-based to price-based to prevent premature exits
@@ -230,16 +240,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Deployed fixes to VM and successfully restarted all four services
 - Kept 6.0 score threshold unchanged as selectivity remains design objective
 - Learned tmux displays can freeze while services run normally
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-27 | claude.ai + Claude Code | 16:48 EDT
-- Fixed Python buffering on systemd services, resolving silent agent operation
-- Built optimizing_agent.py with score 6.0-7.9, premium $100K-$2M, DTE 1-2d/6-14d filters
-- Added mode column to paper_trades, deployed scanner-optimizing-agent systemd service
-- Established three-tier architecture: CONTROL data collection, OPTIMIZING refined criteria, LIVE capital
-- Set live trading model: 10% max deployment, 80% reinvestable profits
 *→ Full details in SESSION_HISTORY.md*
 
 ---

@@ -11,6 +11,29 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-29 | Claude Code | 18:47 EDT | ~1 hour
+**What changed:**
+- Fixed expiration auto-close bug in position_monitor.py where OPEN positions remained indefinitely past expiry due to unreachable EXPIRED logic that required market to be closed but monitor only runs during market hours
+- Added new logic to book OPEN positions as EXPIRED at dte==0 after 15:55 ET on expiry day with dte<0 safety net sweep
+- Implemented get_last_snapshot_price helper with mid/last-snapshot/0 fallback for expired contracts that no longer quote
+- Manually cleared backlog of 10 positions stuck OPEN past expiration by booking them EXPIRED at last mid price
+
+**Key decisions:**
+- Handle expiration during market hours rather than requiring after-hours processing since monitor loop only runs while market is open
+- Use 15:55 ET cutoff on expiry day to allow same-day expiry positions to close naturally before forced expiration
+- Implement price fallback hierarchy (mid → last snapshot → 0) for expired contracts that may lose pricing data
+
+**What we learned:**
+- Original expiration logic was dead code due to market-hours dependency conflict with monitor execution schedule
+- Expired options contracts can lose real-time pricing, requiring historical snapshot fallback mechanisms
+- Position lifecycle management needs to account for edge cases where contracts become untradeable
+
+**Open questions:**
+- Whether the 15:55 ET cutoff timing is optimal for capturing legitimate same-day expiry exits versus forced expiration
+- How frequently expired contracts lose pricing data and if the fallback hierarchy covers all edge cases sufficiently
+
+---
+
 ### 2026-05-29 | Claude Code | 16:47 EDT | ~3.5 hours
 **What changed:**
 - Added Strike, Cost, and Mode columns to Portfolio tables and reordered columns per specification
