@@ -11,6 +11,31 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-28 | claude.ai | 11:19 EDT | 2 hours
+**What changed:**
+- Fixed scheduler.py heartbeat NameError by moving sleep_chunk assignment above print statement
+- Fixed scheduler.py 0h0m boundary stall by changing return max(0, ...) to max(60, ...) in seconds_until_market_open()
+- Added now >= market_close condition to roll-forward logic for consistent boundary handling
+- Deployed fixes to VM, restarted all four scanner services successfully
+
+**Key decisions:**
+- Set 60-second minimum sleep floor to prevent zero-sleep infinite loops at market boundaries
+- Kept optimizing_agent.py 6.0 score threshold unchanged as selectivity is the design objective
+- Verified via journalctl instead of tmux panes for accurate process health monitoring
+
+**What we learned:**
+- Tmux panes can freeze/stop redrawing while services continue running normally in background
+- GitHub jsdelivr CDN now returns .py files as binary, breaking Claude's script review capability
+- Today's signal pool scored 3.0-5.53 with zero entries above 6.0, confirming optimizing mode selectivity
+- journalctl -u service-name provides authoritative process status vs potentially stale tmux displays
+
+**Open questions:**
+- Monitor scheduler stability at future market open boundaries after 60-second floor fix
+- Track if GitHub CDN limitation impacts session handoff continuity for .py file reviews
+- Observe optimizing_agent entry frequency as market conditions change
+
+---
+
 ### 2026-05-27 | claude.ai + Claude Code | 16:48 EDT | 5 hours
 **What changed:**
 - Fixed Python output buffering on all 4 systemd services by adding -u flag, resolving silent agent operation

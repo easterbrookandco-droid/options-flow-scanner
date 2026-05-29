@@ -1,6 +1,6 @@
 # OPTIONS FLOW SCANNER — PROJECT STATE
 *Auto-updated after every session. Source of truth for all tools.*
-*Last updated: 2026-05-27*
+*Last updated: 2026-05-28*
 
 ---
 
@@ -195,39 +195,25 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📋 NEXT SESSION AGENDA
 
-1. 1. IMMEDIATE - Bifurcate reporting by mode (CONTROL vs OPTIMIZING):
-2. a. position_monitor.py session summary - show CONTROL and OPTIMIZING P&L/win rate separately
-3. b. pnl_report.py - add --mode flag to filter by CONTROL or OPTIMIZING or ALL
-4. c. entry_analyzer.py - add mode filter
-5. d. dashboard.py - Portfolio tab shows both modes, add mode toggle or separate sections
-6. 2. Run pnl_report.py with mode breakdown to see optimizing agent baseline (it won't have data until tomorrow but set up the reporting)
-7. 3. Thursday - review if score 6.0-6.9 pattern holds with fuller week 3 data
-8. 4. OI confirmation filter - build and backtest (been on backlog for weeks)
-9. 5. agent_live.py architecture - build the real capital agent:
-10. - place_real_order() via Public.com API
-11. - Same filters as optimizing_agent
-12. - Budget management: 10% max deployment, 80% reinvestable profits
-13. - Confirmation prompt before every entry
-14. - Writes to live_trades.db
-15. 6. live_monitor.py - position monitor for real capital positions
-16. - Reads from live_trades.db
-17. - Same exit logic as position_monitor initially
-18. - Plan to tune separately as data accumulates
-19. 7. Dashboard live trading section:
-20. - Either duplicate tabs with Live prefix
-21. - Or toggle between Paper and Live modes
-22. 8. DB backup to S3 - still pending, important before going live
-23. 9. Auto git pull cron - verify it ran at midnight and pulled correctly
-24. 10. Mobile responsive dashboard (Claude Code - low priority)
-25. 11. Fix Expiring Today outcome buttons on Signals tab (Claude Code)
-26. 12. Position summary by DTE/Ticker/Status on Positions tab (Claude Code)
-27. 13. Consider optimizing_position_monitor.py once optimizing_agent has enough data to compare exit parameter tuning
-28. 14. MIN_COMPOSITE_SCORE decision deferred - optimizing_agent IS the test for score filtering, agent.py remains unconstrained
+1. Verify the scheduler cold-open fix held at the 9:29 to 9:30 boundary on 5/29 — this is the real test since the 5/28 restart caught the market already open
+2. Permanent GitHub fetch fix so Claude can read .py scripts at session start — build a post-push GitHub Action that mirrors .py files to a readable location, either a Google Drive copy or simpler an in-repo .txt mirror that jsdelivr serves as text; this is critical for project continuity across chat threads
+3. Fix PROJECT_STATE.md top sections SYSTEM STATUS and WHERE WE ARE not auto-updating while the session log section updates correctly
+4. Build CONTROL vs OPTIMIZING reporting bifurcation across pnl_report.py, entry_analyzer.py, position_monitor.py session summary, and dashboard.py with a mode filter or toggle
 
 ---
 
 
 ## 📝 SESSION LOG (Last 3 Sessions)
+
+### 2026-05-28 | claude.ai | 11:19 EDT
+- Fixed scheduler.py NameError and 0h0m boundary stall with 60-second minimum
+- Added market close condition to roll-forward logic for consistent boundaries
+- Deployed fixes to VM and successfully restarted all four services
+- Kept 6.0 score threshold unchanged as selectivity remains design objective
+- Learned tmux displays can freeze while services run normally
+*→ Full details in SESSION_HISTORY.md*
+
+---
 
 ### 2026-05-27 | claude.ai + Claude Code | 16:48 EDT
 - Fixed Python buffering on systemd services, resolving silent agent operation
@@ -255,16 +241,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Used flat 1% hurdle with tightening trail widths by DTE
 - Combined model generated +$59,642 vs current approach in backtesting
 - Trailing stops may fire too early on highly profitable positions
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-26 | claude.ai | 16:06 EDT
-- Fixed VM deployment error and deployed tiered DTE backstop system
-- Implemented DTE-aware hurdle thresholds (1/10/30/50%) with fixed 20% trailing stop
-- Adopted combined model showing $59,642 performance improvement over current system
-- Confirmed tiered backstop kills zero profitable winners while protecting positions
-- Changed git editor to nano and validated scheduler activation
 *→ Full details in SESSION_HISTORY.md*
 
 ---
