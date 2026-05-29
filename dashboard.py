@@ -895,6 +895,7 @@ def api_positions():
             'contract':          p['signal_contract'],
             'ticker':            decoded['ticker'],
             'contract_type':     decoded['contract_type'],
+            'strike_display':    decoded['strike_display'],
             'expiry_display':    decoded['expiry_display'],
             'score_at_entry':    p.get('score_at_entry'),
             'score_display':     f"{p['score_at_entry']:.1f}" if p.get('score_at_entry') is not None else '—',
@@ -1387,7 +1388,7 @@ body {
             <thead>
             <!-- Column sum row — aligned to Unrealized/Realized/Post-Exit columns -->
             <tr style="border-bottom:none">
-                <td colspan="9" style="padding:0 0 4px 0;border-bottom:none"></td>
+                <td colspan="10" style="padding:0 0 4px 0;border-bottom:none"></td>
                 <td style="text-align:right;padding:0 8px 4px 0;border-bottom:none">
                     <div style="font-size:9px;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;line-height:1.3">Unrealized</div>
                     <div style="font-size:11px;font-weight:700;color:{{ '#22c55e' if today_sums.unrealized_pos else '#ef4444' }}">{{ today_sums.unrealized }}</div>
@@ -1405,8 +1406,9 @@ body {
             <!-- Column headers -->
             <tr>
                 <th>Ticker</th>
-                <th>Type</th>
                 <th>Expiry</th>
+                <th>Type</th>
+                <th>Strike</th>
                 <th>DTE</th>
                 <th style="text-align:right">Score</th>
                 <th style="text-align:right">Premium</th>
@@ -1423,9 +1425,10 @@ body {
             {% for t in today_entered %}
             <tr>
                 <td style="color:#f1f5f9;font-weight:700">{{ t.decoded.ticker }}</td>
+                <td style="color:#64748b;font-size:11px">{{ t.decoded.expiry_display }}</td>
                 <td><span class="{{ 'type-call' if t.contract_type == 'CALL' else 'type-put' }}">
                     {{ t.decoded.contract_type }}</span></td>
-                <td style="color:#64748b;font-size:11px">{{ t.decoded.expiry_display }}</td>
+                <td style="color:#cbd5e1;font-weight:600">{{ t.decoded.strike_display }}</td>
                 <td><span class="dte-badge {{ 'dte-urgent' if t.dte_at_entry == 0 else 'dte-soon' if t.dte_at_entry <= 2 else 'dte-normal' }}">
                     {{ t.dte_at_entry }}d</span></td>
                 <td style="text-align:right;color:#94a3b8">{{ t.score_display }}</td>
@@ -1838,7 +1841,7 @@ function renderPositions(data) {
             <table class="data-table">
                 <thead>
                 <tr style="border-bottom:none">
-                    <td colspan="11" style="padding:0;border-bottom:none"></td>
+                    <td colspan="12" style="padding:0;border-bottom:none"></td>
                     ${sumTd(sumLabel('Unrealized') + `<div style="font-size:11px;font-weight:700">${tUnreal}</div>`)}
                     ${sumTd(sumLabel('Realized')   + `<div style="font-size:11px;font-weight:700">${tReal}</div>`)}
                     <td style="border-bottom:none;padding:0"></td>
@@ -1847,12 +1850,13 @@ function renderPositions(data) {
                 </tr>
                 <tr>
                     <th>Ticker</th>
+                    <th>Expiry</th>
                     <th>Type</th>
+                    <th>Strike</th>
+                    ${thRight('DTE (Entry)')}
+                    <th>Entry Date</th>
                     ${thRight('Score')}
                     ${thRight('Premium')}
-                    <th>DTE (Entry)</th>
-                    <th>Entry Date</th>
-                    <th>Expiry</th>
                     <th>DTE</th>
                     ${thRight('Entry $')}
                     ${thRight('Last $')}
@@ -1879,12 +1883,13 @@ function renderPositions(data) {
             html += `
             <tr>
                 <td style="color:#f1f5f9;font-weight:700">${p.ticker}</td>
+                <td style="color:#64748b;font-size:11px">${p.expiry_display}</td>
                 <td><span class="${p.contract_type === 'Call' ? 'type-call' : 'type-put'}">${p.contract_type}</span></td>
+                <td style="color:#cbd5e1;font-weight:600">${p.strike_display}</td>
+                <td style="text-align:right;color:#64748b">${p.dte_at_entry != null ? p.dte_at_entry + 'd' : '—'}</td>
+                <td style="color:#64748b;font-size:11px">${p.entry_date_display}</td>
                 <td style="text-align:right;color:#94a3b8">${p.score_display}</td>
                 <td style="text-align:right;color:#94a3b8">${p.premium_display}</td>
-                <td style="color:#64748b">${p.dte_at_entry != null ? p.dte_at_entry + 'd' : '—'}</td>
-                <td style="color:#64748b;font-size:11px">${p.entry_date_display}</td>
-                <td style="color:#64748b;font-size:11px">${p.expiry_display}</td>
                 <td>${dteBadge(p.current_dte)}</td>
                 <td style="text-align:right;color:#94a3b8">$${p.entry_price.toFixed(2)}</td>
                 <td style="text-align:right;color:#e2e8f0">${lpDisp}</td>
