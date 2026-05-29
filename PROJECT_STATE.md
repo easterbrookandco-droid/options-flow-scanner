@@ -205,6 +205,16 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📝 SESSION LOG (Last 3 Sessions)
 
+### 2026-05-28 | Claude Code | 23:48 EDT
+- Expanded Today's Entries to 10 columns with Strike, Score, Premium
+- Rebuilt Positions tab with 18-column table and 4-row summary header
+- Added Cost and ROI columns to Position Summary analytics
+- Implemented reversed Post-Exit coloring: red for money left behind
+- Updated all summary stats to include STOP_TRIGGERED trades
+*→ Full details in SESSION_HISTORY.md*
+
+---
+
 ### 2026-05-28 | claude.ai | 11:19 EDT
 - Fixed scheduler.py NameError and 0h0m boundary stall with 60-second minimum
 - Added market close condition to roll-forward logic for consistent boundaries
@@ -231,16 +241,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Deployed tiered DTE backstop system killing zero-winner positions at thresholds
 - Fixed AMD early-stop flaw and timezone bugs in dashboard
 - Established live trading filters: score 6.0-7.9, specific DTE ranges, premium limits
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-26 | claude.ai | 17:39 EDT
-- Fixed binding error and deployed Model C with DTE-aware trailing stops
-- Built recovery analysis and optimization tools for parameter tuning
-- Used flat 1% hurdle with tightening trail widths by DTE
-- Combined model generated +$59,642 vs current approach in backtesting
-- Trailing stops may fire too early on highly profitable positions
 *→ Full details in SESSION_HISTORY.md*
 
 ---

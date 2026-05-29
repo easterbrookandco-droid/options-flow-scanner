@@ -11,6 +11,36 @@
 
 ## 📝 SESSION LOG
 
+### 2026-05-28 | Claude Code | 23:48 EDT | 4 hours
+**What changed:**
+- Expanded Today's Entries table to full width with 10 columns including Strike, Score, Premium, and moved column sums into thead row for alignment
+- Completely rebuilt Positions tab with 18-column table and 4-row summary header showing Open/Stopped/Closed/Totals statistics
+- Added Cost column (Entry $ × 100 × contracts) and ROI column (Potential ÷ Cost %) to Position Summary
+- Implemented reversed Post-Exit coloring where > 0 = red (left money on table), ≤ 0 = green (favorable exit)
+- Updated all summary statistics to include STOP_TRIGGERED trades alongside CLOSED trades for accurate completed trade counts
+- Added Unrealized column for OPEN positions and Post-Exit tracking for STOP_TRIGGERED positions
+- Enhanced win rate display to show format like "5W/3L (63%)" with percentage colored against 50% threshold
+- Fixed JavaScript pc() function bug where false values were incorrectly returning green instead of red
+
+**Key decisions:**
+- Include STOP_TRIGGERED in all summary stats since both CLOSED and STOP_TRIGGERED have realized P&L written at decision time
+- Use thead row for column sums instead of card header to guarantee proper column alignment
+- Reverse Post-Exit color logic to red for positive values (money left on table) and green for negative/zero (good exit timing)
+- Keep Today's Exits query as CLOSED-only for separate future review
+- Remove Contracts column from Today's Entries and Strike/Trail Stop from Positions to make room for new analytics columns
+
+**What we learned:**
+- JavaScript boolean comparison false >= 0 evaluates as true, causing silent coloring bugs that require explicit boolean checks
+- Column alignment for summary rows is more reliable when embedded in table structure rather than external card headers
+- Post-exit tracking provides valuable insight into exit timing quality when colored to show opportunity cost vs protective exits
+
+**Open questions:**
+- Whether Today's Exits should also include STOP_TRIGGERED trades for consistency with other summary statistics
+- If the 18-column Positions table provides optimal information density or needs further consolidation
+- How to handle strike_display formatting for complex option spreads in future enhancements
+
+---
+
 ### 2026-05-28 | claude.ai | 11:19 EDT | 2 hours
 **What changed:**
 - Fixed scheduler.py heartbeat NameError by moving sleep_chunk assignment above print statement
