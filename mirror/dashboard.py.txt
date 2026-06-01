@@ -82,9 +82,30 @@ def fmt_pct(v):
     if v is None: return '0.0%'
     return f"+{v:.1f}%" if v >= 0 else f"{v:.1f}%"
 
+def _entry_dt_rank(row):
+    """Descending entry-datetime rank for position_sort_key: newest first.
+
+    entry_date is stored as 'YYYY-MM-DD' and entry_time as 'HH:MM:SS'
+    (two columns — see journal.py). We combine them into one datetime and
+    negate the epoch so the newest entry sorts first. Rows without these
+    fields (e.g. the Portfolio 'Today's Entries' block, whose query does not
+    select them) get +inf so they tie and fall through to the pnl tiebreaker,
+    leaving that block's ordering unchanged."""
+    d = row.get('entry_date')
+    if not d:
+        return float('inf')
+    t = row.get('entry_time') or '00:00:00'
+    try:
+        dt = datetime.strptime(f"{d} {t}", "%Y-%m-%d %H:%M:%S")
+        return -dt.timestamp()
+    except (ValueError, TypeError):
+        return float('inf')
+
+
 def position_sort_key(row):
     """Shared table sort: 1) Optimizing before Control, 2) OPEN before
-    STOP_TRIGGERED (others last), 3) pnl descending (positive first, None last).
+    STOP_TRIGGERED (others last), 3) entry datetime descending (newest first),
+    4) pnl descending (positive first, None last).
     Uses unrealized pnl for OPEN rows, realized pnl otherwise. Handles both the
     today_entered rows ('unrealized_pnl') and positions rows ('last_pnl')."""
     mode_rank   = 0 if (row.get('mode') == 'OPTIMIZING') else 1
@@ -95,7 +116,7 @@ def position_sort_key(row):
     else:
         pnl = row.get('realized_pnl')
     pnl = pnl if pnl is not None else float('-inf')
-    return (mode_rank, status_rank, -pnl)
+    return (mode_rank, status_rank, _entry_dt_rank(row), -pnl)
 
 
 # =============================================================================
@@ -321,6 +342,7 @@ def get_open_positions():
             pt.score_at_entry,
             pt.mode,
             pt.entry_date,
+            pt.entry_time,
             pt.exit_date,
             pt.exit_price,
             pt.pnl          AS realized_pnl,
@@ -945,6 +967,8 @@ def api_positions():
             'premium_display':   fmt_premium(p.get('premium')),
             'dte_at_entry':      p['dte_at_entry'],
             'entry_date_display': entry_date_disp,
+            'entry_date':        p.get('entry_date'),   # raw, for position_sort_key
+            'entry_time':        p.get('entry_time'),   # raw, for position_sort_key
             'entry_price':       p['entry_price'],
             'contracts':         contracts,
             'last_price':        lp,
