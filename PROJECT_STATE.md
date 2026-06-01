@@ -1,6 +1,6 @@
 # OPTIONS FLOW SCANNER — PROJECT STATE
 *Auto-updated after every session. Source of truth for all tools.*
-*Last updated: 2026-05-29*
+*Last updated: 2026-06-01*
 
 ---
 
@@ -204,6 +204,16 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 
 ## 📝 SESSION LOG (Last 3 Sessions)
 
+### 2026-06-01 | Claude Code | 12:08 EDT
+- Added OPTIMIZING_MAX_ASK_PER_CONTRACT ($7.00) parameter to centralized strategy configuration
+- Modified optimizing agent to use shared config instead of hardcoded values
+- Added entry_time sorting to dashboard Positions tab (newest first)
+- Updated position queries to include entry_date/entry_time data
+- Deployed changes to VM and restarted optimizing agent services
+*→ Full details in SESSION_HISTORY.md*
+
+---
+
 ### 2026-05-29 | Claude Code | 18:47 EDT
 - Fixed expiration auto-close bug preventing OPEN positions from closing
 - Added 15:55 ET cutoff logic to force-expire positions on expiry
@@ -230,16 +240,6 @@ EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
 - Added Cost and ROI columns to Position Summary analytics
 - Implemented reversed Post-Exit coloring: red for money left behind
 - Updated all summary stats to include STOP_TRIGGERED trades
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-28 | claude.ai | 11:19 EDT
-- Fixed scheduler.py NameError and 0h0m boundary stall with 60-second minimum
-- Added market close condition to roll-forward logic for consistent boundaries
-- Deployed fixes to VM and successfully restarted all four services
-- Kept 6.0 score threshold unchanged as selectivity remains design objective
-- Learned tmux displays can freeze while services run normally
 *→ Full details in SESSION_HISTORY.md*
 
 ---

@@ -11,6 +11,30 @@
 
 ## 📝 SESSION LOG
 
+### 2026-06-01 | Claude Code | 12:08 EDT | 1 hour
+**What changed:**
+- Added OPTIMIZING_MAX_ASK_PER_CONTRACT ($7.00) parameter to strategy_config.py for optimizing_agent.py scope
+- Modified optimizing_agent.py to source MAX_ASK_PER_CONTRACT from shared configuration instead of hardcoded value
+- Added entry_time sorting as 3rd key in position_sort_key for dashboard Positions tab (after Mode/Status, before PnL)
+- Updated get_open_positions to select and carry entry_date/entry_time data into result dictionary
+- Deployed configuration changes to VM and restarted optimizing agent and dashboard services
+
+**Key decisions:**
+- Centralized ask ceiling configuration in strategy_config.py rather than hardcoded agent constants for easier tuning
+- Positioned entry_time sort between status and PnL to prioritize recency while maintaining operational hierarchy
+- Used newest-first sorting for entry_time to surface most recent positions at top of each status group
+
+**What we learned:**
+- Agent startup banner successfully reflects new $7.00 ceiling configuration sourced from shared config
+- Dashboard position sorting now properly groups by mode/status then shows newest entries first within each group
+- Configuration externalization pattern works effectively for agent parameter management
+
+**Open questions:**
+- Monitor if $7.00 ask ceiling impacts optimizing agent trade frequency and position quality
+- Observe if newest-first entry sorting improves dashboard usability for position management workflow
+
+---
+
 ### 2026-05-29 | Claude Code | 18:47 EDT | ~1 hour
 **What changed:**
 - Fixed expiration auto-close bug in position_monitor.py where OPEN positions remained indefinitely past expiry due to unreachable EXPIRED logic that required market to be closed but monitor only runs during market hours
