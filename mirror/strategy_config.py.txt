@@ -57,3 +57,12 @@ def backstop_pct(dte):
     if dte is not None and dte <= 14:
         return 0.70
     return 0.80
+
+
+# ── Optimizing agent: per-contract ask ceiling ───────────────────────────
+# Maximum ask price per contract — budget ceiling per position, same logic as
+# the MAX_ASK_PER_CONTRACT cap. SCOPED TO optimizing_agent.py ONLY — it
+# deliberately does not affect agent.py, the scanner, or the position monitor.
+# Set tight ($7.00) so the optimizing run only enters cheap contracts while
+# the parameter sweep collects data on low-priced entries.
+OPTIMIZING_MAX_ASK_PER_CONTRACT = 7.00

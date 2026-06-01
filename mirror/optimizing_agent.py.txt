@@ -8,6 +8,8 @@ import pytz
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 
+from strategy_config import OPTIMIZING_MAX_ASK_PER_CONTRACT
+
 load_dotenv()
 
 SECRET_KEY  = os.getenv("PUBLIC_SECRET_KEY")
@@ -31,10 +33,10 @@ STALENESS_THRESHOLD = 0.25
 # If two signals are within this gap, skip both — no edge cases
 MIN_SCORE_GAP = 0.25
 
-# Maximum ask price per contract — budget ceiling per position
-# Paper trading — set high to capture full price spectrum for data collection
-# Real capital deployment will use dynamic position sizing instead
-MAX_ASK_PER_CONTRACT = 100.00  # $10,000 per contract ceiling
+# Maximum ask price per contract — budget ceiling per position.
+# Sourced from strategy_config (OPTIMIZING_MAX_ASK_PER_CONTRACT) so this cap
+# lives alongside the other strategy knobs but is referenced only here.
+MAX_ASK_PER_CONTRACT = OPTIMIZING_MAX_ASK_PER_CONTRACT
 
 # Market indicators fetched each cycle for context and thesis
 CONTEXT_TICKERS = ["SPY", "QQQ", "IWM", "TLT"]
