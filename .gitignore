@@ -7,6 +7,12 @@ logs/
 # Excel exports
 scanner_export_*.xlsx
 
+# Auto-generated CDN artifacts — published to the `mirrors` branch by
+# .github/workflows/update-raw-urls.yml, never tracked on master.
+mirror/
+GitHub_file_URLs.txt
+_site/
+
 # OS files
 *.DS_Store
 Thumbs.db
