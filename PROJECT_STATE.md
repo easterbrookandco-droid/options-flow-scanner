@@ -1,247 +1,82 @@
 # OPTIONS FLOW SCANNER — PROJECT STATE
-*Auto-updated after every session. Source of truth for all tools.*
-*Last updated: 2026-06-01*
+*Last updated: 2026-07-03*
+*This session superseded the stale 2026-05-24 state. Prior detail lives in SESSION_HISTORY.md.*
 
 ---
 
 ## 🔴 SYSTEM STATUS
+- VM: AWS EC2, 3.144.128.166, Ubuntu. Services running: scheduler, agent, monitor (dashboard/optimizing-agent status to re-verify).
+- Data: ~1,565 trades logged, 1,449 closed. signals.db is authoritative on VM.
+- Untouched since ~May 29 (user was heads-down at work). System ran autonomously through a June downturn and recovery.
+- Known infra note: NordVPN was killing SSH/VS Code sessions via idle-timeout. Fix = split-tunnel exclusion of ssh.exe AND VS Code; plain-terminal SSH holds, VS Code still flaky. VPN off = stable.
+- `*** System restart required ***` pending on VM (kernel update). Deferred — reboot restarts all services, babysit when done.
 
-| Service | Status | Location |
-|---------|--------|----------|
-| Scheduler | RUNNING | AWS EC2 VM |
-| Agent | RUNNING | AWS EC2 VM |
-| Position Monitor | RUNNING | AWS EC2 VM |
-| Dashboard | RUNNING | AWS EC2 VM (port 5000) |
-| VM | RUNNING | 3.144.128.166 (Ubuntu 26.04, t3.micro) |
-
-**Last confirmed running:** 2026-05-23 evening
-
----
-
-## 📍 WHERE WE ARE (plain English)
-
-The options flow scanner is fully autonomous and running 24/7 on AWS. 
-The system scans for unusual options flow every 30 minutes during market 
-hours, enters paper trades automatically via the agent, tracks positions 
-via the monitor, and exits via a two-stage trailing stop.
-
-We are in week 3 of paper trading data collection. The system has processed 
-290+ closed trades with +$31,808 realized P&L. The trailing stop was just 
-deployed (May 23) and will generate its first live data on Tuesday May 26 
-(Monday is Memorial Day — market closed).
-
-The next major decision point is week 3-4: if score ≥ 6.0 holds as the 
-best performing bucket for a third week, we raise MIN_COMPOSITE_SCORE to 
-6.0 in the agent. That's the first live model change.
+## 📊 CURRENT PERFORMANCE (as of 2026-07-03)
+- Realized P&L: +$18,734 (DOWN from +$31,808 on May 23 — the system LOST ground over the month on ~1,160 more trades).
+- Mark-to-market: +$37,020. Win rate: 43.5% (down from 54.5%).
+- Exit-reason breakdown: TARGET +$65,790 (73 trades, all wins) | MANUAL +$30,286 (50, all wins) | STOP +$5,180 (1,128 trades, ~breakeven) | **EXPIRED −$82,522 (198 trades, −42.5% avg)**.
+- Carried by AMD (+$44K) and QQQ (+$31K). Bled by NVDA (−$28.8K), MSFT (−$22K), SPY (−$19K).
 
 ---
 
-## 🔬 ACTIVE EXPERIMENTS
+## 🔬 THE JULY 3 DIAGNOSTIC — WHAT WE LEARNED (most important section)
 
-| Experiment | Status | Decision Point |
-|-----------|--------|----------------|
-| Score ≥ 6.0 threshold | Week 3 of 3 — confirm Tuesday | Week 4 if pattern holds |
-| Trailing stop (1% hurdle + 20% trail) | Deployed May 23, first live data Tue | Review after 2 weeks |
-| OI confirmation filter | Not yet built | Next session |
-| Market bias data (previous close) | Deployed May 23, first real data Tue | Verify Tuesday |
+**Core reframe:** "Outcome" = OUR realizable exit given the path, NOT how the contract settled. A contract that expired worthless but spent a day up 80% was a *good entry we exited wrong*. This is the lens for all analysis.
 
----
+**Key mechanism discovered — the "never-green" bucket:**
+The trailing stop only ARMS after price crosses the +1% hurdle. A position that never goes green never arms it, so its ONLY safety net is the backstop (60/70/80% loss by DTE). Positions that slow-bleed to −42% and expire sit in the dead zone between "never profitable" (no trailing stop) and "catastrophic" (no backstop trip). That gap has no net.
 
-## 🏗️ SYSTEM ARCHITECTURE
+**THE decisive number:** Splitting closed CONTROL trades by whether they EVER went green (snapshot `hurdle_crossed=1`):
+- never_green: 170 trades, **−$109,612**
+- went_green: 1,258 trades, **+$128,209**
+→ The entire loss is the never-green bucket. The went-green book is net +$128K. **The money is lost at ENTRY, not exit.** No exit tweak can touch never-green positions (trailing stop literally never fires on them).
 
-### Files (all on GitHub + VM + local Windows)
-```
-fetch_trades.py       — Core scanner, auth, chain fetch, scoring (~1335 lines)
-journal.py            — All SQLite operations
-scheduler.py          — 30-min polling loop, saves market closes at 4pm
-agent.py              — Autonomous paper trading agent, 5-min loop
-position_monitor.py   — Position tracking, trailing stop, exits (986 lines)
-dashboard.py          — Flask at localhost:5000 (signals only — needs rebuild)
-evaluate.py           — On-demand contract evaluator
-pnl_report.py         — On-demand P&L reporter with open pro-forma
-entry_analyzer.py     — Signal quality analysis by score/DTE/premium/ticker
-export_db.py          — Exports DB to Excel for validation
-export_analysis_dataset.py — Flat snapshot export for hurdle analysis
-backfill_stop_exits.py — One-time backfill for STOP_TRIGGERED positions
-optimize_full_dataset.py — Trailing stop optimization analysis
-```
+**Four hypotheses tested and KILLED:**
+1. Exit logic is the problem → NO. Went-green book is profitable; exits work in aggregate.
+2. It's a June-regime event → NO. Never-green loss is ~even across months: May −$55,663 (96 trades), June −$53,746 (73). Persistent structural leak, not a downturn accident.
+3. Simple entry filter on score → NO. never-green rate rises only mildly with score (8% under-5 → 18% at 8.0+). No clean cut. NOTE: score is mildly INVERTED — higher score = slightly MORE likely to never go green. Scoring model is suspect.
+4. Direction alignment (call into up-tape etc.) → NO. never-green ~proportional across aligned/against. BUT "flat tape" (SPY ~unchanged at entry) is a bloodbath: 45 never-green vs 32 went-green, the only bucket where losers outnumber winners. Flag for later (may be time-of-day proxy).
 
-### Database: signals.db (SQLite)
-```
-signals              — Flow signals logged by scanner
-paper_trades         — Paper trade entries and exits
-position_snapshots   — Price snapshots every 2 minutes per position
-market_closes        — End-of-day close prices (SPY/QQQ/IWM/TLT/GLD/USO)
-```
+**Ticker cut nuance:** Don't ban high-loss tickers — TSLA (−$38K never-green) is also the BIGGEST winner (+$54K went-green); the loss is volume-scaled, not toxicity. BUT NVDA and GOOGL are net-negative even on the WENT-GREEN side (NVDA went-green −$5,735; GOOGL −$543). Those two can be dropped with ~zero opportunity cost — the only "free" action found.
 
-### Infrastructure
-- **VM:** AWS EC2 t3.micro, Ubuntu 26.04, 20GB EBS
-- **SSH:** ssh -i C:\Users\neast\.ssh\scanner-key.pem ubuntu@3.144.128.166
-- **Dashboard tunnel:** ssh -i C:\Users\neast\.ssh\scanner-key.pem -L 5000:localhost:5000 -N ubuntu@3.144.128.166
-- **Services:** systemd (scanner-scheduler, scanner-monitor, scanner-agent, scanner-dashboard)
-- **VM aliases:** scanner-status, scanner-logs, scanner-restart, scanner-scheduler-log, scanner-monitor-log, scanner-agent-log
-- **Git on VM:** credentials cached via credential.helper store
+**THE VALIDATED FINDING — vol/OI inversion:**
+Bucketing CONTROL trades by scan-time vol_oi_ratio, never-green rate and P&L:
+- 5.0+ : 1,165 trades, 13.3% never-green, **−$8,244** (only losing band; 82% of all entries live here)
+- 3.0–5.0 : 6.2% ng, +$15,652
+- 2.0–3.0 : 4.0% ng, +$8,913
+- 1.0–2.0 : 5.9% ng, +$4,599
+- under 1.0 : 2.5% ng, −$1,814 (thin)
+The LOUDEST prints (extreme vol/OI, which the score REWARDS MOST) are the WORST. Sweet spot is MODERATE vol/OI (~2–5).
+**Survives out-of-sample regime check** — 5.0+ has ~3x the never-green rate of under-5 in BOTH May (18.9% vs 6.3%) and June (10.0% vs 3.6%). And under-5 was regime-ROBUST: profitable in both the up month (+$13.7K) and the down month (+$12.4K), while 5.0+ made +$8.8K in May but −$16.8K in June (edge evaporates exactly when needed).
 
-### GitHub
-- **Repo:** https://github.com/easterbrookandco-droid/options-flow-scanner (public)
-- **Raw URLs:** https://cdn.jsdelivr.net/gh/easterbrookandco-droid/options-flow-scanner@master/GitHub_file_URLs.txt
-- **GitHub Action:** Auto-updates GitHub_file_URLs.txt on every push
+**Interpretation (footprint thesis, refined):** The original premise — tail informed institutional footprints — is VALID but we've been trading its crowded shadow. Extreme vol/OI = frenzy = move already in progress / picked-over / low-conviction lottery flow. Moderate vol/OI = real fresh positioning not yet chased. "Not size, but confirmed, fresh, directional positioning."
+
+**Open caveat:** vol/OI may not be independent of score (score is built partly from vol/OI) — the "high score inverts" and "high vol/OI inverts" findings may be the same effect seen twice. Need to test vol/OI predictive power AFTER controlling for other features before treating as separate levers.
 
 ---
 
-## ⚙️ CURRENT CONFIGURATION
+## 📋 NEXT STEPS (in leverage order)
 
-### Agent (agent.py)
-```python
-CHECK_INTERVAL_SECONDS = 300    # 5 min
-STALENESS_THRESHOLD    = 0.25   # 25%
-MIN_SCORE_GAP          = 0.0    # DISABLED for data collection
-MAX_ASK_PER_CONTRACT   = 100.00
-# Ticker dedup DISABLED (commented out) — re-enable for live trading
-# No 0DTE entries
-```
+1. **OI-confirmation capture (STARTING NOW):** Store next-morning open interest so we can distinguish OPENING vs CLOSING flow directly, instead of inferring from same-day vol/OI. Cannot be tested retroactively — we never stored next-day OI — so every day uninstrumented is lost data. This is the real thesis test.
+2. **vol/OI ceiling / score inversion:** Stop over-weighting extreme vol/OI. Cap entries or invert that score component so moderate ranks highest. DO NOT hand-code from chat — run the full simulation treatment (test ceiling vs whole population, confirm it doesn't gut went-green winners, check capture efficiency) like the May exit-model work.
+3. **Drop NVDA + GOOGL from watchlist** — net-negative even on went-green side, ~zero opportunity cost.
+4. **Entry-evaluation rebuild** — the deep one. Rebuild scoring around footprint QUALITY (opening-vs-closing, delta-as-conviction, moderate-not-extreme size), not the current size-weighted score that has now inverted in 3 separate cuts.
+5. **Loser-side exit (demoted):** A mid-tier exit for never-green bleeders would claw back part of −$109K, but it treats the symptom — entry fix prevents the disease. Must be tested against went-green winners simultaneously (recovery_matrix proved deep-drawdown winners exist) or it guillotines them.
 
-### Position Monitor (position_monitor.py)
-```python
-CHECK_INTERVAL_SECONDS = 120    # 2 min (changed from 3 min May 23)
-HURDLE_PCT             = 0.01   # 1% gain before trailing stop activates
-TRAILING_STOP_PCT      = 0.20   # 20% drop from post-hurdle peak
-# ITM safety exit: DTE=0, profitable, after 3:45pm ET
-# STOP_TRIGGERED: records exit, keeps tracking to expiration for data
-```
+**Stopping rule agreed:** The rebuilt/confirmed entry model must MATERIALLY cut the never-green rate AND survive out-of-sample on a period it wasn't tuned on — or we conclude the uncompeted edge is too thin for a retail account and say so. Sound premise ≠ harvestable edge.
 
-### Signal Tiers
-```
-HIGH:  composite_score ≥ 6 AND premium ≥ $1M
-INST:  premium ≥ $5M regardless of score
-WATCH: score ≥ 3 AND premium ≥ $100K
-```
+## ⚙️ LIVE EXIT LOGIC (current, from strategy_config.py + position_monitor.py)
+- Trailing stop trails peak PRICE (not peak P&L — the May "% basis" bug was fixed). Arms only after +1% hurdle.
+- Trailing width by DTE: 0DTE 10%, 1–2d 15%, 3–5d 20%, 6–14d+ 25%.
+- Backstop: 60% loss ≤2 DTE, 70% 3–14d, 80% 15+d.
+- Hurdle recomputed live every cycle (intentional — open positions benefit from rule changes; do NOT trust a stamped hurdle field in analysis, monitor ignores it. Apply +1% uniformly when reconstructing history).
+- ITM safety exit near expiration.
 
-### Scoring
-```
-composite_score = Vol/OI ratio score (cap 5pts) + premium tier score (0-4pts)
-DTE-adjusted thresholds in analyze_and_display()
-```
+## 🧪 AGENT ARCHITECTURE
+- agent.py = CONTROL (unconstrained, max data, up to ~$40 entries). optimizing_agent.py = OPTIMIZING (mode flag; capped $7 ask INTENTIONALLY — mirrors the real-capital price range user will actually trade; not a confound, a deliberate second cohort). Only 21 OPTIMIZING closed trades so far — too few to conclude anything yet.
+- live/0_record_trade.py exists for manual real-capital logging → live_trades.db.
 
-### Watchlist (19 tickers)
-```
-AAPL, NVDA, MSFT, AMZN, META, GOOGL, TSLA, SPY, QQQ, IWM,
-JPM, GS, BAC, AMD, NFLX, CRM, UBER, XLF, XLE
-EXPIRATIONS_TO_SCAN = 4  (nearest 4 per ticker)
-```
-
----
-
-## 📊 CURRENT PERFORMANCE (as of 2026-05-23)
-
-| Metric | Value |
-|--------|-------|
-| Total closed trades | 290 |
-| Win rate | 54.5% (158W/132L) |
-| Realized P&L | +$31,808 |
-| Mark-to-market | +$21,241 |
-| Starting bankroll | $10,000 |
-| Current value (MTM) | +$31,241 (+212%) |
-| Best ticker | AMD +$51,682 (77% win rate) |
-| Worst ticker | SPY -$20,325 |
-| Avg hold time | 2.5 days |
-
-### Key findings from entry_analyzer.py (weeks 1-2)
-- Score 6.0-6.9 = best bucket (86-91% win rate both weeks) — CONSISTENT
-- Score 8.0+ = worst performer (50-60%) — counterintuitive, likely late-stage flow
-- Score threshold simulation peaks at 6.0 — plan to set MIN_COMPOSITE_SCORE=6.0 in week 4
-- $5M+ premium tier = underperforming (46% win rate week 2)
-- 3-5 DTE = weakest DTE bucket (45-48% win rate)
-- Market bias all showing NEUTRAL (previousClose API bug — fixed May 23, real data Tuesday)
-
----
-
-## 🔑 KEY TECHNICAL DECISIONS & LEARNINGS
-
-### Public.com API Quirks
-- Two-step auth: POST → accessToken → Bearer token
-- Must select accountType == "BROKERAGE" (account 5LT39200, LEVEL_2 options)
-- Expirations endpoint returns "expirations" key (docs say "expirationDates" — wrong)
-- Greeks: GET with osiSymbols as repeated params, data under "greeks" key
-- previousClose returns null — fixed by storing closes ourselves in market_closes table
-- Free tier = 403 on everything; paid plan required
-
-### Flask/Jinja2
-- Template literal {{ }} conflicts with JavaScript
-- Always wrap JS blocks in {% raw %}...{% endraw %}
-
-### Git Workflow
-- Always commit from whichever machine made the change
-- If push rejected: git pull origin master first
-- VM uses PAT stored via credential.helper store
-- GitHub Action auto-updates GitHub_file_URLs.txt on every push
-
-### Trailing Stop Analysis (empirical, May 23)
-- 95 positions expired at loss but were profitable at some point
-- $21,665 available P&L never captured by current system
-- 84/95 peaked BEFORE 0DTE — time-based exits largely wrong approach
-- 75% of cliff dives happen within 5 min — slippage unavoidable but acceptable
-- Optimal: 1% hurdle + 20% trailing stop → +$54,854 improvement backtested
-- False exit rate: 67/82 saves = 82% false exits BUT still net positive vs holding
-
-### Model Improvement Philosophy
-- One change at a time — can't diagnose what worked otherwise
-- Don't filter market context yet — need cross-condition data first  
-- Concentration in paper trading is a feature not a bug
-- Losses are data — let them accumulate, analyze properly
-- Score ≥ 6.0 confirmed as sweet spot across 2 weeks — week 3 is confirmation
-
----
-
-## 📋 NEXT SESSION AGENDA
-
-1. Decide whether the monitor should read the stored per-trade hurdle_price vs recomputing from live HURDLE_PCT
-2. Review trailing-stop behavior Monday once the monitor resumes and trails live price peaks
-3. Tune trailing_stop_pct / hurdle tiers if needed based on the new validation columns
-
----
-
-
-## 📝 SESSION LOG (Last 3 Sessions)
-
-### 2026-06-01 | Claude Code | 12:08 EDT
-- Added OPTIMIZING_MAX_ASK_PER_CONTRACT ($7.00) parameter to centralized strategy configuration
-- Modified optimizing agent to use shared config instead of hardcoded values
-- Added entry_time sorting to dashboard Positions tab (newest first)
-- Updated position queries to include entry_date/entry_time data
-- Deployed changes to VM and restarted optimizing agent services
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-29 | Claude Code | 18:47 EDT
-- Fixed expiration auto-close bug preventing OPEN positions from closing
-- Added 15:55 ET cutoff logic to force-expire positions on expiry
-- Implemented price fallback system for expired contracts losing pricing data
-- Manually cleared 10 stuck positions from expiration backlog
-- Changed expiration handling to work during market hours only
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-29 | Claude Code | 16:47 EDT
-- Fixed duplicate contract rows by joining on signal_id instead of contract strings
-- Switched trailing stops from gain-based to price-based to prevent premature exits
-- Added Strike, Cost, Mode columns to Portfolio tables per specification
-- Centralized strategy parameters into new strategy_config.py module for consistency
-- Added database fields for hurdle_price and trailing stop tracking
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-### 2026-05-28 | Claude Code | 23:48 EDT
-- Expanded Today's Entries to 10 columns with Strike, Score, Premium
-- Rebuilt Positions tab with 18-column table and 4-row summary header
-- Added Cost and ROI columns to Position Summary analytics
-- Implemented reversed Post-Exit coloring: red for money left behind
-- Updated all summary stats to include STOP_TRIGGERED trades
-*→ Full details in SESSION_HISTORY.md*
-
----
-
-*Older sessions in SESSION_HISTORY.md*
+## 🔧 INFRA / WORKFLOW NOTES
+- GitHub fetch for Claude: paste `raw.githubusercontent.com/.../master/FILENAME` links — jsDelivr serves emoji-containing .py files as BINARY (unreadable) and its index is stale. raw.githubusercontent works clean. Permission quirk: Claude can only fetch URLs the user has pasted in-chat.
+- session_log.py habit LAPSED (that's why state was stale May→July). Re-establish: run at end of every session.
+- signals.db schema: paper_trades has entry/exit features + market context strip + mode + hurdle_price. position_snapshots has current_price, pnl, current_dte, hurdle_crossed, running_max_price/pnl, market strip — dense ~2-min cadence, paths are trustworthy. signals table has volume, open_interest, vol_oi_ratio (single scan-time snapshot only — no next-day OI, hence step 1).
