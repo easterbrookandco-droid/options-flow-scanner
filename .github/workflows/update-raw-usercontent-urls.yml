@@ -1,0 +1,101 @@
+name: Update Raw URLs
+on:
+  push:
+    branches: [ master ]
+
+# Generates .txt mirrors of the Python sources plus a jsdelivr URL list, then
+# publishes them to a dedicated `mirrors` branch via force-push. Nothing is ever
+# committed back to master, so this workflow never conflicts with developer
+# pushes. The `mirrors` branch is a single orphan commit, rebuilt each run.
+jobs:
+  update-urls:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      MIRROR_BRANCH: mirrors
+    steps:
+      - name: Checkout repo (triggering commit)
+        uses: actions/checkout@v4
+
+      - name: Build mirrors and URL list into _site/
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site/mirror
+
+          # Flattened .txt mirrors of every source .py file:
+          #   live/0_record_trade.py -> mirror/live_0_record_trade.py.txt
+          find . -type f -name "*.py" \
+            ! -path "./.github/*" \
+            ! -path "./venv/*" \
+            ! -path "./__pycache__/*" \
+            ! -path "./mirror/*" \
+            ! -path "./_site/*" \
+            | while read -r filepath; do
+                clean_path="${filepath#./}"
+                flat_name=$(echo "$clean_path" | tr '/' '_')
+                cp "$filepath" "_site/mirror/${flat_name}"
+              done
+
+          SHA="${GITHUB_SHA}"
+          REPO="${GITHUB_REPOSITORY}"
+          F=_site/GitHub_file_URLs_RawUserContent.txt
+
+          {
+            echo "GitHub Raw File URLs RawUserContent:"
+            echo "Auto-generated on push — do not edit manually"
+            echo "Source files commit-pinned to: ${SHA}"
+            echo "Mirrors + this list served from the '${MIRROR_BRANCH}' branch (always fresh)"
+            echo "Generated at: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+            echo ""
+            echo "# Source files (commit-pinned to master @ ${SHA}, immutable, always fresh)"
+          } > "$F"
+
+          # Source .md/.txt/.bat — served as text directly, pinned to the
+          # triggering commit on master (those files exist there at ${SHA}).
+          find . -type f \( -name "*.md" -o -name "*.txt" -o -name "*.bat" \) \
+            ! -path "./.github/*" \
+            ! -path "./venv/*" \
+            ! -path "./__pycache__/*" \
+            ! -path "./mirror/*" \
+            ! -path "./_site/*" \
+            ! -name "GitHub_file_URLs.txt" \
+            ! -name "GitHub_file_URLs_RawUserContent.txt" \
+            | sort \
+            | while read -r filepath; do
+                clean_path="${filepath#./}"
+                echo "https://raw.githubusercontent.com/${REPO}@${SHA}/${clean_path}"
+              done >> "$F"
+
+          {
+            echo ""
+            echo "# Python script mirrors (.py — served from '${MIRROR_BRANCH}' branch, always latest)"
+          } >> "$F"
+
+          find _site/mirror -type f -name "*.py" \
+            | sort \
+            | while read -r filepath; do
+                echo "https://raw.githubusercontent.com/${REPO}@${MIRROR_BRANCH}/mirror/$(basename "$filepath")"
+              done >> "$F"
+
+          {
+            echo ""
+            echo "# This URL list itself (always @${MIRROR_BRANCH}, never pinned)"
+            echo "https://raw.githubusercontent.com/${REPO}@${MIRROR_BRANCH}/GitHub_file_URLs_RawUserContent.txt"
+          } >> "$F"
+
+      - name: Publish to the mirrors branch (force-push, never touches master)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd _site
+          git init -q
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Auto-update mirrors and URLs"
+          git push -f \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            "HEAD:${MIRROR_BRANCH}"
