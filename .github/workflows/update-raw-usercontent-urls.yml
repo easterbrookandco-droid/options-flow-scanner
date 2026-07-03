@@ -1,4 +1,4 @@
-name: Update Raw URLs
+name: Update Raw URLs RawUserContent
 on:
   push:
     branches: [ master ]
