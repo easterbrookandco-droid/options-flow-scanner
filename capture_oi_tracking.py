@@ -62,6 +62,10 @@ def _migrate_add_enrichment_columns(conn):
         ("iv_observed", "REAL"),
         ("volume_observed", "INTEGER"),
         ("underlying_price_at_check", "REAL"),
+        ("bid_observed", "REAL"),
+        ("ask_observed", "REAL"),
+        ("mid_observed", "REAL"),
+        ("last_observed", "REAL"),
     ]
     for col, typ in to_add:
         if col not in existing:
@@ -94,6 +98,13 @@ def init_table():
             iv_observed               REAL,   -- implied vol at check (chase vs fade)
             volume_observed           INTEGER,-- contract volume at check (sustained interest)
             underlying_price_at_check REAL,   -- stock price at check (makes OI directional)
+            -- contract price path (added 2026-07-17) — the 60x accelerator.
+            -- Lets us test the thesis at SIGNAL level (~2k/day) instead of
+            -- TRADE level (~32/day). Same API payload, previously discarded.
+            bid_observed              REAL,
+            ask_observed              REAL,
+            mid_observed              REAL,   -- optionDetails.midPrice
+            last_observed             REAL,
             created_at        TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -215,11 +226,17 @@ def main():
                 if sym is None:
                     continue
                 greeks = ((item.get("optionDetails") or {}).get("greeks")) or {}
+                details = item.get("optionDetails") or {}
                 oi_now[sym] = {
                     "oi":     item.get("openInterest"),
                     "delta":  _f(greeks.get("delta")),
                     "iv":     _f(greeks.get("impliedVolatility")),
                     "volume": _i(item.get("volume")),
+                    # price path — already in the payload, previously thrown away
+                    "bid":    _f(item.get("bid")),
+                    "ask":    _f(item.get("ask")),
+                    "mid":    _f(details.get("midPrice")),
+                    "last":   _f(item.get("last")),
                 }
 
         for s in sig_list:
@@ -248,15 +265,17 @@ def main():
                     oi_observed, oi_checked_at, days_after_signal,
                     oi_change, oi_change_pct,
                     delta_observed, iv_observed, volume_observed,
-                    underlying_price_at_check
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+                    underlying_price_at_check,
+                    bid_observed, ask_observed, mid_observed, last_observed
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """, (
                 s["signal_id"], s["contract"], s["ticker"], s["expiration"],
                 s["oi_at_signal"], s["vol_at_signal"], s["scan_time"],
                 observed, now_str, days_after,
                 change, change_pct,
                 rec.get("delta"), rec.get("iv"), rec.get("volume"),
-                u_price
+                u_price,
+                rec.get("bid"), rec.get("ask"), rec.get("mid"), rec.get("last")
             ))
             written += 1
 
