@@ -136,6 +136,65 @@ a configuration change plus the order execution layer.
 
 ---
 
+### 🔴 Risk-based position sizing model
+**Category:** agent.py / strategy_config.py
+**Effort:** M
+**Blocked on:** Live trading mode switch (not needed for paper)
+
+Current bankroll rules are portfolio-level exposure caps (20% max open,
+30% drawdown reduction). There is no per-trade sizing model — the agent
+enters 1 contract regardless of premium, conviction, or account state.
+
+For long options, max loss is bounded at the premium paid, so no stop
+distance is needed to compute risk. Naively: 1% risk of a $10K account
+= $100 = exactly 1 contract at the current $100 MAX_ASK ceiling.
+
+But the trailing stop model means full premium loss is not the typical
+outcome. A stop-triggered exit at -25% on a $60 contract risks $15, not
+$60. True risk-per-trade sits somewhere between (premium × trail %) and
+full premium — the gap being never-green trades that die before the
+trail ever arms, plus overnight gap risk.
+
+**Approach:** Query the lifecycle data for the realized loss distribution
+on closed losers, split by never-green vs. went-green-then-stopped. The
+never-green mean/median loss is the effective risk denominator. Size as:
+  contracts = (account × risk_pct) / (entry_premium × effective_loss_pct)
+Floor at 1 contract. Revisit whenever the entry filter changes materially,
+since the never-green rate is what this number is made of.
+
+**Data needed:** Sufficient post-instrumentation closed trades to
+characterize the never-green loss distribution with confidence.
+
+---
+
+### 🔴 Daily loss circuit breaker
+**Category:** agent.py / optimizing_agent.py
+**Effort:** S
+**Blocked on:** Live trading mode switch (not needed for paper)
+
+Existing drawdown triggers (30% reduce, 50% halt) are slow — a 30%
+drawdown could accumulate over weeks of bad entries before firing. A
+daily ceiling is the fast circuit breaker: it catches a regime break,
+a broken data feed, or a scoring bug before it compounds across a
+session.
+
+On a $10K bankroll, a 2% daily ceiling = $200 ≈ 2-3 contracts going to
+zero in one session. Encode alongside the trail tranches in
+strategy_config.py.
+
+**Approach:** At the top of each agent loop, sum today's realized P&L
+plus mark-to-market on open positions. If the loss exceeds
+DAILY_LOSS_CEILING, block new entries for the remainder of the session
+(position_monitor continues managing open positions normally — this is
+an entry gate, not a liquidation trigger). Reset at session open.
+
+**Open question:** Should the ceiling count unrealized drawdown on open
+positions, or realized only? Realized-only is simpler and avoids
+grounding the agent on noise, but is slower to react. Lean realized-only
+for a first pass.
+
+---
+
 ### 🟡 Signal quality score for agent decisions
 **Category:** agent.py
 **Effort:** M
