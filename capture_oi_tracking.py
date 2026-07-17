@@ -41,6 +41,7 @@ from fetch_trades import (
     get_access_token,
     get_account_id,
     fetch_option_chain,
+    get_share_prices,
 )
 
 DB_PATH        = os.path.join(os.path.dirname(os.path.abspath(__file__)), "signals.db")
@@ -50,6 +51,22 @@ EASTERN        = pytz.timezone("US/Eastern")
 # 5 covers "did it build / persist / unwind over the trading week."
 TRACKING_WINDOW_DAYS = 5
 
+
+
+def _migrate_add_enrichment_columns(conn):
+    """Add enrichment columns to an existing table if missing. Idempotent."""
+    c = conn.cursor()
+    existing = {row[1] for row in c.execute("PRAGMA table_info(signal_oi_tracking)").fetchall()}
+    to_add = [
+        ("delta_observed", "REAL"),
+        ("iv_observed", "REAL"),
+        ("volume_observed", "INTEGER"),
+        ("underlying_price_at_check", "REAL"),
+    ]
+    for col, typ in to_add:
+        if col not in existing:
+            c.execute(f"ALTER TABLE signal_oi_tracking ADD COLUMN {col} {typ}")
+    conn.commit()
 
 def init_table():
     """Create the OI tracking table. Safe to call repeatedly."""
@@ -72,6 +89,11 @@ def init_table():
             days_after_signal INTEGER,            -- calendar days since scan_time
             oi_change         INTEGER,            -- oi_observed - oi_at_signal
             oi_change_pct     REAL,
+            -- conviction / direction enrichment (added 2026-07-10)
+            delta_observed            REAL,   -- contract delta at check (conviction)
+            iv_observed               REAL,   -- implied vol at check (chase vs fade)
+            volume_observed           INTEGER,-- contract volume at check (sustained interest)
+            underlying_price_at_check REAL,   -- stock price at check (makes OI directional)
             created_at        TEXT DEFAULT CURRENT_TIMESTAMP
         )
     """)
@@ -86,6 +108,7 @@ def init_table():
         ON signal_oi_tracking(contract)
     """)
     conn.commit()
+    _migrate_add_enrichment_columns(conn)
     conn.close()
     print("signal_oi_tracking table ready.")
 
@@ -142,6 +165,15 @@ def main():
         conn.close()
         return
 
+    # Fetch underlying share prices once for all tracked tickers (cached, 1 call).
+    tracked_tickers = sorted({s["ticker"] for s in signals if s["ticker"]})
+    try:
+        share_prices = get_share_prices(tracked_tickers, token, account_id) or {}
+    except Exception as e:
+        print(f"    ! share price fetch failed: {e}")
+        share_prices = {}
+    print(f"  Underlying prices fetched for {len(share_prices)} tickers")
+
     # Group by (ticker, expiration) so we fetch each chain ONCE, not per-contract.
     chains = {}
     for s in signals:
@@ -168,25 +200,39 @@ def main():
             continue
 
         # chain = {'baseSymbol': str, 'calls': [...], 'puts': [...]}
-        # each contract: {'instrument': {'symbol': 'AAPL260706C00205000'}, 'openInterest': int, ...}
-        # Build a lookup: contract symbol -> current openInterest
+        # Build a lookup: contract symbol -> {oi, delta, iv, volume}
+        def _f(x):
+            try: return float(x)
+            except (TypeError, ValueError): return None
+        def _i(x):
+            try: return int(x)
+            except (TypeError, ValueError): return None
         oi_now = {}
         for side in ("calls", "puts"):
             for item in chain.get(side, []):
                 instr = item.get("instrument") or {}
                 sym = instr.get("symbol")
-                if sym is not None:
-                    oi_now[sym] = item.get("openInterest")
+                if sym is None:
+                    continue
+                greeks = ((item.get("optionDetails") or {}).get("greeks")) or {}
+                oi_now[sym] = {
+                    "oi":     item.get("openInterest"),
+                    "delta":  _f(greeks.get("delta")),
+                    "iv":     _f(greeks.get("impliedVolatility")),
+                    "volume": _i(item.get("volume")),
+                }
 
         for s in sig_list:
-            observed = oi_now.get(s["contract"])
-            if observed is None:
-                # contract not found in current chain (expired/rolled) — skip, note it
+            rec = oi_now.get(s["contract"])
+            if rec is None or rec.get("oi") is None:
+                # contract not found in current chain (expired/rolled) — skip
                 continue
+            observed = rec["oi"]
 
             base = s["oi_at_signal"] or 0
             change = observed - base
             change_pct = round((change / base * 100), 2) if base else None
+            u_price = share_prices.get(s["ticker"])
 
             # days since signal
             try:
@@ -200,13 +246,17 @@ def main():
                     signal_id, contract, ticker, expiration,
                     oi_at_signal, vol_at_signal, scan_time,
                     oi_observed, oi_checked_at, days_after_signal,
-                    oi_change, oi_change_pct
-                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                    oi_change, oi_change_pct,
+                    delta_observed, iv_observed, volume_observed,
+                    underlying_price_at_check
+                ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """, (
                 s["signal_id"], s["contract"], s["ticker"], s["expiration"],
                 s["oi_at_signal"], s["vol_at_signal"], s["scan_time"],
                 observed, now_str, days_after,
-                change, change_pct
+                change, change_pct,
+                rec.get("delta"), rec.get("iv"), rec.get("volume"),
+                u_price
             ))
             written += 1
 
